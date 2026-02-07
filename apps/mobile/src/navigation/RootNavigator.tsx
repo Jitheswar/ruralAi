@@ -9,6 +9,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import PatientListScreen from '../screens/PatientListScreen';
 import AddPatientScreen from '../screens/AddPatientScreen';
 import PatientDetailScreen from '../screens/PatientDetailScreen';
+import SymptomCheckerScreen from '../screens/SymptomCheckerScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,11 @@ function AppStack() {
         name="PatientDetail"
         component={PatientDetailScreen}
         options={{ title: 'Patient Details' }}
+      />
+      <Stack.Screen
+        name="SymptomChecker"
+        component={SymptomCheckerScreen}
+        options={{ title: 'Symptom Check' }}
       />
     </Stack.Navigator>
   );

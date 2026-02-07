@@ -83,7 +83,7 @@ export default function DashboardScreen({ navigation }: any) {
           subtitle="AI-powered health assessment"
           icon="🩺"
           color="#059669"
-          onPress={() => {/* Phase 3 */}}
+          onPress={() => navigation.navigate('SymptomChecker')}
         />
         <DashboardCard
           title="Medicines"
