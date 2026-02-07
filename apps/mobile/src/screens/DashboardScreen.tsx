@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { database } from '../db';
+import Patient from '../db/models/Patient';
 
 interface DashboardCardProps {
   title: string;
@@ -36,6 +38,16 @@ function DashboardCard({ title, subtitle, icon, color, onPress }: DashboardCardP
 
 export default function DashboardScreen({ navigation }: any) {
   const { user, logout } = useAuth();
+  const [patientCount, setPatientCount] = useState(0);
+
+  useEffect(() => {
+    const sub = database
+      .get<Patient>('patients')
+      .query()
+      .observeCount()
+      .subscribe((count) => setPatientCount(count));
+    return () => sub.unsubscribe();
+  }, []);
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -61,17 +73,17 @@ export default function DashboardScreen({ navigation }: any) {
       <ScrollView className="flex-1 px-4 pt-6">
         <DashboardCard
           title="Patients"
-          subtitle="View and manage patients"
+          subtitle={`${patientCount} registered`}
           icon="👥"
           color="#2563EB"
-          onPress={() => {/* Phase 2: navigation.navigate('PatientList') */}}
+          onPress={() => navigation.navigate('PatientList')}
         />
         <DashboardCard
           title="Symptom Check"
           subtitle="AI-powered health assessment"
           icon="🩺"
           color="#059669"
-          onPress={() => {/* Phase 3: navigation.navigate('SymptomChecker') */}}
+          onPress={() => {/* Phase 3 */}}
         />
         <DashboardCard
           title="Medicines"

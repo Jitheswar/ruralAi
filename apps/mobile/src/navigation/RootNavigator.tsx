@@ -6,6 +6,9 @@ import { useAuth } from '../contexts/AuthContext';
 import LoginScreen from '../screens/LoginScreen';
 import OTPScreen from '../screens/OTPScreen';
 import DashboardScreen from '../screens/DashboardScreen';
+import PatientListScreen from '../screens/PatientListScreen';
+import AddPatientScreen from '../screens/AddPatientScreen';
+import PatientDetailScreen from '../screens/PatientDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +32,21 @@ function AppStack() {
         name="Dashboard"
         component={DashboardScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PatientList"
+        component={PatientListScreen}
+        options={{ title: 'Patients' }}
+      />
+      <Stack.Screen
+        name="AddPatient"
+        component={AddPatientScreen}
+        options={{ title: 'Add Patient' }}
+      />
+      <Stack.Screen
+        name="PatientDetail"
+        component={PatientDetailScreen}
+        options={{ title: 'Patient Details' }}
       />
     </Stack.Navigator>
   );
