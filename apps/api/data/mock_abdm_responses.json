@@ -1,0 +1,52 @@
+{
+  "profiles": {
+    "12-3456-7890-1234": {
+      "abha_id": "12-3456-7890-1234",
+      "health_id": "ramesh.kumar@abdm",
+      "name": "Ramesh Kumar",
+      "gender": "M",
+      "year_of_birth": 1985,
+      "phone": "9876543210",
+      "address": {
+        "district": "Jhansi",
+        "state": "Uttar Pradesh",
+        "pincode": "284001"
+      },
+      "linked_facilities": [
+        {
+          "hip_id": "IN3210000123",
+          "name": "CHC Moth",
+          "type": "Community Health Center"
+        }
+      ]
+    },
+    "98-7654-3210-5678": {
+      "abha_id": "98-7654-3210-5678",
+      "health_id": "sunita.devi@abdm",
+      "name": "Sunita Devi",
+      "gender": "F",
+      "year_of_birth": 1990,
+      "phone": "9123456789",
+      "address": {
+        "district": "Lalitpur",
+        "state": "Uttar Pradesh",
+        "pincode": "284403"
+      },
+      "linked_facilities": []
+    }
+  },
+  "consent_artefact_sample": {
+    "consent_id": "cr_sample_001",
+    "patient_abha_id": "12-3456-7890-1234",
+    "hip_id": "IN3210000123",
+    "purpose": "CAREMGT",
+    "date_range": {
+      "from": "2024-01-01",
+      "to": "2025-01-15"
+    },
+    "hi_types": ["Prescription", "DiagnosticReport", "OPConsultation"],
+    "status": "REQUESTED",
+    "created_at": "2025-01-15T10:00:00Z",
+    "expiry": "2025-04-15T10:00:00Z"
+  }
+}

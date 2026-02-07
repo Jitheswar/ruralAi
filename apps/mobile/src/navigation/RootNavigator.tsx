@@ -10,6 +10,9 @@ import PatientListScreen from '../screens/PatientListScreen';
 import AddPatientScreen from '../screens/AddPatientScreen';
 import PatientDetailScreen from '../screens/PatientDetailScreen';
 import SymptomCheckerScreen from '../screens/SymptomCheckerScreen';
+import VoiceInputScreen from '../screens/VoiceInputScreen';
+import PrescriptionOCRScreen from '../screens/PrescriptionOCRScreen';
+import SahayakScreen from '../screens/SahayakScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +56,21 @@ function AppStack() {
         name="SymptomChecker"
         component={SymptomCheckerScreen}
         options={{ title: 'Symptom Check' }}
+      />
+      <Stack.Screen
+        name="VoiceInput"
+        component={VoiceInputScreen}
+        options={{ title: 'Voice Input' }}
+      />
+      <Stack.Screen
+        name="PrescriptionOCR"
+        component={PrescriptionOCRScreen}
+        options={{ title: 'Scan Prescription' }}
+      />
+      <Stack.Screen
+        name="Sahayak"
+        component={SahayakScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

@@ -86,14 +86,29 @@ export default function DashboardScreen({ navigation }: any) {
           onPress={() => navigation.navigate('SymptomChecker')}
         />
         <DashboardCard
-          title="Medicines"
-          subtitle="Search & verify medicines"
-          icon="💊"
+          title="Voice Input"
+          subtitle="Describe symptoms by voice"
+          icon="🎤"
+          color="#7C3AED"
+          onPress={() => navigation.navigate('VoiceInput')}
+        />
+        <DashboardCard
+          title="Scan Prescription"
+          subtitle="Find affordable alternatives"
+          icon="📋"
           color="#D97706"
+          onPress={() => navigation.navigate('PrescriptionOCR')}
+        />
+        <DashboardCard
+          title="Sahayak Mode"
+          subtitle="Manage village health records"
+          icon="🤝"
+          color="#0891B2"
+          onPress={() => navigation.navigate('Sahayak')}
         />
         <DashboardCard
           title="Emergency"
-          subtitle="Nearest hospital & ambulance"
+          subtitle="Call 108 for ambulance"
           icon="🚨"
           color="#DC2626"
         />
