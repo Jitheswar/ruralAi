@@ -1,0 +1,88 @@
+{
+  "symptom_keywords": {
+    "chest_pain": {
+      "en": ["chest pain", "chest hurts", "pain in chest", "tightness in chest", "chest tightness"],
+      "hi": ["seene mein dard", "chhati mein dard", "seene ka dard", "sine mein dard", "chaati dard"]
+    },
+    "high_fever": {
+      "en": ["fever", "high fever", "temperature", "burning up", "feel hot"],
+      "hi": ["bukhar", "tez bukhar", "buhaar", "taap", "bahut bukhar"]
+    },
+    "headache": {
+      "en": ["headache", "head pain", "head hurts", "migraine", "head ache"],
+      "hi": ["sar dard", "sir dard", "sir mein dard", "sardard"]
+    },
+    "cough": {
+      "en": ["cough", "coughing", "dry cough", "wet cough", "persistent cough"],
+      "hi": ["khansi", "khaansi", "khasi", "sukhi khansi"]
+    },
+    "diarrhea": {
+      "en": ["diarrhea", "loose motion", "loose stools", "watery stool", "runny stomach"],
+      "hi": ["dast", "loose motion", "pet kharab", "patla daast"]
+    },
+    "vomiting": {
+      "en": ["vomiting", "throwing up", "vomit", "nausea", "feeling sick"],
+      "hi": ["ulti", "ji machlana", "matli", "ulti aa rahi"]
+    },
+    "breathlessness": {
+      "en": ["breathless", "difficulty breathing", "short of breath", "can't breathe", "breathing problem"],
+      "hi": ["saans lene mein taklif", "saans phulna", "dam ghutna", "saans nahi aa rahi"]
+    },
+    "body_pain": {
+      "en": ["body pain", "body ache", "muscle pain", "joint pain", "all over pain"],
+      "hi": ["badan dard", "jodo mein dard", "sharir mein dard", "poore badan mein dard"]
+    },
+    "abdominal_pain": {
+      "en": ["stomach pain", "abdominal pain", "belly pain", "tummy ache", "stomach ache"],
+      "hi": ["pet dard", "pet mein dard", "pait dard", "pet ka dard"]
+    },
+    "dizziness": {
+      "en": ["dizzy", "dizziness", "lightheaded", "feeling faint", "head spinning"],
+      "hi": ["chakkar", "sir ghum raha", "chakkar aa raha", "chakkar aana"]
+    },
+    "sweating": {
+      "en": ["sweating", "excessive sweat", "night sweats", "profuse sweating"],
+      "hi": ["pasina", "bahut pasina", "paseena", "raat ko pasina"]
+    },
+    "fatigue": {
+      "en": ["tired", "fatigue", "weakness", "exhausted", "no energy", "feeling weak"],
+      "hi": ["thakan", "kamzori", "thak gaya", "shakti nahi"]
+    },
+    "nausea": {
+      "en": ["nausea", "feel like vomiting", "queasy", "sick feeling"],
+      "hi": ["matli", "ji machlana", "ulti jaisi feeling"]
+    },
+    "rash": {
+      "en": ["rash", "skin rash", "red spots", "itchy skin", "skin irritation"],
+      "hi": ["daane", "khujli", "lal daane", "chamdi par daane"]
+    },
+    "joint_pain": {
+      "en": ["joint pain", "knee pain", "elbow pain", "wrist pain", "ankle pain"],
+      "hi": ["jodo ka dard", "ghutne ka dard", "jodo mein dard"]
+    },
+    "back_pain": {
+      "en": ["back pain", "lower back pain", "backache", "spine pain"],
+      "hi": ["kamar dard", "peeth dard", "kamar mein dard"]
+    }
+  },
+  "medical_terms_snomed": {
+    "fever": {"code": "386661006", "category": "general"},
+    "headache": {"code": "25064002", "category": "neuro"},
+    "cough": {"code": "49727002", "category": "respiratory"},
+    "chest pain": {"code": "29857009", "category": "cardiac"},
+    "diarrhea": {"code": "62315008", "category": "gastro"},
+    "vomiting": {"code": "422400008", "category": "gastro"},
+    "breathlessness": {"code": "267036007", "category": "respiratory"},
+    "body pain": {"code": "68962001", "category": "general"},
+    "abdominal pain": {"code": "21522001", "category": "gastro"},
+    "dizziness": {"code": "404640003", "category": "neuro"},
+    "nausea": {"code": "422587007", "category": "gastro"},
+    "sweating": {"code": "415690000", "category": "general"},
+    "fatigue": {"code": "84229001", "category": "general"},
+    "rash": {"code": "271807003", "category": "dermatological"},
+    "joint pain": {"code": "57676002", "category": "general"},
+    "back pain": {"code": "161891005", "category": "general"},
+    "muscle pain": {"code": "68962001", "category": "general"},
+    "weakness": {"code": "13791008", "category": "general"}
+  }
+}

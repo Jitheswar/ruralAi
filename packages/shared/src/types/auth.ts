@@ -2,7 +2,8 @@ export type UserRole = 'citizen' | 'sahayak' | 'admin';
 
 export interface AuthUser {
   id: string;
-  phone: string;
+  email?: string;
+  phone?: string;
   name: string;
   role: UserRole;
   isVerified: boolean;
@@ -16,7 +17,9 @@ export interface AuthSession {
 }
 
 export interface AuthContextType extends AuthSession {
-  sendOtp: (phone: string) => Promise<boolean>;
-  verifyOtp: (phone: string, otp: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  signUp: (email: string, password: string, name: string, role: UserRole) => Promise<boolean>;
+  verifyOtp: (email: string, otp: string) => Promise<boolean>;
+  completeProfile: (password: string, name: string, role: UserRole) => Promise<boolean>;
   logout: () => Promise<void>;
 }

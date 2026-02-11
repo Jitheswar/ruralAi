@@ -1,5 +1,6 @@
+import { Platform } from 'react-native';
 import { Database } from '@nozbe/watermelondb';
-import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
+import LokiJSAdapter from '@nozbe/watermelondb/adapters/lokijs';
 import { schema } from './schema';
 import { migrations } from './migrations';
 import Patient from './models/Patient';
@@ -7,10 +8,11 @@ import User from './models/User';
 import HealthLog from './models/HealthLog';
 import Medicine from './models/Medicine';
 
-const adapter = new SQLiteAdapter({
+const adapter = new LokiJSAdapter({
   schema,
   migrations,
-  jsi: true,
+  useWebWorker: false,
+  useIncrementalIndexedDB: true,
   onSetUpError: (error) => {
     console.error('Database setup error:', error);
   },

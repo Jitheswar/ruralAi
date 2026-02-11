@@ -6,7 +6,10 @@ export type { Medicine } from './types/medicine';
 
 // Constants
 export { ROLES, ROLE_LABELS } from './constants/roles';
-export { MOCK_OTP, API_CONFIG, SESSION_KEY, OTP_LENGTH, OTP_EXPIRY_SECONDS, MAX_OTP_ATTEMPTS, MAX_ACTIVE_DEVICES, SAHAYAK_SESSION_TIMEOUT_MS, AUTO_LOCK_TIMEOUT_MS } from './constants/config';
+export { API_CONFIG, SESSION_KEY, OTP_LENGTH, OTP_EXPIRY_SECONDS, MAX_OTP_ATTEMPTS, MAX_ACTIVE_DEVICES, SAHAYAK_SESSION_TIMEOUT_MS, AUTO_LOCK_TIMEOUT_MS } from './constants/config';
+
+// Supabase
+export { SUPABASE_URL, SUPABASE_ANON_KEY } from './lib/supabase';
 
 // Utils
 export { isValidIndianPhone, formatPhone, isValidOtp, isValidAbhaId } from './utils/validation';

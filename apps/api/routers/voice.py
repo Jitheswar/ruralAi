@@ -1,68 +1,83 @@
-"""Voice transcription stub endpoints."""
+"""Voice transcription endpoints — uses local Whisper model (primary) or Gemini (fallback)."""
 
 from fastapi import APIRouter, UploadFile, File
 from pydantic import BaseModel
 
+from services.ai_models import get_model_for_task
+from services.local_ml_service import transcribe_audio_local, extract_medical_terms_local
+
 router = APIRouter()
 
-# Mock transcription responses keyed by rough "intent"
-MOCK_TRANSCRIPTIONS = [
-    {
-        "hindi_text": "मुझे सीने में दर्द हो रहा है और पसीना आ रहा है",
-        "english_text": "I am having chest pain and sweating",
-        "medical_terms": [
-            {"term": "Chest pain", "snomed_code": "29857009", "category": "cardiac"},
-            {"term": "Hyperhidrosis", "snomed_code": "52613005", "category": "cardiac"},
-        ],
-        "suggested_symptoms": ["chest_pain", "sweating"],
-        "confidence": 0.92,
-    },
-    {
-        "hindi_text": "मुझे दो दिन से बुखार है और सिर दर्द भी है",
-        "english_text": "I have had fever for two days and also headache",
-        "medical_terms": [
-            {"term": "Fever", "snomed_code": "386661006", "category": "general"},
-            {"term": "Headache", "snomed_code": "25064002", "category": "neuro"},
-        ],
-        "suggested_symptoms": ["fever", "headache"],
-        "confidence": 0.95,
-    },
-    {
-        "hindi_text": "पेट में दर्द है और उल्टी हो रही है",
-        "english_text": "I have stomach pain and vomiting",
-        "medical_terms": [
-            {"term": "Abdominal pain", "snomed_code": "21522001", "category": "gastro"},
-            {"term": "Vomiting", "snomed_code": "422400008", "category": "gastro"},
-        ],
-        "suggested_symptoms": ["abdominal_pain", "vomiting"],
-        "confidence": 0.89,
-    },
-]
+MEDICAL_EXTRACTION_PROMPT = """You are a medical transcription assistant for rural India.
+Analyze the following patient description and extract:
 
-# Cycle through mock responses
-_call_counter = 0
+1. The original text (if Hindi, keep as-is)
+2. English translation
+3. Medical terms with SNOMED codes and categories (cardiac, neuro, respiratory, gastro, general, dermatological)
+4. Suggested symptom IDs for our system (use snake_case like: chest_pain, fever, headache, cough, abdominal_pain, vomiting, breathlessness, dizziness, fatigue, body_ache, joint_pain, rash, diarrhea, sweating, nausea)
+
+Respond ONLY with valid JSON:
+{
+  "hindi_text": "original Hindi text or empty",
+  "english_text": "English translation or original",
+  "medical_terms": [
+    {"term": "Medical term", "snomed_code": "code", "category": "category"}
+  ],
+  "suggested_symptoms": ["symptom_id_1", "symptom_id_2"],
+  "confidence": 0.0 to 1.0
+}"""
 
 
 @router.post("/transcribe")
 async def transcribe_voice(audio: UploadFile = File(...)):
     """
-    Accept an audio file and return mock Hindi→English transcription
-    with SNOMED-coded medical terms.
-
-    In production: Whisper/IndicASR → NER → SNOMED mapping.
+    Accept an audio file and transcribe it.
+    Uses local Whisper model (primary) or Gemini (fallback).
     """
-    global _call_counter
+    audio_bytes = await audio.read()
+    mime_type = audio.content_type or "audio/wav"
 
-    # Read file to acknowledge it (don't process)
-    await audio.read()
+    model = get_model_for_task("text_extraction")
 
-    result = MOCK_TRANSCRIPTIONS[_call_counter % len(MOCK_TRANSCRIPTIONS)]
-    _call_counter += 1
+    if model == "local":
+        result = await transcribe_audio_local(audio_bytes, mime_type)
+        if "error" not in result:
+            return {"success": True, "transcription": result}
+        print(f"Local Whisper failed: {result.get('error')}, falling back to Gemini")
 
-    return {
-        "success": True,
-        "transcription": result,
-    }
+    # Fallback to Gemini
+    try:
+        from services.gemini_service import _get_client, _parse_json_response
+        from google.genai import types
+
+        client = _get_client()
+        if not client:
+            # If local also failed, return that error
+            if model == "local" and "error" in result:
+                return {"success": False, "error": result["error"]}
+            return {"success": False, "error": "No transcription service available"}
+
+        model_name = "gemini-2.0-flash"
+        audio_part = types.Part.from_bytes(data=audio_bytes, mime_type=mime_type)
+
+        prompt = f"""{MEDICAL_EXTRACTION_PROMPT}
+
+Transcribe this audio recording from a patient describing their symptoms.
+The audio may be in Hindi, English, or a mix. Extract all medical information."""
+
+        response = client.models.generate_content(
+            model=model_name,
+            contents=[prompt, audio_part],
+        )
+        gemini_result = _parse_json_response(response.text)
+
+        if "error" in gemini_result and "raw" in gemini_result:
+            return {"success": False, "error": gemini_result["error"]}
+
+        return {"success": True, "transcription": gemini_result}
+
+    except Exception as e:
+        return {"success": False, "error": f"Transcription failed: {str(e)}"}
 
 
 class TextTranscribeRequest(BaseModel):
@@ -73,36 +88,43 @@ class TextTranscribeRequest(BaseModel):
 @router.post("/transcribe-text")
 async def transcribe_text(req: TextTranscribeRequest):
     """
-    Accept text input (for testing without audio) and return mock medical terms.
+    Accept text input and extract medical terms.
+    Uses local keyword matching (primary) or Gemini (fallback).
     """
-    # Simple keyword matching for demo
-    text_lower = req.text.lower()
+    model = get_model_for_task("text_extraction")
 
-    terms = []
-    symptoms = []
+    if model == "local":
+        result = await extract_medical_terms_local(req.text, req.language)
+        if "error" not in result:
+            return {"success": True, "transcription": result}
+        print(f"Local text extraction failed: {result.get('error')}, falling back to Gemini")
 
-    keyword_map = {
-        "chest": ({"term": "Chest pain", "snomed_code": "29857009", "category": "cardiac"}, "chest_pain"),
-        "fever": ({"term": "Fever", "snomed_code": "386661006", "category": "general"}, "fever"),
-        "headache": ({"term": "Headache", "snomed_code": "25064002", "category": "neuro"}, "headache"),
-        "cough": ({"term": "Cough", "snomed_code": "49727002", "category": "respiratory"}, "cough"),
-        "stomach": ({"term": "Abdominal pain", "snomed_code": "21522001", "category": "gastro"}, "abdominal_pain"),
-        "vomit": ({"term": "Vomiting", "snomed_code": "422400008", "category": "gastro"}, "vomiting"),
-        "breathe": ({"term": "Dyspnea", "snomed_code": "267036007", "category": "respiratory"}, "shortness_of_breath"),
-    }
+    # Fallback to Gemini
+    try:
+        from services.gemini_service import _get_client, _parse_json_response
 
-    for keyword, (term, symptom_id) in keyword_map.items():
-        if keyword in text_lower:
-            terms.append(term)
-            symptoms.append(symptom_id)
+        client = _get_client()
+        if not client:
+            if model == "local" and "error" in result:
+                return {"success": False, "error": result["error"]}
+            return {"success": False, "error": "No text analysis service available"}
 
-    return {
-        "success": True,
-        "transcription": {
-            "hindi_text": req.text if req.language == "hi" else "",
-            "english_text": req.text if req.language == "en" else f"[Translated] {req.text}",
-            "medical_terms": terms,
-            "suggested_symptoms": symptoms,
-            "confidence": 0.85,
-        },
-    }
+        model_name = "gemini-2.0-flash"
+        prompt = f"""{MEDICAL_EXTRACTION_PROMPT}
+
+Patient's description (language: {req.language}):
+"{req.text}"
+"""
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+        )
+        gemini_result = _parse_json_response(response.text)
+
+        if "error" in gemini_result and "raw" in gemini_result:
+            return {"success": False, "error": gemini_result["error"]}
+
+        return {"success": True, "transcription": gemini_result}
+
+    except Exception as e:
+        return {"success": False, "error": f"Text analysis failed: {str(e)}"}

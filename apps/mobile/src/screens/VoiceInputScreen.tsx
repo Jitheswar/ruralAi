@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
 import VoiceRecordButton from '../components/VoiceRecordButton';
 import { transcribeAudio, TranscriptionResult } from '../services/aiService';
 
@@ -61,16 +61,14 @@ export default function VoiceInputScreen({ navigation, route }: any) {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1 px-4 pt-6" contentContainerStyle={{ alignItems: 'center' }}>
-        {/* Title */}
-        <Text className="text-xl font-bold text-gray-900 mb-2">Voice Input</Text>
-        <Text className="text-sm text-gray-500 text-center mb-8 px-4">
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
+        <Text style={styles.title}>Voice Input</Text>
+        <Text style={styles.subtitle}>
           Describe your symptoms in Hindi or English. We'll translate and identify medical terms.
         </Text>
 
-        {/* Recording button */}
-        <View className="my-8">
+        <View style={styles.recordingButtonContainer}>
           <VoiceRecordButton
             isRecording={state === 'recording'}
             onPressIn={handlePressIn}
@@ -79,86 +77,83 @@ export default function VoiceInputScreen({ navigation, route }: any) {
           />
         </View>
 
-        {/* Processing indicator */}
         {state === 'processing' && (
-          <View className="bg-blue-50 rounded-xl p-4 w-full mb-4">
-            <Text className="text-blue-700 text-center">
+          <View style={styles.processingContainer}>
+            <Text style={styles.processingText}>
               Processing your voice input...
             </Text>
           </View>
         )}
 
-        {/* Results */}
         {result && state === 'done' && (
-          <View className="w-full">
-            {/* Hindi text */}
+          <View style={styles.resultsContainer}>
             {result.hindi_text ? (
-              <View className="bg-white rounded-xl p-4 mb-3 border border-gray-100">
-                <Text className="text-xs text-gray-400 mb-1">Hindi</Text>
-                <Text className="text-base text-gray-800">{result.hindi_text}</Text>
+              <View style={styles.resultCard}>
+                <Text style={styles.resultLabel}>Hindi</Text>
+                <Text style={styles.resultText}>{result.hindi_text}</Text>
               </View>
             ) : null}
 
-            {/* English translation */}
-            <View className="bg-white rounded-xl p-4 mb-3 border border-gray-100">
-              <Text className="text-xs text-gray-400 mb-1">English</Text>
-              <Text className="text-base text-gray-800">{result.english_text}</Text>
+            <View style={styles.resultCard}>
+              <Text style={styles.resultLabel}>English</Text>
+              <Text style={styles.resultText}>{result.english_text}</Text>
             </View>
 
-            {/* Medical terms */}
             {result.medical_terms.length > 0 && (
-              <View className="bg-white rounded-xl p-4 mb-3 border border-gray-100">
-                <Text className="text-xs text-gray-400 mb-2">Medical Terms Identified</Text>
+              <View style={styles.resultCard}>
+                <Text style={styles.medicalTermsLabel}>Medical Terms Identified</Text>
                 {result.medical_terms.map((term, i) => (
-                  <View key={i} className="flex-row items-center mb-1">
+                  <View key={i} style={styles.medicalTermRow}>
                     <View
-                      className="w-2 h-2 rounded-full mr-2"
-                      style={{
-                        backgroundColor:
-                          term.category === 'cardiac'
-                            ? '#DC2626'
-                            : term.category === 'neuro'
-                            ? '#4F46E5'
-                            : term.category === 'respiratory'
-                            ? '#2563EB'
-                            : term.category === 'gastro'
-                            ? '#D97706'
-                            : '#6B7280',
-                      }}
+                      style={[
+                        styles.medicalTermDot,
+                        {
+                          backgroundColor:
+                            term.category === 'cardiac'
+                              ? '#DC2626'
+                              : term.category === 'neuro'
+                              ? '#4F46E5'
+                              : term.category === 'respiratory'
+                              ? '#2563EB'
+                              : term.category === 'gastro'
+                              ? '#D97706'
+                              : '#6B7280',
+                        }
+                      ]}
                     />
-                    <Text className="text-gray-800 flex-1">{term.term}</Text>
-                    <Text className="text-gray-400 text-xs">{term.snomed_code}</Text>
+                    <Text style={styles.medicalTermText}>{term.term}</Text>
+                    <Text style={styles.medicalTermCode}>{term.snomed_code}</Text>
                   </View>
                 ))}
               </View>
             )}
 
-            {/* Confidence */}
-            <View className="bg-white rounded-xl p-4 mb-4 border border-gray-100">
-              <View className="flex-row justify-between items-center">
-                <Text className="text-xs text-gray-400">Confidence</Text>
-                <Text className="text-sm font-semibold text-gray-700">
+            <View style={styles.confidenceCard}>
+              <View style={styles.confidenceHeader}>
+                <Text style={styles.confidenceLabel}>Confidence</Text>
+                <Text style={styles.confidenceValue}>
                   {Math.round(result.confidence * 100)}%
                 </Text>
               </View>
-              <View className="bg-gray-200 h-2 rounded-full mt-2">
+              <View style={styles.confidenceBarBackground}>
                 <View
-                  className="h-2 rounded-full"
-                  style={{
-                    width: `${result.confidence * 100}%`,
-                    backgroundColor: result.confidence > 0.8 ? '#059669' : '#D97706',
-                  }}
+                  style={[
+                    styles.confidenceBarFill,
+                    {
+                      width: `${result.confidence * 100}%`,
+                      backgroundColor: result.confidence > 0.8 ? '#059669' : '#D97706',
+                    }
+                  ]}
                 />
               </View>
             </View>
 
-            {/* Actions */}
             {result.suggested_symptoms.length > 0 && (
               <Pressable
                 onPress={handleUseSymptoms}
-                className="bg-primary py-4 rounded-xl items-center mb-3"
+                style={styles.useSymptomsButton}
               >
-                <Text className="text-white font-semibold">
+                <Text style={styles.useSymptomsText}>
                   Use These Symptoms ({result.suggested_symptoms.length})
                 </Text>
               </Pressable>
@@ -166,9 +161,9 @@ export default function VoiceInputScreen({ navigation, route }: any) {
 
             <Pressable
               onPress={handleReset}
-              className="bg-gray-200 py-3 rounded-xl items-center mb-8"
+              style={styles.tryAgainButton}
             >
-              <Text className="text-gray-700 font-medium">Try Again</Text>
+              <Text style={styles.tryAgainText}>Try Again</Text>
             </Pressable>
           </View>
         )}
@@ -176,3 +171,140 @@ export default function VoiceInputScreen({ navigation, route }: any) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 32,
+    paddingHorizontal: 16,
+  },
+  recordingButtonContainer: {
+    marginVertical: 32,
+  },
+  processingContainer: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 16,
+    width: '100%',
+    marginBottom: 16,
+  },
+  processingText: {
+    color: '#1D4ED8',
+    textAlign: 'center',
+  },
+  resultsContainer: {
+    width: '100%',
+  },
+  resultCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  resultLabel: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginBottom: 4,
+  },
+  resultText: {
+    fontSize: 16,
+    color: '#1F2937',
+  },
+  medicalTermsLabel: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginBottom: 8,
+  },
+  medicalTermRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  medicalTermDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 9999,
+    marginRight: 8,
+  },
+  medicalTermText: {
+    color: '#1F2937',
+    flex: 1,
+  },
+  medicalTermCode: {
+    color: '#9CA3AF',
+    fontSize: 12,
+  },
+  confidenceCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  confidenceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  confidenceLabel: {
+    fontSize: 12,
+    color: '#9CA3AF',
+  },
+  confidenceValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+  },
+  confidenceBarBackground: {
+    backgroundColor: '#E5E7EB',
+    height: 8,
+    borderRadius: 9999,
+    marginTop: 8,
+  },
+  confidenceBarFill: {
+    height: 8,
+    borderRadius: 9999,
+  },
+  useSymptomsButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  useSymptomsText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  tryAgainButton: {
+    backgroundColor: '#E5E7EB',
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  tryAgainText: {
+    color: '#374151',
+    fontWeight: '500',
+  },
+});

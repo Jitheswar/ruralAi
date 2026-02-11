@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, Modal, FlatList } from 'react-native';
+import { View, Text, Pressable, Modal, FlatList, StyleSheet } from 'react-native';
 
 export interface ManagedProfile {
   id: string;
@@ -25,48 +25,44 @@ export default function ProfileSwitcher({
     <>
       <Pressable
         onPress={() => setVisible(true)}
-        className="flex-row items-center bg-white/20 px-3 py-2 rounded-full"
+        style={styles.switchButton}
       >
         <Text style={{ fontSize: 16, marginRight: 4 }}>
           {currentProfile ? '👤' : '🏠'}
         </Text>
-        <Text className="text-white text-xs font-medium" numberOfLines={1}>
+        <Text style={styles.switchButtonText} numberOfLines={1}>
           {currentProfile ? currentProfile.name : 'Self'}
         </Text>
-        <Text className="text-white/60 text-xs ml-1">▼</Text>
+        <Text style={styles.switchButtonArrow}>▼</Text>
       </Pressable>
 
       <Modal visible={visible} transparent animationType="fade">
         <Pressable
-          className="flex-1 bg-black/50 justify-end"
+          style={styles.modalOverlay}
           onPress={() => setVisible(false)}
         >
-          <View className="bg-white rounded-t-3xl px-4 pt-6 pb-8">
-            <Text className="text-lg font-bold text-gray-900 mb-4">
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
               Switch Profile
             </Text>
 
-            {/* Self option */}
             <Pressable
               onPress={() => {
                 onSwitch(null);
                 setVisible(false);
               }}
-              className={`flex-row items-center p-4 rounded-xl mb-2 ${
-                !currentProfile ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
-              }`}
+              style={[styles.profileItem, !currentProfile ? styles.profileItemActive : styles.profileItemInactive]}
             >
               <Text style={{ fontSize: 24, marginRight: 12 }}>🏠</Text>
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-900">Self</Text>
-                <Text className="text-xs text-gray-500">Your own health records</Text>
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>Self</Text>
+                <Text style={styles.profileSubtext}>Your own health records</Text>
               </View>
               {!currentProfile && (
-                <Text className="text-blue-600 font-bold">✓</Text>
+                <Text style={styles.checkmark}>✓</Text>
               )}
             </Pressable>
 
-            {/* Managed profiles */}
             <FlatList
               data={profiles}
               keyExtractor={(item) => item.id}
@@ -78,16 +74,14 @@ export default function ProfileSwitcher({
                       onSwitch(item);
                       setVisible(false);
                     }}
-                    className={`flex-row items-center p-4 rounded-xl mb-2 ${
-                      isActive ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
-                    }`}
+                    style={[styles.profileItem, isActive ? styles.profileItemActive : styles.profileItemInactive]}
                   >
                     <Text style={{ fontSize: 24, marginRight: 12 }}>👤</Text>
-                    <View className="flex-1">
-                      <Text className="text-base font-semibold text-gray-900">
+                    <View style={styles.profileInfo}>
+                      <Text style={styles.profileName}>
                         {item.name}
                       </Text>
-                      <Text className="text-xs text-gray-500">
+                      <Text style={styles.profileSubtext}>
                         {item.relation}
                         {item.consentExpiry
                           ? ` · Consent until ${item.consentExpiry}`
@@ -95,7 +89,7 @@ export default function ProfileSwitcher({
                       </Text>
                     </View>
                     {isActive && (
-                      <Text className="text-blue-600 font-bold">✓</Text>
+                      <Text style={styles.checkmark}>✓</Text>
                     )}
                   </Pressable>
                 );
@@ -103,7 +97,7 @@ export default function ProfileSwitcher({
             />
 
             {profiles.length === 0 && (
-              <Text className="text-gray-400 text-center py-4">
+              <Text style={styles.emptyMessage}>
                 No managed profiles yet
               </Text>
             )}
@@ -113,3 +107,79 @@ export default function ProfileSwitcher({
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  switchButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 9999,
+  },
+  switchButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  switchButtonArrow: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 12,
+    marginLeft: 4,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  profileItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  profileItemActive: {
+    backgroundColor: '#EFF6FF',
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+  },
+  profileItemInactive: {
+    backgroundColor: '#F9FAFB',
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  profileSubtext: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  checkmark: {
+    color: '#2563EB',
+    fontWeight: 'bold',
+  },
+  emptyMessage: {
+    color: '#9CA3AF',
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+});

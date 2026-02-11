@@ -15,3 +15,8 @@ __pycache__/
 .DS_Store
 android/
 ios/
+
+# Local ML models & training data (large files)
+apps/api/models/*.joblib
+apps/api/data/Training.csv
+apps/api/data/Testing.csv

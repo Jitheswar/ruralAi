@@ -1,103 +1,148 @@
-"""Prescription OCR stub endpoints."""
+"""
+Prescription OCR Router — real Gemini Vision for prescription scanning,
+real Supabase medicine DB for lookups and price comparisons.
+"""
 
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Depends
 from pydantic import BaseModel
-from typing import Optional
+
+from services.ai_service import extract_prescription
+from services.medicine_db import search_medicines, get_medicines_by_names
+from services.auth import get_current_user_id, get_supabase_client
 
 router = APIRouter()
 
-# Mock medicine extraction results
-MOCK_PRESCRIPTIONS = [
-    {
-        "medicines": [
-            {
-                "name": "Amoxicillin 500mg",
-                "dosage": "1 tablet",
-                "frequency": "3 times a day",
-                "duration": "5 days",
-                "market_price": 85.0,
-                "jan_aushadhi_price": 12.5,
-                "jan_aushadhi_name": "Amoxicillin 500mg Cap",
-                "savings_percent": 85,
-            },
-            {
-                "name": "Paracetamol 650mg",
-                "dosage": "1 tablet",
-                "frequency": "As needed (max 4/day)",
-                "duration": "3 days",
-                "market_price": 30.0,
-                "jan_aushadhi_price": 5.0,
-                "jan_aushadhi_name": "Paracetamol 650mg Tab",
-                "savings_percent": 83,
-            },
-            {
-                "name": "Pantoprazole 40mg",
-                "dosage": "1 tablet",
-                "frequency": "Once daily before breakfast",
-                "duration": "7 days",
-                "market_price": 120.0,
-                "jan_aushadhi_price": 18.0,
-                "jan_aushadhi_name": "Pantoprazole 40mg Tab",
-                "savings_percent": 85,
-            },
-        ],
-        "doctor_name": "Dr. Sharma",
-        "date": "2025-01-10",
-        "total_market_price": 235.0,
-        "total_jan_aushadhi_price": 35.5,
-    },
-    {
-        "medicines": [
-            {
-                "name": "Metformin 500mg",
-                "dosage": "1 tablet",
-                "frequency": "Twice daily with meals",
-                "duration": "30 days",
-                "market_price": 65.0,
-                "jan_aushadhi_price": 11.0,
-                "jan_aushadhi_name": "Metformin 500mg Tab",
-                "savings_percent": 83,
-            },
-            {
-                "name": "Amlodipine 5mg",
-                "dosage": "1 tablet",
-                "frequency": "Once daily",
-                "duration": "30 days",
-                "market_price": 45.0,
-                "jan_aushadhi_price": 7.0,
-                "jan_aushadhi_name": "Amlodipine 5mg Tab",
-                "savings_percent": 84,
-            },
-        ],
-        "doctor_name": "Dr. Patel",
-        "date": "2025-01-12",
-        "total_market_price": 110.0,
-        "total_jan_aushadhi_price": 18.0,
-    },
-]
-
-_call_counter = 0
-
 
 @router.post("/prescription")
-async def scan_prescription(image: UploadFile = File(...)):
+async def scan_prescription(
+    image: UploadFile = File(...),
+    user_id: str = Depends(get_current_user_id)
+):
     """
-    Accept a prescription image and return extracted medicine data
-    with Jan Aushadhi price comparisons.
-
-    In production: Tesseract/PaddleOCR → NER → Medicine DB lookup.
+    Accept a prescription image, extract medicines via Gemini Vision,
+    then look up Jan Aushadhi alternatives from the medicine database.
     """
-    global _call_counter
+    image_bytes = await image.read()
+    mime_type = image.content_type or "image/jpeg"
 
-    # Read file to acknowledge it
-    await image.read()
+    # 1. Extract medicines from image using Gemini Vision
+    extraction = await extract_prescription(image_bytes, mime_type)
 
-    result = MOCK_PRESCRIPTIONS[_call_counter % len(MOCK_PRESCRIPTIONS)]
-    _call_counter += 1
+    if "error" in extraction:
+        return {"success": False, "error": extraction["error"]}
+
+    raw_medicines = extraction.get("medicines", [])
+    doctor_name = extraction.get("doctor_name") or "Unknown"
+    date = extraction.get("date") or "Not specified"
+
+    # 2. Look up each extracted medicine in our database for Jan Aushadhi alternatives
+    medicine_names = [
+        m.get("brand_name") or m.get("generic_name", "")
+        for m in raw_medicines
+        if m.get("brand_name") or m.get("generic_name")
+    ]
+
+    db_matches = await get_medicines_by_names(medicine_names) if medicine_names else []
+
+    # 3. Build enriched results
+    enriched_medicines = []
+    total_market = 0.0
+    total_jan_aushadhi = 0.0
+
+    for raw_med in raw_medicines:
+        brand = raw_med.get("brand_name", "")
+        generic = raw_med.get("generic_name", "")
+        search_term = (brand or generic).lower()
+
+        # Find best match from DB
+        db_match = None
+        for dbm in db_matches:
+            if (
+                search_term in (dbm.get("brand_name", "")).lower()
+                or search_term in (dbm.get("generic_name", "")).lower()
+                or (dbm.get("brand_name", "")).lower() in search_term
+                or (dbm.get("generic_name", "")).lower() in search_term
+            ):
+                db_match = dbm
+                break
+
+        market_price = float(db_match["market_price"]) if db_match and db_match.get("market_price") else 0
+        jan_price = float(db_match["jan_aushadhi_price"]) if db_match and db_match.get("jan_aushadhi_price") else 0
+        savings = float(db_match["savings_percent"]) if db_match and db_match.get("savings_percent") else 0
+
+        total_market += market_price
+        total_jan_aushadhi += jan_price
+
+        enriched_medicines.append({
+            "name": brand or generic or "Unknown",
+            "generic_name": db_match["generic_name"] if db_match else generic,
+            "dosage": raw_med.get("dosage", ""),
+            "frequency": raw_med.get("frequency", ""),
+            "duration": raw_med.get("duration", ""),
+            "market_price": market_price,
+            "jan_aushadhi_price": jan_price,
+            "jan_aushadhi_name": db_match["jan_aushadhi_name"] if db_match else "",
+            "savings_percent": savings,
+            "uses": db_match.get("uses", []) if db_match else [],
+            "side_effects": db_match.get("side_effects", []) if db_match else [],
+            "found_in_db": db_match is not None,
+        })
+
+    # 4. Save to Health Records (Supabase) — BEFORE returning response
+    saved = False
+    try:
+        supabase = get_supabase_client()
+        patient_id = None
+
+        # Check if user has any patients created by them
+        res = supabase.table("patients").select("id").eq("created_by", user_id).limit(1).execute()
+        if res.data:
+            patient_id = res.data[0]["id"]
+        else:
+            # Create new patient (avoid querying users table — RLS recursion)
+            new_patient = {
+                "created_by": user_id,
+                "name": "My Health Profile",
+            }
+            create_res = supabase.table("patients").insert(new_patient).execute()
+            if create_res.data:
+                patient_id = create_res.data[0]["id"]
+
+        if patient_id:
+            log_entry = {
+                "patient_id": patient_id,
+                "recorded_by": user_id,
+                "log_type": "prescription",
+                "data": {
+                    "extraction": extraction,
+                    "analysis": {
+                         "medicines": enriched_medicines,
+                         "doctor_name": doctor_name,
+                         "date": date,
+                         "total_market_price": total_market,
+                         "total_jan_aushadhi_price": total_jan_aushadhi,
+                         "notes": extraction.get("notes", ""),
+                    }
+                },
+                "notes": f"Prescription from {doctor_name}",
+            }
+            supabase.table("health_logs").insert(log_entry).execute()
+            saved = True
+
+    except Exception as e:
+        print(f"Failed to auto-save prescription record: {e}")
 
     return {
         "success": True,
-        "prescription": result,
+        "saved": saved,
+        "prescription": {
+            "medicines": enriched_medicines,
+            "doctor_name": doctor_name,
+            "date": date,
+            "total_market_price": round(total_market, 2),
+            "total_jan_aushadhi_price": round(total_jan_aushadhi, 2),
+            "notes": extraction.get("notes", ""),
+        },
     }
 
 
@@ -107,54 +152,39 @@ class MedicineLookupRequest(BaseModel):
 
 @router.post("/medicine-lookup")
 async def lookup_medicine(req: MedicineLookupRequest):
-    """Look up Jan Aushadhi alternative for a given medicine name."""
-    name_lower = req.medicine_name.lower()
+    """Look up a medicine in the database — returns Jan Aushadhi alternative and details."""
+    results = await search_medicines(req.medicine_name, limit=5)
 
-    alternatives = {
-        "amoxicillin": {
-            "found": True,
-            "brand_name": "Amoxicillin 500mg",
-            "jan_aushadhi_name": "Amoxicillin 500mg Cap",
-            "market_price": 85.0,
-            "jan_aushadhi_price": 12.5,
-            "available_at": ["Jan Aushadhi Kendra, Block PHC", "District Hospital Pharmacy"],
-        },
-        "paracetamol": {
-            "found": True,
-            "brand_name": "Paracetamol 650mg",
-            "jan_aushadhi_name": "Paracetamol 650mg Tab",
-            "market_price": 30.0,
-            "jan_aushadhi_price": 5.0,
-            "available_at": ["Jan Aushadhi Kendra, Block PHC"],
-        },
-        "metformin": {
-            "found": True,
-            "brand_name": "Metformin 500mg",
-            "jan_aushadhi_name": "Metformin 500mg Tab",
-            "market_price": 65.0,
-            "jan_aushadhi_price": 11.0,
-            "available_at": ["Jan Aushadhi Kendra, Block PHC", "District Hospital Pharmacy"],
-        },
-        "amlodipine": {
-            "found": True,
-            "brand_name": "Amlodipine 5mg",
-            "jan_aushadhi_name": "Amlodipine 5mg Tab",
-            "market_price": 45.0,
-            "jan_aushadhi_price": 7.0,
-            "available_at": ["Jan Aushadhi Kendra, Block PHC"],
-        },
-        "pantoprazole": {
-            "found": True,
-            "brand_name": "Pantoprazole 40mg",
-            "jan_aushadhi_name": "Pantoprazole 40mg Tab",
-            "market_price": 120.0,
-            "jan_aushadhi_price": 18.0,
-            "available_at": ["District Hospital Pharmacy"],
-        },
+    if not results:
+        return {"found": False, "message": f"No results found for '{req.medicine_name}'"}
+
+    # Return the best match (first result) plus alternatives
+    best = results[0]
+    return {
+        "found": True,
+        "medicine_name": best.get("brand_name", ""),
+        "generic_name": best.get("generic_name", ""),
+        "salt_composition": best.get("salt_composition", ""),
+        "category": best.get("category", ""),
+        "market_price": float(best["market_price"]) if best.get("market_price") else None,
+        "jan_aushadhi_name": best.get("jan_aushadhi_name", ""),
+        "jan_aushadhi_price": float(best["jan_aushadhi_price"]) if best.get("jan_aushadhi_price") else None,
+        "savings_percent": float(best["savings_percent"]) if best.get("savings_percent") else None,
+        "dosage_form": best.get("dosage_form", ""),
+        "strength": best.get("strength", ""),
+        "uses": best.get("uses", []),
+        "side_effects": best.get("side_effects", []),
+        "contraindications": best.get("contraindications", []),
+        "hindi_name": best.get("hindi_name", ""),
+        "is_nlem": best.get("is_nlem", False),
+        "alternatives": [
+            {
+                "brand_name": r.get("brand_name", ""),
+                "generic_name": r.get("generic_name", ""),
+                "strength": r.get("strength", ""),
+                "market_price": float(r["market_price"]) if r.get("market_price") else None,
+                "jan_aushadhi_price": float(r["jan_aushadhi_price"]) if r.get("jan_aushadhi_price") else None,
+            }
+            for r in results[1:]
+        ],
     }
-
-    for key, data in alternatives.items():
-        if key in name_lower:
-            return data
-
-    return {"found": False, "message": f"No Jan Aushadhi alternative found for '{req.medicine_name}'"}

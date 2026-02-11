@@ -1,9 +1,11 @@
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
+import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import OTPScreen from '../screens/OTPScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import PatientListScreen from '../screens/PatientListScreen';
@@ -13,17 +15,34 @@ import SymptomCheckerScreen from '../screens/SymptomCheckerScreen';
 import VoiceInputScreen from '../screens/VoiceInputScreen';
 import PrescriptionOCRScreen from '../screens/PrescriptionOCRScreen';
 import SahayakScreen from '../screens/SahayakScreen';
+import ProfileSetupScreen from '../screens/ProfileSetupScreen';
+import VitalsInputScreen from '../screens/VitalsInputScreen';
 
 const Stack = createNativeStackNavigator();
 
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: true, title: 'Login' }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{ headerShown: true, title: 'Create Account' }}
+      />
       <Stack.Screen
         name="OTP"
         component={OTPScreen}
-        options={{ headerShown: true, title: 'Verify OTP' }}
+        options={{ headerShown: true, title: 'Verify Email' }}
+      />
+      <Stack.Screen
+        name="ProfileSetup"
+        component={ProfileSetupScreen}
+        options={{ headerShown: true, title: 'Complete Profile' }}
       />
     </Stack.Navigator>
   );
@@ -72,6 +91,11 @@ function AppStack() {
         component={SahayakScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="VitalsInput"
+        component={VitalsInputScreen}
+        options={{ title: 'Record Vitals' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -81,7 +105,7 @@ export default function RootNavigator() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#2563EB" />
       </View>
     );
@@ -93,3 +117,12 @@ export default function RootNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+});

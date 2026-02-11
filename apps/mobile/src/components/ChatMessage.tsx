@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface ChatMessageProps {
   type: 'user' | 'system';
@@ -16,28 +16,67 @@ const SEVERITY_STYLES = {
 export default function ChatMessage({ type, text, severity }: ChatMessageProps) {
   if (type === 'user') {
     return (
-      <View className="flex-row justify-end mb-3">
-        <View className="bg-primary rounded-2xl rounded-br-sm px-4 py-3 max-w-[80%]">
-          <Text className="text-white text-sm">{text}</Text>
+      <View style={styles.userMessageContainer}>
+        <View style={styles.userMessageBubble}>
+          <Text style={styles.userMessageText}>{text}</Text>
         </View>
       </View>
     );
   }
 
-  const styles = severity ? SEVERITY_STYLES[severity] : null;
+  const severityStyles = severity ? SEVERITY_STYLES[severity] : null;
 
   return (
-    <View className="flex-row justify-start mb-3">
+    <View style={styles.systemMessageContainer}>
       <View
-        className="rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]"
-        style={
-          styles
-            ? { backgroundColor: styles.bg, borderLeftWidth: 3, borderLeftColor: styles.border }
-            : { backgroundColor: '#F3F4F6' }
-        }
+        style={[
+          styles.systemMessageBubble,
+          severityStyles
+            ? { backgroundColor: severityStyles.bg, borderLeftWidth: 3, borderLeftColor: severityStyles.border }
+            : styles.systemMessageBubbleDefault
+        ]}
       >
-        <Text className="text-gray-800 text-sm">{text}</Text>
+        <Text style={styles.systemMessageText}>{text}</Text>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  userMessageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 12,
+  },
+  userMessageBubble: {
+    backgroundColor: '#2563EB',
+    borderRadius: 16,
+    borderBottomRightRadius: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    maxWidth: '80%',
+  },
+  userMessageText: {
+    color: '#ffffff',
+    fontSize: 14,
+  },
+  systemMessageContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginBottom: 12,
+  },
+  systemMessageBubble: {
+    borderRadius: 16,
+    borderBottomLeftRadius: 2,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    maxWidth: '85%',
+  },
+  systemMessageBubbleDefault: {
+    backgroundColor: '#F3F4F6',
+  },
+  systemMessageText: {
+    color: '#1F2937',
+    fontSize: 14,
+  },
+});

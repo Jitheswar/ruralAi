@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Alert, Image, StyleSheet } from 'react-native';
 import { scanPrescription, PrescriptionResult, PrescriptionMedicine } from '../services/aiService';
 import { useSymptomEngine } from '../hooks/useSymptomEngine';
 
@@ -7,32 +7,31 @@ type ScanState = 'idle' | 'scanning' | 'done';
 
 function MedicineCard({ med }: { med: PrescriptionMedicine }) {
   return (
-    <View className="bg-white rounded-xl p-4 mb-3 border border-gray-100">
-      <Text className="text-base font-semibold text-gray-900 mb-1">{med.name}</Text>
-      <Text className="text-sm text-gray-500 mb-2">
+    <View style={styles.medicineCard}>
+      <Text style={styles.medicineName}>{med.name}</Text>
+      <Text style={styles.medicineDosage}>
         {med.dosage} · {med.frequency} · {med.duration}
       </Text>
 
-      {/* Price comparison */}
-      <View className="bg-green-50 rounded-lg p-3">
-        <View className="flex-row justify-between mb-1">
-          <Text className="text-xs text-gray-500">Market Price</Text>
-          <Text className="text-sm text-gray-700">₹{med.market_price.toFixed(0)}</Text>
+      <View style={styles.priceComparison}>
+        <View style={styles.priceRow}>
+          <Text style={styles.priceLabel}>Market Price</Text>
+          <Text style={styles.priceMarket}>₹{med.market_price.toFixed(0)}</Text>
         </View>
-        <View className="flex-row justify-between mb-1">
-          <Text className="text-xs text-green-700 font-medium">Jan Aushadhi</Text>
-          <Text className="text-sm text-green-700 font-bold">
+        <View style={styles.priceRow}>
+          <Text style={styles.janAushadhiLabel}>Jan Aushadhi</Text>
+          <Text style={styles.janAushadhiPrice}>
             ₹{med.jan_aushadhi_price.toFixed(0)}
           </Text>
         </View>
-        <View className="flex-row justify-between pt-1 border-t border-green-200 mt-1">
-          <Text className="text-xs text-green-600">You save</Text>
-          <Text className="text-sm text-green-600 font-bold">{med.savings_percent}%</Text>
+        <View style={styles.savingsRow}>
+          <Text style={styles.savingsLabel}>You save</Text>
+          <Text style={styles.savingsValue}>{med.savings_percent}%</Text>
         </View>
       </View>
 
       {med.jan_aushadhi_name !== med.name && (
-        <Text className="text-xs text-gray-400 mt-2">
+        <Text style={styles.janAushadhiName}>
           Jan Aushadhi: {med.jan_aushadhi_name}
         </Text>
       )}
@@ -83,53 +82,50 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1 px-4 pt-6">
-        {/* Title */}
-        <Text className="text-xl font-bold text-gray-900 mb-2">Prescription Scanner</Text>
-        <Text className="text-sm text-gray-500 mb-6">
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.title}>Prescription Scanner</Text>
+        <Text style={styles.subtitle}>
           Scan a prescription to find affordable Jan Aushadhi alternatives.
         </Text>
 
-        {/* Image source selection */}
         {state === 'idle' && (
           <View>
             <Pressable
               onPress={() => handlePickImage('camera')}
-              className="bg-primary py-5 rounded-xl items-center mb-3"
+              style={styles.cameraButton}
             >
               <Text style={{ fontSize: 32, marginBottom: 4 }}>📷</Text>
-              <Text className="text-white font-semibold text-base">Take Photo</Text>
-              <Text className="text-white/70 text-xs mt-1">Use camera to scan prescription</Text>
+              <Text style={styles.cameraButtonText}>Take Photo</Text>
+              <Text style={styles.cameraButtonSubtext}>Use camera to scan prescription</Text>
             </Pressable>
 
             <Pressable
               onPress={() => handlePickImage('gallery')}
-              className="bg-white border border-gray-300 py-5 rounded-xl items-center mb-6"
+              style={styles.galleryButton}
             >
               <Text style={{ fontSize: 32, marginBottom: 4 }}>🖼️</Text>
-              <Text className="text-gray-800 font-semibold text-base">Choose from Gallery</Text>
-              <Text className="text-gray-500 text-xs mt-1">Select existing photo</Text>
+              <Text style={styles.galleryButtonText}>Choose from Gallery</Text>
+              <Text style={styles.galleryButtonSubtext}>Select existing photo</Text>
             </Pressable>
 
-            {/* Info card */}
-            <View className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-              <Text className="text-blue-800 font-semibold mb-2">How it works</Text>
-              <View className="flex-row mb-1">
-                <Text className="text-blue-600 mr-2">1.</Text>
-                <Text className="text-blue-700 text-sm flex-1">
+            <View style={styles.infoCard}>
+              <Text style={styles.infoCardTitle}>How it works</Text>
+              <View style={styles.infoStep}>
+                <Text style={styles.infoStepNumber}>1.</Text>
+                <Text style={styles.infoStepText}>
                   Take a photo of your prescription
                 </Text>
               </View>
-              <View className="flex-row mb-1">
-                <Text className="text-blue-600 mr-2">2.</Text>
-                <Text className="text-blue-700 text-sm flex-1">
+              <View style={styles.infoStep}>
+                <Text style={styles.infoStepNumber}>2.</Text>
+                <Text style={styles.infoStepText}>
                   We extract medicine names and dosages
                 </Text>
               </View>
-              <View className="flex-row">
-                <Text className="text-blue-600 mr-2">3.</Text>
-                <Text className="text-blue-700 text-sm flex-1">
+              <View style={styles.infoStepLast}>
+                <Text style={styles.infoStepNumber}>3.</Text>
+                <Text style={styles.infoStepText}>
                   See Jan Aushadhi alternatives with prices
                 </Text>
               </View>
@@ -137,86 +133,358 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
           </View>
         )}
 
-        {/* Scanning indicator */}
         {state === 'scanning' && (
-          <View className="items-center py-12">
+          <View style={styles.scanningContainer}>
             <Text style={{ fontSize: 48, marginBottom: 16 }}>🔍</Text>
-            <Text className="text-gray-700 font-medium text-base">
+            <Text style={styles.scanningText}>
               Scanning prescription...
             </Text>
-            <Text className="text-gray-400 text-sm mt-2">
+            <Text style={styles.scanningSubtext}>
               Extracting medicine information
             </Text>
           </View>
         )}
 
-        {/* Results */}
         {result && state === 'done' && (
           <View>
-            {/* Doctor info */}
-            <View className="bg-white rounded-xl p-4 mb-4 border border-gray-100">
-              <View className="flex-row justify-between">
-                <Text className="text-sm text-gray-500">Prescribed by</Text>
-                <Text className="text-sm font-medium text-gray-800">
+            <View style={styles.doctorCard}>
+              <View style={styles.doctorRow}>
+                <Text style={styles.doctorLabel}>Prescribed by</Text>
+                <Text style={styles.doctorValue}>
                   {result.doctor_name}
                 </Text>
               </View>
-              <View className="flex-row justify-between mt-1">
-                <Text className="text-sm text-gray-500">Date</Text>
-                <Text className="text-sm text-gray-800">{result.date}</Text>
+              <View style={styles.doctorRowLast}>
+                <Text style={styles.doctorLabel}>Date</Text>
+                <Text style={styles.doctorDate}>{result.date}</Text>
               </View>
             </View>
 
-            {/* Medicines */}
-            <Text className="text-base font-semibold text-gray-900 mb-3">
+            <Text style={styles.medicinesTitle}>
               Medicines ({result.medicines.length})
             </Text>
             {result.medicines.map((med, i) => (
               <MedicineCard key={i} med={med} />
             ))}
 
-            {/* Total savings */}
-            <View className="bg-green-600 rounded-xl p-4 mb-4">
-              <Text className="text-white font-bold text-base mb-2">Total Savings</Text>
-              <View className="flex-row justify-between mb-1">
-                <Text className="text-white/80 text-sm">Market total</Text>
-                <Text className="text-white text-sm">
+            <View style={styles.totalSavingsCard}>
+              <Text style={styles.totalSavingsTitle}>Total Savings</Text>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Market total</Text>
+                <Text style={styles.totalValue}>
                   ₹{result.total_market_price.toFixed(0)}
                 </Text>
               </View>
-              <View className="flex-row justify-between mb-1">
-                <Text className="text-white/80 text-sm">Jan Aushadhi total</Text>
-                <Text className="text-white font-bold text-sm">
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Jan Aushadhi total</Text>
+                <Text style={styles.totalJanAushadhiValue}>
                   ₹{result.total_jan_aushadhi_price.toFixed(0)}
                 </Text>
               </View>
-              <View className="border-t border-white/30 mt-2 pt-2 flex-row justify-between">
-                <Text className="text-white font-bold">You save</Text>
-                <Text className="text-white font-bold text-lg">
+              <View style={styles.totalSavingsRow}>
+                <Text style={styles.totalSavingsLabel}>You save</Text>
+                <Text style={styles.totalSavingsAmount}>
                   ₹{(result.total_market_price - result.total_jan_aushadhi_price).toFixed(0)}
                 </Text>
               </View>
             </View>
 
-            {/* Actions */}
             <Pressable
               onPress={handleSaveToRecord}
-              className="bg-primary py-4 rounded-xl items-center mb-3"
+              style={styles.saveButton}
             >
-              <Text className="text-white font-semibold">Save to Health Record</Text>
+              <Text style={styles.saveButtonText}>Save to Health Record</Text>
             </Pressable>
 
             <Pressable
               onPress={handleReset}
-              className="bg-gray-200 py-3 rounded-xl items-center mb-8"
+              style={styles.scanAnotherButton}
             >
-              <Text className="text-gray-700 font-medium">Scan Another</Text>
+              <Text style={styles.scanAnotherText}>Scan Another</Text>
             </Pressable>
           </View>
         )}
 
-        <View className="h-6" />
+        <View style={styles.spacer} />
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 24,
+  },
+  cameraButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cameraButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  cameraButtonSubtext: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  galleryButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    paddingVertical: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  galleryButtonText: {
+    color: '#1F2937',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  galleryButtonSubtext: {
+    color: '#6B7280',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  infoCard: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+  },
+  infoCardTitle: {
+    color: '#1E40AF',
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  infoStep: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  infoStepLast: {
+    flexDirection: 'row',
+  },
+  infoStepNumber: {
+    color: '#2563EB',
+    marginRight: 8,
+  },
+  infoStepText: {
+    color: '#1D4ED8',
+    fontSize: 14,
+    flex: 1,
+  },
+  scanningContainer: {
+    alignItems: 'center',
+    paddingVertical: 48,
+  },
+  scanningText: {
+    color: '#374151',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  scanningSubtext: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    marginTop: 8,
+  },
+  doctorCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  doctorRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  doctorRowLast: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  doctorLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  doctorValue: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1F2937',
+  },
+  doctorDate: {
+    fontSize: 14,
+    color: '#1F2937',
+  },
+  medicinesTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  medicineCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  medicineName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  medicineDosage: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 8,
+  },
+  priceComparison: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 8,
+    padding: 12,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  priceLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  priceMarket: {
+    fontSize: 14,
+    color: '#374151',
+  },
+  janAushadhiLabel: {
+    fontSize: 12,
+    color: '#15803D',
+    fontWeight: '500',
+  },
+  janAushadhiPrice: {
+    fontSize: 14,
+    color: '#15803D',
+    fontWeight: 'bold',
+  },
+  savingsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: '#BBF7D0',
+    marginTop: 4,
+  },
+  savingsLabel: {
+    fontSize: 12,
+    color: '#16A34A',
+  },
+  savingsValue: {
+    fontSize: 14,
+    color: '#16A34A',
+    fontWeight: 'bold',
+  },
+  janAushadhiName: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 8,
+  },
+  totalSavingsCard: {
+    backgroundColor: '#16A34A',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  totalSavingsTitle: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  totalLabel: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 14,
+  },
+  totalValue: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  totalJanAushadhiValue: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  totalSavingsRow: {
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.3)',
+    marginTop: 8,
+    paddingTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  totalSavingsLabel: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  totalSavingsAmount: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  saveButton: {
+    backgroundColor: '#2563EB',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  scanAnotherButton: {
+    backgroundColor: '#E5E7EB',
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  scanAnotherText: {
+    color: '#374151',
+    fontWeight: '500',
+  },
+  spacer: {
+    height: 24,
+  },
+});

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { database } from '../db';
 import Patient from '../db/models/Patient';
@@ -16,21 +16,19 @@ function DashboardCard({ title, subtitle, icon, color, onPress }: DashboardCardP
   return (
     <Pressable
       onPress={onPress}
-      className="bg-white rounded-2xl p-5 mb-4 shadow-sm border border-gray-100"
-      style={{ elevation: 2 }}
+      style={[styles.card, { elevation: 2 }]}
     >
-      <View className="flex-row items-center">
+      <View style={styles.cardRow}>
         <View
-          className="w-12 h-12 rounded-full items-center justify-center mr-4"
-          style={{ backgroundColor: color + '20' }}
+          style={[styles.iconContainer, { backgroundColor: color + '20' }]}
         >
           <Text style={{ fontSize: 24 }}>{icon}</Text>
         </View>
-        <View className="flex-1">
-          <Text className="text-lg font-semibold text-gray-900">{title}</Text>
-          <Text className="text-sm text-gray-500">{subtitle}</Text>
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle}>{title}</Text>
+          <Text style={styles.cardSubtitle}>{subtitle}</Text>
         </View>
-        <Text className="text-gray-400 text-xl">&rsaquo;</Text>
+        <Text style={styles.chevron}>&rsaquo;</Text>
       </View>
     </Pressable>
   );
@@ -50,27 +48,27 @@ export default function DashboardScreen({ navigation }: any) {
   }, []);
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View style={styles.container}>
       {/* Header */}
-      <View className="bg-primary pt-14 pb-6 px-6 rounded-b-3xl">
-        <View className="flex-row justify-between items-center">
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
           <View>
-            <Text className="text-white text-sm opacity-80">Welcome back</Text>
-            <Text className="text-white text-xl font-bold">
-              {user?.name || user?.phone || 'User'}
+            <Text style={styles.welcomeText}>Welcome back</Text>
+            <Text style={styles.userName}>
+              {user?.name || user?.email || 'User'}
             </Text>
           </View>
           <Pressable
             onPress={logout}
-            className="bg-white/20 px-4 py-2 rounded-full"
+            style={styles.logoutButton}
           >
-            <Text className="text-white text-sm font-medium">Logout</Text>
+            <Text style={styles.logoutText}>Logout</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Cards */}
-      <ScrollView className="flex-1 px-4 pt-6">
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <DashboardCard
           title="Patients"
           subtitle={`${patientCount} registered`}
@@ -113,8 +111,95 @@ export default function DashboardScreen({ navigation }: any) {
           color="#DC2626"
         />
 
-        <View className="h-6" />
+        <View style={styles.spacer} />
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  header: {
+    backgroundColor: '#2563EB',
+    paddingTop: 56,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  welcomeText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  userName: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  logoutButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 9999,
+  },
+  logoutText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  scrollContent: {
+    paddingTop: 24,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#F3F4F6',
+  },
+  cardRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 9999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  chevron: {
+    color: '#9CA3AF',
+    fontSize: 20,
+  },
+  spacer: {
+    height: 24,
+  },
+});

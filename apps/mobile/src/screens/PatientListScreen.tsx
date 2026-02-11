@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Pressable, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TextInput, Pressable, RefreshControl, StyleSheet } from 'react-native';
 import { database } from '../db';
 import { Q } from '@nozbe/watermelondb';
 import Patient from '../db/models/Patient';
@@ -43,18 +43,16 @@ export default function PatientListScreen({ navigation }: any) {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
-      {/* Search */}
-      <View className="px-4 pt-4 pb-2">
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
         <TextInput
           value={search}
           onChangeText={setSearch}
           placeholder="Search patients..."
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-base"
+          style={styles.searchInput}
         />
       </View>
 
-      {/* List */}
       <FlatList
         data={filteredPatients}
         keyExtractor={(item) => item.id}
@@ -69,23 +67,71 @@ export default function PatientListScreen({ navigation }: any) {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
         ListEmptyComponent={
-          <View className="items-center py-12">
-            <Text className="text-gray-400 text-base">No patients yet</Text>
-            <Text className="text-gray-400 text-sm mt-1">
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No patients yet</Text>
+            <Text style={styles.emptySubtext}>
               Tap + to add your first patient
             </Text>
           </View>
         }
       />
 
-      {/* FAB */}
       <Pressable
         onPress={() => navigation.navigate('AddPatient')}
-        className="absolute bottom-6 right-6 w-14 h-14 bg-primary rounded-full items-center justify-center shadow-lg"
-        style={{ elevation: 5 }}
+        style={[styles.fab, { elevation: 5 }]}
       >
-        <Text className="text-white text-2xl font-light">+</Text>
+        <Text style={styles.fabText}>+</Text>
       </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  searchInput: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 48,
+  },
+  emptyText: {
+    color: '#9CA3AF',
+    fontSize: 16,
+  },
+  emptySubtext: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    marginTop: 4,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    backgroundColor: '#2563EB',
+    borderRadius: 9999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fabText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '300',
+  },
+});

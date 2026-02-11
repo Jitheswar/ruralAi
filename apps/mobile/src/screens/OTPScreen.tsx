@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import OTPInput from '../components/OTPInput';
 
 export default function OTPScreen({ route }: any) {
-  const { phone } = route.params;
+  const { email } = route.params;
   const { verifyOtp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -13,12 +13,12 @@ export default function OTPScreen({ route }: any) {
     setError('');
     setLoading(true);
     try {
-      const success = await verifyOtp(phone, otp);
+      const success = await verifyOtp(email, otp);
       if (!success) {
-        setError('Invalid OTP. Please try again.');
+        setError('Invalid code. Please try again.');
       }
-      // On success, AuthContext updates -> RootNavigator auto-navigates to Dashboard
-    } catch (e) {
+      // On success, auth state change will auto-navigate to Dashboard
+    } catch (_e) {
       setError('Verification failed. Please try again.');
     } finally {
       setLoading(false);
@@ -26,27 +26,61 @@ export default function OTPScreen({ route }: any) {
   }
 
   return (
-    <View className="flex-1 bg-white justify-center px-6">
-      <Text className="text-2xl font-bold text-center mb-2">
-        Verify OTP
-      </Text>
-      <Text className="text-sm text-gray-500 text-center mb-8">
-        Enter the 6-digit code sent to {phone}
+    <View style={styles.container}>
+      <Text style={styles.title}>Verify Email</Text>
+      <Text style={styles.subtitle}>
+        Enter the 6-digit code sent to {email}
       </Text>
 
       <OTPInput onComplete={handleVerify} />
 
       {loading && (
-        <ActivityIndicator size="large" color="#2563EB" className="mt-6" />
+        <ActivityIndicator size="large" color="#2563EB" style={styles.loader} />
       )}
 
       {error ? (
-        <Text className="text-danger text-sm text-center mt-4">{error}</Text>
+        <Text style={styles.error}>{error}</Text>
       ) : null}
 
-      <Text className="text-xs text-gray-400 text-center mt-8">
-        Dev mode: Use 123456
+      <Text style={styles.resendText}>
+        Didn't receive code? Resend in 30s
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  loader: {
+    marginTop: 24,
+  },
+  error: {
+    color: '#DC2626',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  resendText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginTop: 32,
+  },
+});

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, ScrollView, Alert, StyleSheet } from 'react-native';
 import { database } from '../db';
 import Patient from '../db/models/Patient';
 import { useAuth } from '../contexts/AuthContext';
@@ -51,46 +51,43 @@ export default function AddPatientScreen({ navigation }: any) {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
-      <View className="p-4">
-        <Text className="text-2xl font-bold text-gray-900 mb-6">Add Patient</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Add Patient</Text>
 
-        {/* Name */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">Name *</Text>
+        <Text style={styles.label}>Name *</Text>
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder="Patient name"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* Age */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">Age *</Text>
+        <Text style={styles.label}>Age *</Text>
         <TextInput
           value={age}
           onChangeText={setAge}
           placeholder="Age in years"
           keyboardType="number-pad"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* Gender */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">Gender *</Text>
-        <View className="flex-row gap-2 mb-4">
+        <Text style={styles.label}>Gender *</Text>
+        <View style={styles.genderContainer}>
           {genderOptions.map((g) => (
             <Pressable
               key={g}
               onPress={() => setGender(g)}
-              className={`flex-1 py-3 rounded-lg items-center border ${
-                gender === g
-                  ? 'bg-primary border-primary'
-                  : 'bg-white border-gray-300'
-              }`}
+              style={[
+                styles.genderButton,
+                gender === g ? styles.genderButtonActive : styles.genderButtonInactive
+              ]}
             >
               <Text
-                className={`font-medium ${
-                  gender === g ? 'text-white' : 'text-gray-700'
-                }`}
+                style={[
+                  styles.genderButtonText,
+                  gender === g ? styles.genderButtonTextActive : styles.genderButtonTextInactive
+                ]}
               >
                 {g}
               </Text>
@@ -98,60 +95,140 @@ export default function AddPatientScreen({ navigation }: any) {
           ))}
         </View>
 
-        {/* Phone */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">Phone</Text>
+        <Text style={styles.label}>Phone</Text>
         <TextInput
           value={phone}
           onChangeText={setPhone}
           placeholder="Mobile number"
           keyboardType="phone-pad"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* Village */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">Village</Text>
+        <Text style={styles.label}>Village</Text>
         <TextInput
           value={village}
           onChangeText={setVillage}
           placeholder="Village name"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* District */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">District</Text>
+        <Text style={styles.label}>District</Text>
         <TextInput
           value={district}
           onChangeText={setDistrict}
           placeholder="District name"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* ABHA ID */}
-        <Text className="text-sm font-medium text-gray-700 mb-1">ABHA ID</Text>
+        <Text style={styles.label}>ABHA ID</Text>
         <TextInput
           value={abhaId}
           onChangeText={setAbhaId}
           placeholder="XX-XXXX-XXXX-XXXX or name@abdm"
-          className="bg-white border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+          style={styles.input}
         />
 
-        {/* Save Button */}
         <Pressable
           onPress={handleSave}
           disabled={saving}
-          className={`py-4 rounded-lg items-center mt-2 ${
-            saving ? 'bg-gray-300' : 'bg-primary'
-          }`}
+          style={[
+            styles.saveButton,
+            saving ? styles.saveButtonDisabled : styles.saveButtonEnabled
+          ]}
         >
-          <Text className="text-white font-semibold text-base">
+          <Text style={styles.saveButtonText}>
             {saving ? 'Saving...' : 'Save Patient'}
           </Text>
         </Pressable>
 
-        <Text className="text-xs text-gray-400 text-center mt-4">
+        <Text style={styles.footer}>
           Works offline. Data syncs when internet is available.
         </Text>
       </View>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  contentContainer: {
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 4,
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 16,
+    fontSize: 16,
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  genderButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  genderButtonActive: {
+    backgroundColor: '#2563EB',
+    borderColor: '#2563EB',
+  },
+  genderButtonInactive: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#D1D5DB',
+  },
+  genderButtonText: {
+    fontWeight: '500',
+  },
+  genderButtonTextActive: {
+    color: '#FFFFFF',
+  },
+  genderButtonTextInactive: {
+    color: '#374151',
+  },
+  saveButton: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  saveButtonEnabled: {
+    backgroundColor: '#2563EB',
+  },
+  saveButtonDisabled: {
+    backgroundColor: '#D1D5DB',
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  footer: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+});

@@ -1,5 +1,3 @@
-export const MOCK_OTP = '123456';
-
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000',
   ANDROID_EMULATOR_URL: 'http://10.0.2.2:8000',

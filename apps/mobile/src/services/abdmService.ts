@@ -3,7 +3,11 @@
  * Falls back to inline mocks when API is unreachable.
  */
 
-import { API_BASE_URL } from '@rural-ai/shared';
+import { Platform } from 'react-native';
+import { API_CONFIG } from '@rural-ai/shared';
+
+const API_BASE_URL =
+  Platform.OS === 'android' ? API_CONFIG.ANDROID_EMULATOR_URL : API_CONFIG.BASE_URL;
 
 // ----- Types -----
 

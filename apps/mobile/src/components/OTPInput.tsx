@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, TextInput, Pressable, Text } from 'react-native';
+import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
 
 interface OTPInputProps {
   length?: number;
@@ -31,7 +31,7 @@ export default function OTPInput({ length = 6, onComplete }: OTPInputProps) {
   }
 
   return (
-    <View className="flex-row justify-center gap-2">
+    <View style={styles.container}>
       {otp.map((digit, index) => (
         <TextInput
           key={index}
@@ -41,10 +41,28 @@ export default function OTPInput({ length = 6, onComplete }: OTPInputProps) {
           onKeyPress={(e) => handleKeyPress(e, index)}
           keyboardType="number-pad"
           maxLength={1}
-          className="w-12 h-14 border-2 border-gray-300 rounded-lg text-center text-xl font-bold bg-white"
-          style={{ fontSize: 22 }}
+          style={styles.input}
         />
       ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  input: {
+    width: 48,
+    height: 56,
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: 'bold',
+    backgroundColor: '#FFFFFF',
+  },
+});

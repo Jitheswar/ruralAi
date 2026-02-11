@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, Modal, Linking, Alert } from 'react-native';
+import { View, Text, Pressable, Modal, Linking, Alert, StyleSheet } from 'react-native';
 import { TriageResult } from '../engine/triageEngine';
 
 interface RedFlagAlertProps {
@@ -26,29 +26,29 @@ export default function RedFlagAlert({ visible, result, onDismiss }: RedFlagAler
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
-      <View className="flex-1 bg-red-600 justify-center px-6">
+      <View style={styles.container}>
         {/* Warning icon */}
-        <View className="items-center mb-6">
-          <Text style={{ fontSize: 64 }}>&#9888;&#65039;</Text>
+        <View style={styles.iconContainer}>
+          <Text style={styles.icon}>&#9888;&#65039;</Text>
         </View>
 
         {/* Title */}
-        <Text className="text-white text-2xl font-bold text-center mb-2">
+        <Text style={styles.title}>
           {result.name}
         </Text>
 
         {/* Message */}
-        <Text className="text-white/90 text-base text-center mb-8">
+        <Text style={styles.message}>
           {result.message}
         </Text>
 
         {/* Instructions */}
-        <View className="bg-white/10 rounded-xl p-5 mb-8">
-          <Text className="text-white font-semibold mb-3">What to do:</Text>
+        <View style={styles.instructionsBox}>
+          <Text style={styles.instructionsTitle}>What to do:</Text>
           {result.instructions.map((instruction, i) => (
-            <View key={i} className="flex-row mb-2">
-              <Text className="text-white font-bold mr-2">{i + 1}.</Text>
-              <Text className="text-white/90 flex-1">{instruction}</Text>
+            <View key={i} style={styles.instructionRow}>
+              <Text style={styles.instructionNumber}>{i + 1}.</Text>
+              <Text style={styles.instructionText}>{instruction}</Text>
             </View>
           ))}
         </View>
@@ -56,9 +56,9 @@ export default function RedFlagAlert({ visible, result, onDismiss }: RedFlagAler
         {/* Call button */}
         <Pressable
           onPress={handleCall}
-          className="bg-white py-4 rounded-xl items-center mb-4"
+          style={styles.callButton}
         >
-          <Text className="text-red-600 text-lg font-bold">
+          <Text style={styles.callButtonText}>
             Call 108 (Ambulance)
           </Text>
         </Pressable>
@@ -66,11 +66,84 @@ export default function RedFlagAlert({ visible, result, onDismiss }: RedFlagAler
         {/* Dismiss */}
         <Pressable
           onPress={handleDismiss}
-          className="py-3 items-center"
+          style={styles.dismissButton}
         >
-          <Text className="text-white/60 text-sm">Dismiss</Text>
+          <Text style={styles.dismissButtonText}>Dismiss</Text>
         </Pressable>
       </View>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#DC2626',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  iconContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  icon: {
+    fontSize: 64,
+  },
+  title: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  message: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  instructionsBox: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 32,
+  },
+  instructionsTitle: {
+    color: '#ffffff',
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  instructionRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  instructionNumber: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginRight: 8,
+  },
+  instructionText: {
+    color: 'rgba(255,255,255,0.9)',
+    flex: 1,
+  },
+  callButton: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  callButtonText: {
+    color: '#DC2626',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  dismissButton: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  dismissButtonText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 14,
+  },
+});

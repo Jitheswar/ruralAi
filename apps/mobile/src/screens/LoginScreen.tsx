@@ -1,32 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, Pressable, ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
-import { isValidIndianPhone, formatPhone } from '@rural-ai/shared';
 
-export default function LoginScreen({ navigation }: any) {
-  const { sendOtp } = useAuth();
-  const [phone, setPhone] = useState('');
+type RootStackParamList = {
+  Welcome: undefined;
+  Login: undefined;
+  Register: undefined;
+  OTP: { email: string };
+  Dashboard: undefined;
+};
+
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
+};
+
+export default function LoginScreen({ navigation }: Props) {
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function handleSendOtp() {
+  async function handleLogin() {
     setError('');
-    const formatted = formatPhone(phone);
+    const trimmedEmail = email.trim();
 
-    if (!isValidIndianPhone(formatted)) {
-      setError('Please enter a valid 10-digit Indian mobile number');
+    if (!trimmedEmail || !trimmedEmail.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (!password) {
+      setError('Please enter your password');
       return;
     }
 
     setLoading(true);
     try {
-      const success = await sendOtp(formatted);
-      if (success) {
-        navigation.navigate('OTP', { phone: formatted });
-      } else {
-        setError('Failed to send OTP. Please try again.');
+      const success = await login(trimmedEmail, password);
+      if (!success) {
+        setError('Invalid email or password. Please try again.');
       }
-    } catch (e) {
+    } catch (_e) {
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -36,55 +52,123 @@ export default function LoginScreen({ navigation }: any) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-white"
+      style={styles.container}
     >
-      <View className="flex-1 justify-center px-6">
-        <Text className="text-3xl font-bold text-center text-primary mb-2">
-          Rural Health AI
-        </Text>
-        <Text className="text-base text-gray-500 text-center mb-10">
-          Your health companion, online or offline
-        </Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.subtitle}>Sign in to your account</Text>
 
-        <Text className="text-sm font-medium text-gray-700 mb-2">
-          Mobile Number
-        </Text>
-        <View className="flex-row items-center border-2 border-gray-300 rounded-lg mb-4">
-          <Text className="px-3 py-3 text-gray-500 border-r border-gray-300 bg-gray-50">
-            +91
-          </Text>
-          <TextInput
-            value={phone}
-            onChangeText={setPhone}
-            placeholder="Enter 10-digit number"
-            keyboardType="phone-pad"
-            maxLength={10}
-            className="flex-1 px-3 py-3 text-base"
-          />
-        </View>
+        <Text style={styles.label}>Email Address</Text>
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Enter your email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          style={styles.input}
+        />
+
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Enter your password"
+          secureTextEntry
+          style={styles.input}
+        />
 
         {error ? (
-          <Text className="text-danger text-sm mb-4">{error}</Text>
+          <Text style={styles.error}>{error}</Text>
         ) : null}
 
         <Pressable
-          onPress={handleSendOtp}
-          disabled={loading || phone.length < 10}
-          className={`py-4 rounded-lg items-center ${
-            loading || phone.length < 10 ? 'bg-gray-300' : 'bg-primary'
-          }`}
+          onPress={handleLogin}
+          disabled={loading || !email.includes('@') || !password}
+          style={[styles.button, (loading || !email.includes('@') || !password) ? styles.buttonDisabled : styles.buttonActive]}
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white font-semibold text-base">Send OTP</Text>
+            <Text style={styles.buttonText}>Login</Text>
           )}
         </Pressable>
 
-        <Text className="text-xs text-gray-400 text-center mt-6">
-          Dev mode: Use OTP 123456
-        </Text>
+        <Pressable onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.linkText}>
+            Don't have an account? <Text style={styles.linkBold}>Register</Text>
+          </Text>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 32,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 2,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: '#F9FAFB',
+  },
+  error: {
+    color: '#DC2626',
+    fontSize: 14,
+    marginBottom: 16,
+  },
+  button: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#D1D5DB',
+  },
+  buttonActive: {
+    backgroundColor: '#2563EB',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  linkText: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginTop: 24,
+  },
+  linkBold: {
+    color: '#2563EB',
+    fontWeight: '600',
+  },
+});

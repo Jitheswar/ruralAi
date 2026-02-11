@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useSymptomEngine } from '../hooks/useSymptomEngine';
 import { getSymptomList } from '../engine/triageEngine';
@@ -41,8 +41,8 @@ export default function SymptomCheckerScreen() {
   const durationOptions = [1, 2, 3, 5, 7];
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <ScrollView ref={scrollRef} className="flex-1 px-4 pt-4">
+    <View style={styles.container}>
+      <ScrollView ref={scrollRef} style={styles.scrollView}>
         {/* Greeting */}
         <ChatMessage
           type="system"
@@ -51,8 +51,8 @@ export default function SymptomCheckerScreen() {
 
         {/* Symptom Selection */}
         {step === 'symptoms' && (
-          <View className="mb-4">
-            <View className="flex-row flex-wrap mt-2">
+          <View style={styles.symptomSection}>
+            <View style={styles.symptomList}>
               {symptoms.map((s) => (
                 <SymptomBubble
                   key={s.id}
@@ -85,16 +85,17 @@ export default function SymptomCheckerScreen() {
               text="How long have you had these symptoms?"
             />
             {step === 'duration' ? (
-              <View className="flex-row flex-wrap mb-4">
+              <View style={styles.durationContainer}>
                 {durationOptions.map((d) => (
                   <Pressable
                     key={d}
                     onPress={() => engine.setDuration(d)}
-                    className={`px-4 py-2 rounded-full m-1 ${
-                      engine.duration === d ? 'bg-primary' : 'bg-white border border-gray-300'
-                    }`}
+                    style={[
+                      styles.durationButton,
+                      engine.duration === d ? styles.durationButtonSelected : styles.durationButtonUnselected
+                    ]}
                   >
-                    <Text className={engine.duration === d ? 'text-white font-medium' : 'text-gray-700'}>
+                    <Text style={engine.duration === d ? styles.durationTextSelected : styles.durationTextUnselected}>
                       {d} {d === 1 ? 'day' : 'days'}
                     </Text>
                   </Pressable>
@@ -117,20 +118,22 @@ export default function SymptomCheckerScreen() {
               text="Did the symptoms start suddenly?"
             />
             {step === 'modifiers' ? (
-              <View className="flex-row mb-4">
+              <View style={styles.modifiersContainer}>
                 <Pressable
                   onPress={() => engine.toggleModifier('sudden_onset')}
-                  className={`px-6 py-3 rounded-full mr-2 ${
+                  style={[
+                    styles.modifierButton,
+                    styles.modifierButtonLeft,
                     engine.modifiers.includes('sudden_onset')
-                      ? 'bg-primary'
-                      : 'bg-white border border-gray-300'
-                  }`}
+                      ? styles.modifierButtonSelected
+                      : styles.modifierButtonUnselected
+                  ]}
                 >
                   <Text
-                    className={
+                    style={
                       engine.modifiers.includes('sudden_onset')
-                        ? 'text-white font-medium'
-                        : 'text-gray-700'
+                        ? styles.modifierTextSelected
+                        : styles.modifierTextUnselected
                     }
                   >
                     Yes, suddenly
@@ -142,17 +145,18 @@ export default function SymptomCheckerScreen() {
                       engine.toggleModifier('sudden_onset');
                     }
                   }}
-                  className={`px-6 py-3 rounded-full ${
+                  style={[
+                    styles.modifierButton,
                     !engine.modifiers.includes('sudden_onset')
-                      ? 'bg-primary'
-                      : 'bg-white border border-gray-300'
-                  }`}
+                      ? styles.modifierButtonSelected
+                      : styles.modifierButtonUnselected
+                  ]}
                 >
                   <Text
-                    className={
+                    style={
                       !engine.modifiers.includes('sudden_onset')
-                        ? 'text-white font-medium'
-                        : 'text-gray-700'
+                        ? styles.modifierTextSelected
+                        : styles.modifierTextUnselected
                     }
                   >
                     Gradually
@@ -173,16 +177,16 @@ export default function SymptomCheckerScreen() {
           <>
             <ChatMessage type="system" text="Here's what I found:" />
             {engine.results.map((r) => (
-              <View key={r.ruleId} className="mb-3">
+              <View key={r.ruleId} style={styles.resultItem}>
                 <ChatMessage
                   type="system"
                   text={r.message}
                   severity={r.severity}
                 />
                 {r.instructions.map((inst, i) => (
-                  <View key={i} className="flex-row ml-4 mb-1">
-                    <Text className="text-gray-500 text-xs mr-1">{i + 1}.</Text>
-                    <Text className="text-gray-600 text-xs flex-1">{inst}</Text>
+                  <View key={i} style={styles.instructionRow}>
+                    <Text style={styles.instructionNumber}>{i + 1}.</Text>
+                    <Text style={styles.instructionText}>{inst}</Text>
                   </View>
                 ))}
               </View>
@@ -190,29 +194,30 @@ export default function SymptomCheckerScreen() {
           </>
         )}
 
-        <View className="h-24" />
+        <View style={styles.spacer} />
       </ScrollView>
 
       {/* Bottom action bar */}
-      <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-3">
+      <View style={styles.bottomBar}>
         {step === 'results' ? (
           <Pressable
             onPress={handleReset}
-            className="bg-gray-200 py-4 rounded-lg items-center"
+            style={styles.resetButton}
           >
-            <Text className="text-gray-700 font-semibold">Start Over</Text>
+            <Text style={styles.resetButtonText}>Start Over</Text>
           </Pressable>
         ) : (
           <Pressable
             onPress={handleNext}
             disabled={step === 'symptoms' && engine.selectedSymptoms.length === 0}
-            className={`py-4 rounded-lg items-center ${
+            style={[
+              styles.nextButton,
               step === 'symptoms' && engine.selectedSymptoms.length === 0
-                ? 'bg-gray-300'
-                : 'bg-primary'
-            }`}
+                ? styles.nextButtonDisabled
+                : styles.nextButtonEnabled
+            ]}
           >
-            <Text className="text-white font-semibold">
+            <Text style={styles.nextButtonText}>
               {step === 'modifiers' ? 'Check Symptoms' : 'Next'}
             </Text>
           </Pressable>
@@ -230,3 +235,133 @@ export default function SymptomCheckerScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  symptomSection: {
+    marginBottom: 16,
+  },
+  symptomList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+  },
+  durationContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 16,
+  },
+  durationButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 9999,
+    margin: 4,
+  },
+  durationButtonSelected: {
+    backgroundColor: '#2563EB',
+  },
+  durationButtonUnselected: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+  },
+  durationTextSelected: {
+    color: '#ffffff',
+    fontWeight: '500',
+  },
+  durationTextUnselected: {
+    color: '#374151',
+  },
+  modifiersContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  modifierButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 9999,
+  },
+  modifierButtonLeft: {
+    marginRight: 8,
+  },
+  modifierButtonSelected: {
+    backgroundColor: '#2563EB',
+  },
+  modifierButtonUnselected: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+  },
+  modifierTextSelected: {
+    color: '#ffffff',
+    fontWeight: '500',
+  },
+  modifierTextUnselected: {
+    color: '#374151',
+  },
+  resultItem: {
+    marginBottom: 12,
+  },
+  instructionRow: {
+    flexDirection: 'row',
+    marginLeft: 16,
+    marginBottom: 4,
+  },
+  instructionNumber: {
+    color: '#6B7280',
+    fontSize: 12,
+    marginRight: 4,
+  },
+  instructionText: {
+    color: '#4B5563',
+    fontSize: 12,
+    flex: 1,
+  },
+  spacer: {
+    height: 96,
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  resetButton: {
+    backgroundColor: '#E5E7EB',
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  resetButtonText: {
+    color: '#374151',
+    fontWeight: '600',
+  },
+  nextButton: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  nextButtonDisabled: {
+    backgroundColor: '#D1D5DB',
+  },
+  nextButtonEnabled: {
+    backgroundColor: '#2563EB',
+  },
+  nextButtonText: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+});

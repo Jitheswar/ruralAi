@@ -1,10 +1,19 @@
-import { MockPatient } from '@/lib/mockData';
+import type { Patient } from '@/lib/supabaseData';
 
 interface PatientTableProps {
-  patients: MockPatient[];
+  patients: Patient[];
 }
 
 export default function PatientTable({ patients }: PatientTableProps) {
+  if (patients.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+        <p className="text-gray-500 text-lg mb-2">No patients found</p>
+        <p className="text-gray-400 text-sm">Patients will appear here once added.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <table className="w-full">
@@ -28,15 +37,15 @@ export default function PatientTable({ patients }: PatientTableProps) {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{p.name}</p>
-                    <p className="text-xs text-gray-500">{p.phone}</p>
+                    <p className="text-xs text-gray-500">{p.phone || '—'}</p>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 text-sm text-gray-600">{p.age}</td>
-              <td className="px-6 py-4 text-sm text-gray-600 capitalize">{p.gender}</td>
-              <td className="px-6 py-4 text-sm text-gray-600">{p.village}</td>
+              <td className="px-6 py-4 text-sm text-gray-600">{p.age ?? '—'}</td>
+              <td className="px-6 py-4 text-sm text-gray-600 capitalize">{p.gender || '—'}</td>
+              <td className="px-6 py-4 text-sm text-gray-600">{p.village || '—'}</td>
               <td className="px-6 py-4 text-sm text-gray-600">
-                {p.abhaId ? (
+                {p.abha_id ? (
                   <span className="text-green-600 text-xs font-medium">Linked</span>
                 ) : (
                   <span className="text-gray-400 text-xs">Not linked</span>
@@ -44,10 +53,10 @@ export default function PatientTable({ patients }: PatientTableProps) {
               </td>
               <td className="px-6 py-4">
                 <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                  p.isSynced ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                  p.is_synced ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                 }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${p.isSynced ? 'bg-green-500' : 'bg-orange-500'}`} />
-                  {p.isSynced ? 'Synced' : 'Pending'}
+                  <span className={`w-1.5 h-1.5 rounded-full ${p.is_synced ? 'bg-green-500' : 'bg-orange-500'}`} />
+                  {p.is_synced ? 'Synced' : 'Pending'}
                 </span>
               </td>
             </tr>

@@ -2,17 +2,47 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { logout } from '@/lib/mockAuth';
+import { logout, getSession } from '@/lib/auth';
+import type { UserRole } from '@rural-ai/shared';
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-  { href: '/dashboard/patients', label: 'Patients', icon: '👥' },
-  { href: '/dashboard/sahayak', label: 'Sahayak', icon: '👩‍⚕️' },
-];
+interface NavItem {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+const navByRole: Record<UserRole, NavItem[]> = {
+  admin: [
+    { href: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { href: '/dashboard/patients', label: 'Patients', icon: '👥' },
+    { href: '/dashboard/sahayak', label: 'Sahayak', icon: '👩‍⚕️' },
+  ],
+  sahayak: [
+    { href: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { href: '/dashboard/my-patients', label: 'My Patients', icon: '👥' },
+  ],
+  citizen: [
+    { href: '/dashboard', label: 'Dashboard', icon: '📊' },
+    { href: '/dashboard/my-health', label: 'My Health', icon: '💊' },
+    { href: '/dashboard/symptom-checker', label: 'Symptom Checker', icon: '🩺' },
+    { href: '/dashboard/prescription-scanner', label: 'Rx Scanner', icon: '📷' },
+    { href: '/dashboard/medicine-search', label: 'Medicine Search', icon: '💊' },
+    { href: '/dashboard/nearby', label: 'Nearby Help', icon: '📍' },
+  ],
+};
+
+const portalLabel: Record<UserRole, string> = {
+  admin: 'Admin Portal',
+  sahayak: 'Sahayak Portal',
+  citizen: 'Health Portal',
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const user = getSession();
+  const role: UserRole = user?.role || 'citizen';
+  const navItems = navByRole[role];
 
   function handleLogout() {
     logout();
@@ -23,7 +53,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
       <div className="p-6 border-b border-gray-700">
         <h1 className="text-xl font-bold">Rural Health AI</h1>
-        <p className="text-xs text-gray-400 mt-1">Admin Portal</p>
+        <p className="text-xs text-gray-400 mt-1">{portalLabel[role]}</p>
       </div>
 
       <nav className="flex-1 p-4">
@@ -44,6 +74,12 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-gray-700">
+        {user && (
+          <div className="px-4 py-2 mb-2">
+            <p className="text-sm font-medium text-white truncate">{user.name || user.email}</p>
+            <p className="text-xs text-gray-400 capitalize">{role}</p>
+          </div>
+        )}
         <button
           onClick={handleLogout}
           className="w-full px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"

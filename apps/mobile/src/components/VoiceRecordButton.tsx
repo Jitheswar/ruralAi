@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, Pressable, Animated } from 'react-native';
+import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
 
 interface VoiceRecordButtonProps {
   isRecording: boolean;
@@ -38,8 +38,7 @@ export default function VoiceRecordButton({
   }, [isRecording, pulseAnim]);
 
   return (
-    <View className="items-center">
-      {/* Pulse ring */}
+    <View style={styles.container}>
       {isRecording && (
         <Animated.View
           style={{
@@ -53,7 +52,6 @@ export default function VoiceRecordButton({
         />
       )}
 
-      {/* Main button */}
       <Pressable
         onPressIn={onPressIn}
         onPressOut={onPressOut}
@@ -75,10 +73,21 @@ export default function VoiceRecordButton({
         <Text style={{ fontSize: 40 }}>{isRecording ? '⏹' : '🎤'}</Text>
       </Pressable>
 
-      {/* Label */}
-      <Text className="text-gray-600 text-sm mt-4 text-center">
+      <Text style={styles.label}>
         {isRecording ? 'Recording... Release to stop' : disabled ? 'Processing...' : 'Hold to speak'}
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
+  label: {
+    color: '#4B5563',
+    fontSize: 14,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+});
