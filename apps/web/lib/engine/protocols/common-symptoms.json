@@ -1,0 +1,89 @@
+{
+  "version": "1.0.0",
+  "symptoms": [
+    {
+      "id": "high_fever",
+      "label": "High Fever (>102F)",
+      "rule": {
+        "and": [
+          { "in": ["high_fever", { "var": "symptoms" }] },
+          { ">": [{ "var": "duration_days" }, 3] }
+        ]
+      },
+      "action": {
+        "type": "warning",
+        "message": "Fever lasting more than 3 days requires medical attention.",
+        "advice": [
+          "Take paracetamol (500mg) every 6 hours",
+          "Drink plenty of fluids",
+          "Visit the nearest PHC if fever persists"
+        ],
+        "suggestedMedicine": "paracetamol_500mg"
+      }
+    },
+    {
+      "id": "dehydration_risk",
+      "label": "Dehydration Risk",
+      "rule": {
+        "and": [
+          { "or": [
+            { "in": ["diarrhea", { "var": "symptoms" }] },
+            { "in": ["vomiting", { "var": "symptoms" }] }
+          ]},
+          { ">": [{ "var": "duration_days" }, 1] }
+        ]
+      },
+      "action": {
+        "type": "warning",
+        "message": "Risk of dehydration. Start ORS immediately.",
+        "advice": [
+          "Dissolve one ORS packet in 1 litre of clean water",
+          "Sip slowly, do not gulp",
+          "Continue even if vomiting (small sips frequently)",
+          "Visit PHC if no improvement in 24 hours"
+        ],
+        "suggestedMedicine": "ors_powder"
+      }
+    },
+    {
+      "id": "respiratory_infection",
+      "label": "Respiratory Infection",
+      "rule": {
+        "and": [
+          { "in": ["cough", { "var": "symptoms" }] },
+          { "in": ["high_fever", { "var": "symptoms" }] },
+          { ">": [{ "var": "duration_days" }, 2] }
+        ]
+      },
+      "action": {
+        "type": "warning",
+        "message": "Possible respiratory infection. Doctor consultation recommended.",
+        "advice": [
+          "Rest and avoid exertion",
+          "Stay hydrated with warm fluids",
+          "Monitor temperature regularly",
+          "Seek medical attention if breathing becomes difficult"
+        ],
+        "suggestedMedicine": null
+      }
+    }
+  ],
+  "symptomList": [
+    { "id": "chest_pain", "label": "Chest Pain", "icon": "heart", "category": "cardiac" },
+    { "id": "high_fever", "label": "High Fever", "icon": "thermometer", "category": "general" },
+    { "id": "headache", "label": "Headache", "icon": "brain", "category": "neuro" },
+    { "id": "cough", "label": "Cough", "icon": "lungs", "category": "respiratory" },
+    { "id": "diarrhea", "label": "Diarrhea", "icon": "stomach", "category": "gastro" },
+    { "id": "sweating", "label": "Excessive Sweating", "icon": "droplet", "category": "general" },
+    { "id": "breathlessness", "label": "Difficulty Breathing", "icon": "wind", "category": "respiratory" },
+    { "id": "vomiting", "label": "Vomiting", "icon": "stomach", "category": "gastro" },
+    { "id": "body_pain", "label": "Body Pain", "icon": "body", "category": "general" },
+    { "id": "left_arm_pain", "label": "Left Arm Pain", "icon": "arm", "category": "cardiac" },
+    { "id": "sudden_numbness", "label": "Sudden Numbness", "icon": "hand", "category": "neuro" },
+    { "id": "face_drooping", "label": "Face Drooping", "icon": "face", "category": "neuro" },
+    { "id": "speech_difficulty", "label": "Difficulty Speaking", "icon": "chat", "category": "neuro" },
+    { "id": "bluish_lips", "label": "Bluish Lips/Nails", "icon": "lips", "category": "respiratory" },
+    { "id": "abdominal_pain", "label": "Stomach Pain", "icon": "stomach", "category": "gastro" },
+    { "id": "dizziness", "label": "Dizziness", "icon": "spiral", "category": "neuro" }
+  ]
+}

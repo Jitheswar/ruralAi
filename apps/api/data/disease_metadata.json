@@ -1,0 +1,2251 @@
+{
+  "Fungal infection": {
+    "severity": "info",
+    "summary": "A skin infection caused by fungi such as dermatophytes or Candida. Common in hot, humid climates. Presents as itchy, red, scaly patches on the skin, groin, feet, or nails.",
+    "home_care": [
+      "Keep the affected area clean and dry at all times",
+      "Wear loose, breathable cotton clothing",
+      "Avoid sharing towels, clothing, or personal items",
+      "Wash clothes and bedsheets in hot water and dry in sunlight",
+      "Apply antifungal powder to skin folds after bathing",
+      "Avoid scratching the affected area to prevent spreading"
+    ],
+    "warning_signs": [
+      "Infection spreading to large areas of the body",
+      "Pus or fluid oozing from the affected area",
+      "Fever developing along with the skin infection",
+      "No improvement after 2 weeks of antifungal treatment",
+      "Infection on the scalp with hair loss"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Clotrimazole cream",
+        "dosage": "1% topical cream",
+        "frequency": "Apply twice daily",
+        "duration": "2-4 weeks",
+        "reason": "Kills fungal organisms on the skin"
+      },
+      {
+        "generic_name": "Fluconazole",
+        "dosage": "150 mg tablet",
+        "frequency": "Once weekly",
+        "duration": "2-4 weeks",
+        "reason": "Systemic antifungal for widespread or resistant infections"
+      },
+      {
+        "generic_name": "Cetirizine",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily",
+        "duration": "As needed for itching",
+        "reason": "Relieves itching and discomfort"
+      }
+    ],
+    "follow_up_questions": [
+      "Where exactly on your body is the rash or itchy area?",
+      "How long have you had this skin problem?",
+      "Does anyone else in your family have a similar rash?",
+      "Have you tried any creams or ointments already?",
+      "Do you work in a place where you sweat a lot?"
+    ]
+  },
+  "Allergy": {
+    "severity": "info",
+    "summary": "An overreaction of the immune system to substances like dust, pollen, certain foods, or insect stings. Symptoms include sneezing, runny nose, itchy eyes, skin rashes, or swelling.",
+    "home_care": [
+      "Identify and avoid the trigger that causes the allergy",
+      "Keep the house clean and dust-free, especially sleeping areas",
+      "Use a clean cloth over nose and mouth when sweeping or in dusty areas",
+      "Wash bed covers and pillows regularly in hot water",
+      "Apply cold compress on skin rashes to reduce itching",
+      "Drink warm water with tulsi or ginger for nasal congestion"
+    ],
+    "warning_signs": [
+      "Swelling of the face, lips, tongue, or throat",
+      "Difficulty breathing or wheezing",
+      "Dizziness or feeling faint after exposure to allergen",
+      "Rapid heartbeat with skin rash",
+      "Severe vomiting or diarrhea after eating a food"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Cetirizine",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily",
+        "duration": "5-7 days or as needed",
+        "reason": "Blocks histamine to reduce allergic symptoms"
+      },
+      {
+        "generic_name": "Levocetirizine",
+        "dosage": "5 mg tablet",
+        "frequency": "Once daily at bedtime",
+        "duration": "5-7 days",
+        "reason": "Non-sedating antihistamine for persistent allergy symptoms"
+      },
+      {
+        "generic_name": "Calamine lotion",
+        "dosage": "Topical application",
+        "frequency": "Apply 2-3 times daily on rash",
+        "duration": "Until rash resolves",
+        "reason": "Soothes itchy skin and provides cooling relief"
+      }
+    ],
+    "follow_up_questions": [
+      "What do you think triggered the allergy (food, dust, medicine, insect bite)?",
+      "Do you have any swelling in your face, lips, or throat?",
+      "Are you having any difficulty breathing?",
+      "Have you had this type of reaction before?",
+      "Are you currently taking any medications?"
+    ]
+  },
+  "GERD": {
+    "severity": "info",
+    "summary": "Gastroesophageal reflux disease occurs when stomach acid frequently flows back into the food pipe. Causes heartburn, chest discomfort, sour taste in the mouth, and difficulty swallowing. Common after heavy or spicy meals.",
+    "home_care": [
+      "Eat smaller, more frequent meals instead of large meals",
+      "Avoid spicy, oily, fried, and acidic foods",
+      "Do not lie down for at least 2-3 hours after eating",
+      "Elevate the head end of the bed by 6 inches using bricks or blocks",
+      "Avoid tea, coffee, tobacco, and alcohol",
+      "Maintain a healthy weight through moderate exercise",
+      "Chew food slowly and thoroughly"
+    ],
+    "warning_signs": [
+      "Difficulty swallowing food or sensation of food getting stuck",
+      "Vomiting blood or dark coffee-ground colored vomit",
+      "Black or tarry stools",
+      "Unintentional weight loss",
+      "Persistent chest pain (must rule out heart attack)"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Omeprazole",
+        "dosage": "20 mg capsule",
+        "frequency": "Once daily before breakfast",
+        "duration": "4-8 weeks",
+        "reason": "Reduces stomach acid production effectively"
+      },
+      {
+        "generic_name": "Pantoprazole",
+        "dosage": "40 mg tablet",
+        "frequency": "Once daily before breakfast",
+        "duration": "4-8 weeks",
+        "reason": "Proton pump inhibitor that heals damaged food pipe lining"
+      },
+      {
+        "generic_name": "Antacid gel (Aluminium hydroxide + Magnesium hydroxide)",
+        "dosage": "10 ml suspension",
+        "frequency": "After meals and at bedtime",
+        "duration": "As needed",
+        "reason": "Provides quick relief from heartburn and acidity"
+      }
+    ],
+    "follow_up_questions": [
+      "How often do you experience heartburn or acid coming up?",
+      "Do you have any difficulty swallowing food?",
+      "Do you smoke, chew tobacco, or drink alcohol?",
+      "What type of food do you usually eat (spicy, oily)?",
+      "Do your symptoms get worse at night when lying down?"
+    ]
+  },
+  "Chronic cholestasis": {
+    "severity": "warning",
+    "summary": "A condition where bile flow from the liver is reduced or blocked over a long period. Causes yellowing of skin and eyes, intense itching, dark urine, pale stools, and fatigue. Requires medical evaluation to determine the cause.",
+    "home_care": [
+      "Follow a low-fat diet to reduce strain on the liver",
+      "Avoid alcohol completely",
+      "Keep skin moisturized to reduce itching",
+      "Take cool baths with oatmeal or baking soda for itch relief",
+      "Eat small, frequent meals rich in fruits and vegetables",
+      "Stay well hydrated with clean water",
+      "Avoid self-medication, especially paracetamol in high doses"
+    ],
+    "warning_signs": [
+      "Severe abdominal pain in the upper right side",
+      "High fever with chills and yellowing of eyes",
+      "Rapid worsening of jaundice",
+      "Confusion or altered mental state",
+      "Swelling of the abdomen or legs",
+      "Bleeding from gums or nose without reason"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Ursodeoxycholic acid",
+        "dosage": "300 mg tablet",
+        "frequency": "Twice daily after meals",
+        "duration": "As prescribed by doctor",
+        "reason": "Improves bile flow and protects liver cells"
+      },
+      {
+        "generic_name": "Cholestyramine",
+        "dosage": "4 g sachet",
+        "frequency": "Once or twice daily mixed in water",
+        "duration": "As prescribed by doctor",
+        "reason": "Binds bile acids and reduces severe itching"
+      },
+      {
+        "generic_name": "Hydroxyzine",
+        "dosage": "25 mg tablet",
+        "frequency": "At bedtime",
+        "duration": "As needed for itching",
+        "reason": "Provides relief from intense itching at night"
+      }
+    ],
+    "follow_up_questions": [
+      "Have you noticed yellowing of your eyes or skin?",
+      "Is your urine darker than usual (tea-colored)?",
+      "Are your stools pale or clay-colored?",
+      "Do you have severe itching, especially at night?",
+      "Do you drink alcohol? If yes, how much and how often?",
+      "Have you had any liver problems before?"
+    ]
+  },
+  "Drug Reaction": {
+    "severity": "warning",
+    "summary": "An unwanted reaction caused by a medication. Can range from mild skin rashes to severe life-threatening reactions. May occur with any medicine including traditional or herbal remedies. Important to identify the offending drug.",
+    "home_care": [
+      "Stop the suspected medicine immediately and note its name",
+      "Keep a list of all medicines being taken to show the doctor",
+      "Apply calamine lotion on skin rashes for relief",
+      "Take cool baths to soothe widespread skin irritation",
+      "Drink plenty of water to help flush the drug from the body",
+      "Do not take the suspected medicine again without doctor advice"
+    ],
+    "warning_signs": [
+      "Swelling of the face, tongue, or throat",
+      "Difficulty breathing or tightness in chest",
+      "Blistering or peeling of the skin",
+      "High fever with widespread rash",
+      "Severe blisters in mouth, eyes, or genital area",
+      "Rapid heartbeat, dizziness, or fainting",
+      "Yellowing of the eyes (liver damage)"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Cetirizine",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily",
+        "duration": "5-7 days",
+        "reason": "Reduces allergic reaction symptoms like rash and itching"
+      },
+      {
+        "generic_name": "Prednisolone",
+        "dosage": "10 mg tablet",
+        "frequency": "As directed by doctor",
+        "duration": "Short course 3-5 days",
+        "reason": "Reduces severe inflammation and allergic response (doctor supervision required)"
+      },
+      {
+        "generic_name": "Calamine lotion",
+        "dosage": "Topical application",
+        "frequency": "Apply 3-4 times daily on rash",
+        "duration": "Until rash resolves",
+        "reason": "Soothes skin irritation and itching"
+      }
+    ],
+    "follow_up_questions": [
+      "Which medicine did you start taking recently before this reaction?",
+      "How long after taking the medicine did the reaction start?",
+      "Do you have rash, itching, swelling, or breathing difficulty?",
+      "Have you ever had a drug reaction before? To which medicine?",
+      "Are you taking any other medicines, including traditional or herbal remedies?"
+    ]
+  },
+  "Peptic ulcer disease": {
+    "severity": "warning",
+    "summary": "Sores that develop on the inner lining of the stomach or upper small intestine. Causes burning stomach pain, bloating, nausea, and sometimes vomiting. Often caused by H. pylori bacteria or prolonged use of painkillers like ibuprofen.",
+    "home_care": [
+      "Eat small, frequent meals at regular times",
+      "Avoid spicy, sour, and fried foods",
+      "Stop smoking and tobacco use completely",
+      "Avoid alcohol as it worsens ulcers",
+      "Do not take painkillers like ibuprofen or aspirin without doctor advice",
+      "Manage stress through relaxation and regular sleep",
+      "Eat more fruits like banana and papaya which soothe the stomach"
+    ],
+    "warning_signs": [
+      "Vomiting blood (red or dark brown coffee-ground material)",
+      "Black, tarry, or bloody stools",
+      "Sudden severe abdominal pain that does not go away",
+      "Feeling dizzy or fainting",
+      "Rapid unintentional weight loss",
+      "Unable to eat or keep food down"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Pantoprazole",
+        "dosage": "40 mg tablet",
+        "frequency": "Once daily before breakfast",
+        "duration": "4-8 weeks",
+        "reason": "Reduces stomach acid and allows ulcer to heal"
+      },
+      {
+        "generic_name": "Sucralfate",
+        "dosage": "1 g tablet",
+        "frequency": "Four times daily on empty stomach",
+        "duration": "4-6 weeks",
+        "reason": "Forms a protective coating over the ulcer to promote healing"
+      },
+      {
+        "generic_name": "Amoxicillin",
+        "dosage": "500 mg capsule",
+        "frequency": "Twice daily",
+        "duration": "14 days (if H. pylori positive)",
+        "reason": "Kills H. pylori bacteria which causes most ulcers"
+      }
+    ],
+    "follow_up_questions": [
+      "Where exactly is the pain in your abdomen?",
+      "Does the pain get better or worse after eating?",
+      "Have you noticed any blood in your vomit or stools?",
+      "Do you take painkillers (ibuprofen, aspirin) regularly?",
+      "Do you smoke, chew tobacco, or drink alcohol?"
+    ]
+  },
+  "AIDS": {
+    "severity": "critical",
+    "summary": "Acquired Immunodeficiency Syndrome is caused by HIV virus. It severely weakens the immune system, making the body unable to fight infections. Spreads through unprotected sex, contaminated blood, shared needles, and mother to child. Early treatment with antiretroviral drugs can help people live long, healthy lives.",
+    "home_care": [
+      "Take all prescribed antiretroviral medicines exactly as directed, never miss doses",
+      "Eat a nutritious balanced diet with plenty of proteins, vegetables, and fruits",
+      "Drink only clean, boiled water to avoid infections",
+      "Practice safe sex and always use condoms",
+      "Maintain good personal hygiene and handwashing",
+      "Get adequate rest and avoid excessive physical stress",
+      "Keep all follow-up appointments at the ART center",
+      "Avoid contact with people who have active infections like TB"
+    ],
+    "warning_signs": [
+      "Persistent fever lasting more than 2 weeks",
+      "Rapid unexplained weight loss",
+      "Persistent diarrhea lasting more than one month",
+      "Persistent cough lasting more than 3 weeks (may indicate TB)",
+      "White patches in the mouth or throat",
+      "Severe recurring skin infections or rashes",
+      "Swollen lymph nodes in neck, armpit, or groin",
+      "Confusion, memory loss, or neurological problems"
+    ],
+    "see_doctor_urgency": "immediately",
+    "recommended_medicines": [
+      {
+        "generic_name": "Tenofovir + Lamivudine + Dolutegravir (TLD)",
+        "dosage": "Fixed-dose combination tablet",
+        "frequency": "Once daily",
+        "duration": "Lifelong (as prescribed by ART center)",
+        "reason": "First-line antiretroviral therapy recommended by NACO India"
+      },
+      {
+        "generic_name": "Cotrimoxazole",
+        "dosage": "960 mg tablet (double strength)",
+        "frequency": "Once daily",
+        "duration": "As prescribed based on CD4 count",
+        "reason": "Prevents opportunistic infections in patients with low immunity"
+      },
+      {
+        "generic_name": "Multivitamin tablets",
+        "dosage": "1 tablet",
+        "frequency": "Once daily",
+        "duration": "Ongoing",
+        "reason": "Supports nutritional needs and overall immune health"
+      }
+    ],
+    "follow_up_questions": [
+      "Have you been tested for HIV? What was the result?",
+      "Are you currently taking any antiretroviral medicines?",
+      "Have you had any recent fever, weight loss, or recurring infections?",
+      "When was your last visit to the ART center?",
+      "Is anyone in your family also receiving treatment?"
+    ]
+  },
+  "Diabetes": {
+    "severity": "warning",
+    "summary": "A chronic condition where blood sugar levels are too high because the body cannot produce enough insulin or use it effectively. Causes increased thirst, frequent urination, fatigue, blurred vision, and slow wound healing. Requires lifelong management with diet, exercise, and medication.",
+    "home_care": [
+      "Eat a balanced diet with more vegetables, dal, whole grains (roti, brown rice)",
+      "Reduce intake of sugar, sweets, white rice, maida, and sugary drinks",
+      "Walk briskly for at least 30 minutes daily",
+      "Check blood sugar regularly at the nearest health center",
+      "Take medicines at the same time every day without missing doses",
+      "Inspect feet daily for cuts, blisters, or swelling",
+      "Keep feet clean and dry, wear comfortable footwear",
+      "Avoid smoking and alcohol"
+    ],
+    "warning_signs": [
+      "Blood sugar above 300 mg/dL with nausea or vomiting",
+      "Excessive thirst with very frequent urination and rapid weight loss",
+      "Fruity smell on breath with drowsiness (diabetic ketoacidosis)",
+      "Shaking, sweating, confusion, or fainting (low blood sugar)",
+      "Non-healing wound or ulcer on the foot",
+      "Sudden blurring or loss of vision",
+      "Chest pain or shortness of breath",
+      "Numbness or tingling in hands and feet getting worse"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Metformin",
+        "dosage": "500 mg tablet",
+        "frequency": "Twice daily after meals",
+        "duration": "Ongoing as prescribed",
+        "reason": "First-line medicine that lowers blood sugar and improves insulin sensitivity"
+      },
+      {
+        "generic_name": "Glimepiride",
+        "dosage": "1 mg tablet",
+        "frequency": "Once daily before breakfast",
+        "duration": "Ongoing as prescribed",
+        "reason": "Stimulates the pancreas to produce more insulin"
+      },
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet in 1 litre of clean water",
+        "frequency": "Sip throughout the day if dehydrated",
+        "duration": "As needed",
+        "reason": "Prevents dehydration from excessive urination"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you know your current blood sugar level?",
+      "Are you taking any diabetes medicines currently? Which ones?",
+      "How often do you check your blood sugar?",
+      "Have you noticed any wounds on your feet that are not healing?",
+      "Do you have a family history of diabetes?",
+      "What does your daily diet look like?"
+    ]
+  },
+  "Gastroenteritis": {
+    "severity": "info",
+    "summary": "Inflammation of the stomach and intestines, usually caused by viral or bacterial infection from contaminated food or water. Causes watery diarrhea, vomiting, stomach cramps, and sometimes fever. Common during monsoon season. Main danger is dehydration, especially in children and elderly.",
+    "home_care": [
+      "Give ORS solution frequently in small sips to prevent dehydration",
+      "Continue breastfeeding for infants; do not stop",
+      "Eat light, easily digestible food like khichdi, curd rice, banana, and dal water",
+      "Avoid oily, spicy, or heavy foods until recovery",
+      "Drink boiled and cooled water only",
+      "Wash hands thoroughly with soap before eating and after using toilet",
+      "Rest adequately and avoid strenuous work",
+      "Monitor urine output - less urine means more dehydration"
+    ],
+    "warning_signs": [
+      "No urine output for 6-8 hours (sign of severe dehydration)",
+      "Blood or mucus in the stool",
+      "High fever above 102°F (39°C)",
+      "Continuous vomiting, unable to keep any fluids down",
+      "Sunken eyes, very dry mouth, no tears when crying (in children)",
+      "Excessive drowsiness, irritability, or confusion",
+      "Diarrhea lasting more than 3 days without improvement"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet dissolved in 1 litre clean water",
+        "frequency": "After every loose stool, sip frequently",
+        "duration": "Until diarrhea stops",
+        "reason": "Replaces lost water and electrolytes to prevent dehydration"
+      },
+      {
+        "generic_name": "Zinc sulphate",
+        "dosage": "20 mg tablet (10 mg for children under 6 months)",
+        "frequency": "Once daily",
+        "duration": "10-14 days",
+        "reason": "Reduces duration and severity of diarrhea, especially in children"
+      },
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6-8 hours if fever",
+        "duration": "2-3 days as needed",
+        "reason": "Reduces fever and body aches"
+      }
+    ],
+    "follow_up_questions": [
+      "How many times have you had loose stools today?",
+      "Is there any blood or mucus in the stool?",
+      "Are you able to drink fluids or do you vomit everything?",
+      "When did you last pass urine?",
+      "Did you eat outside food or drink untreated water recently?",
+      "Is anyone else in your household also having similar symptoms?"
+    ]
+  },
+  "Bronchial Asthma": {
+    "severity": "warning",
+    "summary": "A chronic lung condition where airways become narrow, swollen, and produce extra mucus, making breathing difficult. Causes wheezing, coughing (especially at night), chest tightness, and shortness of breath. Triggered by dust, smoke, cold air, exercise, or allergens.",
+    "home_care": [
+      "Avoid known triggers like dust, smoke, strong smells, and cold air",
+      "Keep the house clean and well-ventilated but avoid dust exposure",
+      "Do not burn wood, dung, or incense inside the house",
+      "Always carry your rescue inhaler with you",
+      "Use the inhaler correctly - ask health worker to demonstrate technique",
+      "Practice slow deep breathing exercises daily",
+      "Cover nose and mouth with a cloth in dusty or cold conditions",
+      "Avoid smoking and exposure to secondhand smoke"
+    ],
+    "warning_signs": [
+      "Severe breathlessness - unable to speak in complete sentences",
+      "Lips or fingernails turning blue",
+      "Rescue inhaler not providing relief after 2-3 puffs",
+      "Breathing becoming faster and more labored",
+      "Chest feeling very tight with inability to lie down",
+      "Drowsiness or confusion during an attack",
+      "Peak flow reading below 50% of personal best"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Salbutamol inhaler",
+        "dosage": "100 mcg per puff",
+        "frequency": "2 puffs as needed during attack (max 8 puffs/day)",
+        "duration": "As needed (rescue medicine)",
+        "reason": "Quickly opens up narrowed airways during an asthma attack"
+      },
+      {
+        "generic_name": "Budesonide inhaler",
+        "dosage": "200 mcg per puff",
+        "frequency": "2 puffs twice daily",
+        "duration": "Ongoing as prescribed (controller medicine)",
+        "reason": "Reduces airway inflammation and prevents asthma attacks"
+      },
+      {
+        "generic_name": "Montelukast",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily at bedtime",
+        "duration": "Ongoing as prescribed",
+        "reason": "Prevents airway inflammation and nighttime asthma symptoms"
+      }
+    ],
+    "follow_up_questions": [
+      "How often do you get breathless or wheeze?",
+      "Do you wake up at night due to cough or difficulty breathing?",
+      "What triggers your asthma (dust, smoke, cold, exercise)?",
+      "Do you use an inhaler? How often do you need your rescue inhaler?",
+      "Is there a chulha (cooking stove) with wood or dung inside your house?",
+      "Does anyone in your family have asthma or allergies?"
+    ]
+  },
+  "Hypertension": {
+    "severity": "warning",
+    "summary": "Persistently high blood pressure (above 140/90 mmHg). Often has no symptoms and is called the 'silent killer'. Over time damages the heart, brain, kidneys, and eyes. Major risk factor for heart attack and stroke. Very common in India, especially with salty diet and sedentary lifestyle.",
+    "home_care": [
+      "Reduce salt intake - avoid papad, pickle, processed foods, and adding extra salt",
+      "Eat more fruits, vegetables, and whole grains",
+      "Walk briskly for at least 30 minutes daily",
+      "Maintain a healthy body weight",
+      "Quit smoking and tobacco in all forms",
+      "Limit or stop alcohol consumption",
+      "Manage stress through yoga, meditation, or deep breathing",
+      "Take blood pressure medicines every day without missing even one dose",
+      "Get blood pressure checked regularly at the nearest health center"
+    ],
+    "warning_signs": [
+      "Severe headache with blurred vision",
+      "Chest pain or tightness",
+      "Sudden numbness or weakness on one side of the body",
+      "Difficulty speaking or understanding speech (stroke warning)",
+      "Blood in the urine",
+      "Severe nosebleed that does not stop",
+      "Shortness of breath at rest",
+      "Blood pressure reading above 180/120 mmHg"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Amlodipine",
+        "dosage": "5 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Ongoing as prescribed (lifelong)",
+        "reason": "Relaxes blood vessels to lower blood pressure"
+      },
+      {
+        "generic_name": "Enalapril",
+        "dosage": "5 mg tablet",
+        "frequency": "Once or twice daily",
+        "duration": "Ongoing as prescribed",
+        "reason": "Lowers blood pressure and protects the heart and kidneys"
+      },
+      {
+        "generic_name": "Hydrochlorothiazide",
+        "dosage": "12.5 mg tablet",
+        "frequency": "Once daily in the morning",
+        "duration": "Ongoing as prescribed",
+        "reason": "Removes extra salt and water from the body to lower blood pressure"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you know your blood pressure reading?",
+      "Are you currently taking any blood pressure medicines?",
+      "How much salt do you consume daily? Do you eat pickles, papad?",
+      "Do you get regular physical exercise or do you have a sedentary lifestyle?",
+      "Do you have diabetes or any heart or kidney problems?",
+      "Does anyone in your family have high blood pressure?"
+    ]
+  },
+  "Migraine": {
+    "severity": "info",
+    "summary": "A neurological condition causing intense, throbbing headaches usually on one side of the head. Often accompanied by nausea, vomiting, and sensitivity to light and sound. Attacks can last hours to days. Common triggers include stress, lack of sleep, certain foods, and hormonal changes.",
+    "home_care": [
+      "Rest in a quiet, dark room during an attack",
+      "Apply a cold cloth or ice pack wrapped in a towel to the forehead",
+      "Drink water as dehydration can worsen headaches",
+      "Maintain a regular sleep schedule - sleep and wake at the same time",
+      "Eat meals at regular times; do not skip meals",
+      "Identify and avoid personal triggers (stress, certain foods, bright lights)",
+      "Practice relaxation techniques like deep breathing",
+      "Keep a headache diary to track triggers and frequency"
+    ],
+    "warning_signs": [
+      "Worst headache of your life - sudden and severe ('thunderclap')",
+      "Headache with high fever and stiff neck",
+      "Headache with confusion, seizures, or loss of consciousness",
+      "New headache pattern after age 50",
+      "Headache with weakness or numbness on one side of the body",
+      "Vision loss that does not recover after the headache",
+      "Headache getting progressively worse over days to weeks"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500-1000 mg tablet",
+        "frequency": "Every 6-8 hours as needed",
+        "duration": "During migraine attack only",
+        "reason": "Relieves mild to moderate headache pain"
+      },
+      {
+        "generic_name": "Ibuprofen",
+        "dosage": "400 mg tablet",
+        "frequency": "Every 8 hours with food",
+        "duration": "During migraine attack, max 3 days",
+        "reason": "Reduces pain and inflammation during migraine attack"
+      },
+      {
+        "generic_name": "Domperidone",
+        "dosage": "10 mg tablet",
+        "frequency": "Three times daily before meals",
+        "duration": "During attack for nausea",
+        "reason": "Controls nausea and vomiting associated with migraine"
+      }
+    ],
+    "follow_up_questions": [
+      "Is the headache on one side or both sides of the head?",
+      "Do you have nausea, vomiting, or sensitivity to light during the headache?",
+      "How often do you get these headaches?",
+      "Do you notice anything that triggers the headaches (stress, foods, sleep)?",
+      "Have you had any vision changes or aura before the headache starts?",
+      "How long do your headaches usually last?"
+    ]
+  },
+  "Cervical spondylosis": {
+    "severity": "info",
+    "summary": "Age-related wear and tear of the spinal discs and bones in the neck. Very common after age 40. Causes neck pain, stiffness, headaches, and sometimes numbness or tingling in the arms and hands. Worsened by prolonged bending of the neck (looking at phones) and poor posture.",
+    "home_care": [
+      "Maintain good neck posture - keep the head straight, not bent forward",
+      "Avoid prolonged use of mobile phone with neck bent down",
+      "Use a thin, firm pillow for sleeping - avoid thick or very soft pillows",
+      "Do gentle neck exercises as shown by a physiotherapist",
+      "Apply warm compress or hot water bottle to the neck for 15-20 minutes",
+      "Avoid carrying heavy loads on the head",
+      "Take regular breaks if working at a desk or computer",
+      "Avoid sudden jerky movements of the neck"
+    ],
+    "warning_signs": [
+      "Weakness in arms or legs or difficulty walking",
+      "Loss of bladder or bowel control",
+      "Numbness or tingling spreading down both arms",
+      "Loss of balance or coordination",
+      "Severe pain not relieved by any medicine",
+      "Dropping things frequently due to hand weakness"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6-8 hours as needed",
+        "duration": "3-5 days during flare-up",
+        "reason": "Relieves neck pain safely"
+      },
+      {
+        "generic_name": "Ibuprofen",
+        "dosage": "400 mg tablet",
+        "frequency": "Twice daily after food",
+        "duration": "5-7 days during flare-up",
+        "reason": "Reduces pain and inflammation in the neck"
+      },
+      {
+        "generic_name": "Thiocolchicoside",
+        "dosage": "4 mg tablet",
+        "frequency": "Twice daily",
+        "duration": "5-7 days",
+        "reason": "Relieves muscle spasm and stiffness in the neck"
+      }
+    ],
+    "follow_up_questions": [
+      "Where exactly is the pain - neck, shoulders, or arms?",
+      "Do you have any numbness or tingling in your hands or fingers?",
+      "Does the pain get worse with any particular movement or posture?",
+      "What is your daily work - do you sit at a desk or do physical labor?",
+      "How often do you use your mobile phone with your head bent down?",
+      "Have you had any weakness in your arms or difficulty gripping things?"
+    ]
+  },
+  "Paralysis (brain hemorrhage)": {
+    "severity": "critical",
+    "summary": "Bleeding in the brain that damages brain tissue, causing sudden weakness or paralysis of one side of the body, difficulty speaking, severe headache, and loss of consciousness. This is a medical emergency. Quick treatment within the first few hours can save life and reduce disability.",
+    "home_care": [
+      "CALL EMERGENCY SERVICES IMMEDIATELY - this is a life-threatening emergency",
+      "Note the exact time when symptoms started (critical for treatment)",
+      "Keep the patient lying on their side (recovery position) to prevent choking",
+      "Do not give anything to eat or drink as swallowing may be impaired",
+      "Keep the patient calm and reassured while waiting for help",
+      "Do not move the patient unnecessarily",
+      "After hospital discharge, follow the rehabilitation exercises exactly as prescribed",
+      "Prevent bedsores by changing position every 2 hours if bedridden"
+    ],
+    "warning_signs": [
+      "Sudden severe headache - worst headache of life",
+      "Sudden weakness or numbness on one side of face, arm, or leg",
+      "Sudden difficulty speaking or understanding speech",
+      "Sudden loss of vision in one or both eyes",
+      "Sudden loss of balance, dizziness, or inability to walk",
+      "Loss of consciousness or seizures",
+      "Vomiting with severe headache"
+    ],
+    "see_doctor_urgency": "immediately",
+    "recommended_medicines": [
+      {
+        "generic_name": "Mannitol (hospital use)",
+        "dosage": "As determined by doctor",
+        "frequency": "IV infusion in hospital",
+        "duration": "As prescribed during acute phase",
+        "reason": "Reduces brain swelling in emergency (hospital only)"
+      },
+      {
+        "generic_name": "Amlodipine",
+        "dosage": "5 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Ongoing as prescribed for blood pressure control",
+        "reason": "Controls blood pressure to prevent further bleeding"
+      },
+      {
+        "generic_name": "Phenytoin",
+        "dosage": "100 mg tablet",
+        "frequency": "As prescribed by neurologist",
+        "duration": "As prescribed to prevent seizures",
+        "reason": "Prevents seizures which can worsen brain damage"
+      }
+    ],
+    "follow_up_questions": [
+      "When exactly did the symptoms start? (Note the time)",
+      "Which side of the body is weak or numb?",
+      "Can the person speak and understand what you are saying?",
+      "Is the person conscious and alert?",
+      "Does the person have high blood pressure or diabetes?",
+      "Has the person vomited or had a seizure?"
+    ]
+  },
+  "Jaundice": {
+    "severity": "warning",
+    "summary": "Yellowing of the skin and whites of the eyes caused by buildup of bilirubin. Can be caused by liver infection (hepatitis), gallstones, alcohol, or blood disorders. Dark yellow urine and pale stools are common. Needs investigation to find the cause.",
+    "home_care": [
+      "Rest adequately and avoid physical exertion",
+      "Drink plenty of clean, boiled water and fresh fruit juices (sugarcane juice is traditionally recommended)",
+      "Eat a light, low-fat diet - khichdi, boiled vegetables, fruits",
+      "Avoid oily, fried, and spicy food completely",
+      "Completely stop alcohol consumption",
+      "Do not take any medicines without doctor's advice, especially paracetamol",
+      "Maintain good hygiene - wash hands before eating and after toilet",
+      "Boil drinking water and ensure food hygiene"
+    ],
+    "warning_signs": [
+      "Deepening yellow color of eyes and skin",
+      "Severe pain in the upper right abdomen",
+      "High fever with chills",
+      "Confusion, drowsiness, or altered behavior (liver failure sign)",
+      "Swelling of the abdomen (fluid accumulation)",
+      "Vomiting blood or passing black stools",
+      "Very dark (cola-colored) urine with completely white stools",
+      "Bruising or bleeding without injury"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Ursodeoxycholic acid",
+        "dosage": "300 mg tablet",
+        "frequency": "Twice daily after meals",
+        "duration": "As prescribed by doctor",
+        "reason": "Supports bile flow and liver function"
+      },
+      {
+        "generic_name": "Multivitamin with B-complex",
+        "dosage": "1 tablet",
+        "frequency": "Once daily",
+        "duration": "4-6 weeks",
+        "reason": "Supports liver recovery and overall nutrition"
+      },
+      {
+        "generic_name": "Lactulose syrup",
+        "dosage": "15-30 ml",
+        "frequency": "Twice daily",
+        "duration": "As prescribed by doctor",
+        "reason": "Helps remove toxins through the gut and prevents liver complications"
+      }
+    ],
+    "follow_up_questions": [
+      "When did you first notice the yellow color in your eyes or skin?",
+      "What color is your urine - dark yellow or brown?",
+      "What color are your stools - normal, pale, or clay-colored?",
+      "Do you have any pain in your abdomen?",
+      "Do you drink alcohol? If yes, how much and how often?",
+      "Have you traveled recently or eaten street food or untreated water?"
+    ]
+  },
+  "Malaria": {
+    "severity": "warning",
+    "summary": "A serious mosquito-borne disease caused by Plasmodium parasites. Causes high fever with chills and sweating in a cyclic pattern, severe headache, body aches, and fatigue. Can become life-threatening (cerebral malaria) if not treated promptly. Common in rural India, especially during and after monsoon season.",
+    "home_care": [
+      "Get a malaria test (rapid diagnostic test or blood smear) immediately at the nearest health center",
+      "Take the full course of antimalarial medicines as prescribed - do not stop early",
+      "Use Paracetamol for fever - sponge the body with lukewarm water",
+      "Drink plenty of fluids including ORS, clean water, and fresh juices",
+      "Sleep under an insecticide-treated bed net (LLIN)",
+      "Prevent mosquito bites using repellents and full-sleeved clothing in the evening",
+      "Remove stagnant water around the house where mosquitoes breed",
+      "Rest and eat light, nutritious food"
+    ],
+    "warning_signs": [
+      "Fever above 104°F (40°C) that is not coming down",
+      "Severe headache with vomiting and stiff neck",
+      "Confusion, drowsiness, or unconsciousness (cerebral malaria)",
+      "Dark or red colored urine (blackwater fever)",
+      "Rapid breathing or difficulty breathing",
+      "Severe weakness or inability to stand or walk",
+      "Convulsions or seizures",
+      "Yellowing of the eyes",
+      "Very low urine output"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Chloroquine",
+        "dosage": "As per body weight (standard adult: 600mg, then 300mg at 6h, 24h, 48h)",
+        "frequency": "As per national malaria treatment protocol",
+        "duration": "3 days for P. vivax",
+        "reason": "Kills malaria parasites in the blood (for P. vivax malaria)"
+      },
+      {
+        "generic_name": "Artemether-Lumefantrine (ACT)",
+        "dosage": "80/480 mg tablet (adult dose)",
+        "frequency": "Twice daily for 3 days",
+        "duration": "3 days",
+        "reason": "First-line treatment for P. falciparum malaria as per national guidelines"
+      },
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6 hours as needed for fever",
+        "duration": "Until fever subsides",
+        "reason": "Controls high fever and body aches"
+      }
+    ],
+    "follow_up_questions": [
+      "When did the fever start and does it come in cycles with chills and sweating?",
+      "Have you had a malaria test done? What was the result?",
+      "Do you sleep under a mosquito net?",
+      "Is there any stagnant water near your house?",
+      "Have you had malaria before? When was the last time?",
+      "Are you experiencing any vomiting, headache, or confusion?"
+    ]
+  },
+  "Chicken pox": {
+    "severity": "info",
+    "summary": "A highly contagious viral infection caused by the varicella-zoster virus. Causes itchy rash with fluid-filled blisters that start on the face and trunk and spread to the whole body. Accompanied by fever, tiredness, and loss of appetite. More serious in adults, pregnant women, and people with weak immunity.",
+    "home_care": [
+      "Keep the patient isolated from others, especially pregnant women and newborns, until all blisters have crusted over",
+      "Trim fingernails short to prevent scratching and skin infection",
+      "Apply calamine lotion on the blisters to reduce itching",
+      "Give cool (not cold) baths with neem leaves in the water",
+      "Wear loose, soft cotton clothing",
+      "Drink plenty of fluids and eat soft, easy-to-swallow foods",
+      "Do not use aspirin or ibuprofen for fever - use only Paracetamol",
+      "Change and wash clothes and bed sheets daily"
+    ],
+    "warning_signs": [
+      "High fever above 104°F (40°C) lasting more than 4 days",
+      "Rash becoming very red, warm, swollen, or tender (bacterial infection)",
+      "Pus draining from the blisters",
+      "Difficulty breathing or persistent cough",
+      "Severe headache with stiff neck and vomiting",
+      "Difficulty waking up or unusual drowsiness",
+      "Chicken pox in a pregnant woman or newborn baby"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet (age-appropriate dose for children)",
+        "frequency": "Every 6 hours as needed for fever",
+        "duration": "Until fever subsides",
+        "reason": "Controls fever safely (do NOT use aspirin or ibuprofen)"
+      },
+      {
+        "generic_name": "Calamine lotion",
+        "dosage": "Topical application",
+        "frequency": "Apply 3-4 times daily on blisters",
+        "duration": "Until blisters dry and crust over",
+        "reason": "Reduces itching and soothes the skin"
+      },
+      {
+        "generic_name": "Cetirizine",
+        "dosage": "10 mg tablet (5 mg for children 6-12 years)",
+        "frequency": "Once daily",
+        "duration": "Until itching subsides",
+        "reason": "Reduces itching and helps with sleep"
+      }
+    ],
+    "follow_up_questions": [
+      "When did the rash first appear and where on the body?",
+      "Has the person been vaccinated against chicken pox?",
+      "Is the patient a child, adult, or pregnant woman?",
+      "Is anyone else in the household showing similar symptoms?",
+      "Are the blisters oozing pus or becoming red and swollen?",
+      "Is the patient able to eat and drink?"
+    ]
+  },
+  "Dengue": {
+    "severity": "warning",
+    "summary": "A mosquito-borne viral illness transmitted by Aedes mosquitoes that bite during daytime. Causes sudden high fever, severe headache, pain behind the eyes, severe joint and muscle pain ('breakbone fever'), rash, and fatigue. Can become life-threatening dengue hemorrhagic fever with bleeding and shock.",
+    "home_care": [
+      "Get a dengue test (NS1 antigen or dengue serology) at the nearest health center",
+      "Monitor platelet count daily through blood tests",
+      "Drink plenty of fluids - ORS, coconut water, fresh juices, clean water",
+      "Use only Paracetamol for fever - DO NOT use Aspirin, Ibuprofen, or Diclofenac as they increase bleeding risk",
+      "Do lukewarm water sponging for high fever",
+      "Eat nutritious soft food - papaya leaf juice is traditionally used",
+      "Complete bed rest is essential",
+      "Use mosquito nets and repellents to prevent spread to others",
+      "Prevent Aedes mosquito breeding - empty all water containers around the house"
+    ],
+    "warning_signs": [
+      "Severe abdominal pain or persistent vomiting",
+      "Bleeding from gums, nose, or blood in vomit or stools",
+      "Red spots or patches on the skin (petechiae)",
+      "Rapid drop in platelet count below 50,000",
+      "Feeling restless then suddenly becoming drowsy or lethargic",
+      "Cold, clammy skin with rapid weak pulse (dengue shock)",
+      "Difficulty breathing or fluid accumulation",
+      "Blood in urine"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6 hours as needed (max 4 g/day)",
+        "duration": "Until fever subsides",
+        "reason": "Only safe medicine for fever in dengue (DO NOT use ibuprofen/aspirin)"
+      },
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet in 1 litre clean water",
+        "frequency": "Sip frequently throughout the day",
+        "duration": "Throughout the illness",
+        "reason": "Prevents dehydration which is the main cause of dengue complications"
+      },
+      {
+        "generic_name": "Domperidone",
+        "dosage": "10 mg tablet",
+        "frequency": "Three times daily before meals",
+        "duration": "Until vomiting stops",
+        "reason": "Controls nausea and vomiting so patient can maintain fluid intake"
+      }
+    ],
+    "follow_up_questions": [
+      "When did the fever start? Is it continuous or does it come and go?",
+      "Do you have severe pain behind your eyes or in joints and muscles?",
+      "Have you noticed any bleeding from nose, gums, or red spots on skin?",
+      "Have you had a dengue test or platelet count done?",
+      "Are you able to drink fluids and keep them down?",
+      "Has anyone else in your area been diagnosed with dengue recently?"
+    ]
+  },
+  "Typhoid": {
+    "severity": "warning",
+    "summary": "A bacterial infection caused by Salmonella typhi, spread through contaminated water and food. Causes sustained high fever that increases stepwise over days, headache, weakness, stomach pain, and sometimes a rash. Without treatment, can cause intestinal bleeding or perforation. Common in areas with poor sanitation.",
+    "home_care": [
+      "Take the full course of antibiotics as prescribed - do not stop early even if feeling better",
+      "Drink only boiled or filtered water",
+      "Eat soft, easily digestible food - khichdi, dal, boiled vegetables, curd",
+      "Avoid raw vegetables, salads, and street food until fully recovered",
+      "Rest completely - avoid physical exertion",
+      "Wash hands thoroughly with soap before eating and after using toilet",
+      "Monitor temperature twice daily and keep a record",
+      "Family members should get tested if they develop fever"
+    ],
+    "warning_signs": [
+      "Severe abdominal pain or swelling",
+      "Blood in the stool or black tarry stools (intestinal bleeding)",
+      "Fever not responding to antibiotics after 5 days",
+      "Confusion or altered mental state",
+      "Persistent vomiting unable to keep medicines down",
+      "Rapid heartbeat with cold, clammy skin",
+      "Severe weakness or inability to get up from bed"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Azithromycin",
+        "dosage": "500 mg tablet",
+        "frequency": "Once daily",
+        "duration": "7 days",
+        "reason": "Effective antibiotic against typhoid bacteria"
+      },
+      {
+        "generic_name": "Cefixime",
+        "dosage": "200 mg tablet",
+        "frequency": "Twice daily",
+        "duration": "14 days",
+        "reason": "Alternative antibiotic for typhoid treatment"
+      },
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6-8 hours as needed",
+        "duration": "Until fever subsides",
+        "reason": "Controls the high fever safely"
+      }
+    ],
+    "follow_up_questions": [
+      "How many days have you had fever? Is it increasing gradually?",
+      "Have you had a Widal test or blood culture done?",
+      "What is your source of drinking water? Do you boil it?",
+      "Do you have any abdominal pain or diarrhea?",
+      "Have you started any antibiotics? If yes, are you feeling better?",
+      "Has anyone else in your family or neighborhood had typhoid recently?"
+    ]
+  },
+  "hepatitis A": {
+    "severity": "warning",
+    "summary": "A viral liver infection spread through contaminated water and food. Causes yellowing of eyes and skin, dark urine, nausea, vomiting, loss of appetite, fatigue, and abdominal pain. Usually self-limiting and does not become chronic. Common in areas with poor water and sanitation. Prevented by the Hepatitis A vaccine.",
+    "home_care": [
+      "Complete bed rest is essential during the acute phase",
+      "Drink plenty of clean boiled water, ORS, coconut water, and fresh fruit juices",
+      "Eat a high-carbohydrate, low-fat diet - rice, khichdi, fruits, boiled vegetables",
+      "Avoid oily, fried, and spicy foods completely",
+      "Stop alcohol consumption completely",
+      "Do not take any medicines without asking the doctor, especially paracetamol",
+      "Maintain strict personal hygiene - wash hands before eating and after toilet",
+      "Use a separate toilet or clean it after use to prevent spread"
+    ],
+    "warning_signs": [
+      "Severe vomiting preventing eating or drinking",
+      "Increasing drowsiness or confusion (liver failure)",
+      "Worsening jaundice (deeper yellow color)",
+      "Swelling of the abdomen",
+      "Bleeding from gums or nose without reason",
+      "Fever returning after initially improving",
+      "Very low urine output"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet in 1 litre clean water",
+        "frequency": "Sip frequently throughout the day",
+        "duration": "Until appetite and fluid intake improve",
+        "reason": "Prevents dehydration from vomiting and poor appetite"
+      },
+      {
+        "generic_name": "Domperidone",
+        "dosage": "10 mg tablet",
+        "frequency": "Three times daily before meals",
+        "duration": "Until nausea and vomiting resolve",
+        "reason": "Controls nausea and vomiting to maintain nutrition"
+      },
+      {
+        "generic_name": "Multivitamin with B-complex",
+        "dosage": "1 tablet",
+        "frequency": "Once daily",
+        "duration": "4-6 weeks",
+        "reason": "Supports liver recovery and overall nutrition"
+      }
+    ],
+    "follow_up_questions": [
+      "When did the yellowing of your eyes first appear?",
+      "What is the color of your urine and stools?",
+      "Are you able to eat and drink, or do you vomit everything?",
+      "What is your source of drinking water?",
+      "Have others in your family or village had similar symptoms?",
+      "Have you been vaccinated against Hepatitis A?"
+    ]
+  },
+  "Hepatitis B": {
+    "severity": "warning",
+    "summary": "A viral liver infection spread through blood, unprotected sex, shared needles, and mother to child during birth. Can become chronic and lead to liver cirrhosis and liver cancer over years. Many people have no symptoms initially. Preventable by vaccination. Treatable with antiviral medicines.",
+    "home_care": [
+      "Take antiviral medicines exactly as prescribed - do not miss any doses",
+      "Avoid alcohol completely as it accelerates liver damage",
+      "Do not share razors, toothbrushes, or needles with anyone",
+      "Practice safe sex and use condoms",
+      "Eat a balanced diet with vegetables, fruits, and adequate protein",
+      "Avoid self-medication, especially painkillers and herbal remedies that can harm the liver",
+      "Get regular liver function tests and viral load tests as advised",
+      "Ensure all family members and close contacts are vaccinated against Hepatitis B"
+    ],
+    "warning_signs": [
+      "Increasing yellowing of eyes and skin",
+      "Swelling of the abdomen (ascites)",
+      "Vomiting blood or passing black stools",
+      "Confusion, drowsiness, or personality changes (liver encephalopathy)",
+      "Severe fatigue and inability to carry out daily activities",
+      "New onset of swelling in legs and feet",
+      "Unexplained weight loss"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Tenofovir",
+        "dosage": "300 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Long-term as prescribed by liver specialist",
+        "reason": "Suppresses Hepatitis B virus replication and prevents liver damage"
+      },
+      {
+        "generic_name": "Entecavir",
+        "dosage": "0.5 mg tablet",
+        "frequency": "Once daily on empty stomach",
+        "duration": "Long-term as prescribed by liver specialist",
+        "reason": "Alternative antiviral that effectively controls Hepatitis B"
+      },
+      {
+        "generic_name": "Ursodeoxycholic acid",
+        "dosage": "300 mg tablet",
+        "frequency": "Twice daily after meals",
+        "duration": "As prescribed",
+        "reason": "Supports liver function and bile flow"
+      }
+    ],
+    "follow_up_questions": [
+      "When were you diagnosed with Hepatitis B?",
+      "Are you currently taking any antiviral medicines?",
+      "Do you drink alcohol? If yes, how much?",
+      "Have your family members been tested and vaccinated for Hepatitis B?",
+      "When was your last liver function test?",
+      "Have you noticed any swelling in your abdomen or legs?"
+    ]
+  },
+  "Hepatitis C": {
+    "severity": "warning",
+    "summary": "A viral liver infection primarily spread through contaminated blood (unsafe injections, blood transfusions, shared needles). Often has no symptoms for years while silently damaging the liver. Can be cured with antiviral treatment. If untreated, leads to liver cirrhosis and liver cancer.",
+    "home_care": [
+      "Take antiviral medicines exactly as prescribed for the full duration",
+      "Avoid alcohol completely",
+      "Do not share razors, toothbrushes, or any items that may have blood on them",
+      "Ensure all injections are given with new, disposable syringes",
+      "Eat a balanced, liver-friendly diet - avoid fatty and processed foods",
+      "Avoid self-medication, especially paracetamol in high doses",
+      "Get regular follow-up blood tests as advised by doctor",
+      "Inform your doctor and dentist about your Hepatitis C status"
+    ],
+    "warning_signs": [
+      "Increasing jaundice (yellowing of skin and eyes)",
+      "Abdominal swelling or fluid accumulation",
+      "Vomiting blood or black stools",
+      "Confusion or excessive drowsiness",
+      "Severe fatigue beyond normal tiredness",
+      "Easy bruising or prolonged bleeding from cuts",
+      "Unexplained weight loss"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Sofosbuvir + Daclatasvir",
+        "dosage": "400 mg / 60 mg fixed-dose combination",
+        "frequency": "Once daily",
+        "duration": "12-24 weeks as prescribed",
+        "reason": "Direct-acting antivirals that cure Hepatitis C in over 95% of cases"
+      },
+      {
+        "generic_name": "Ribavirin",
+        "dosage": "200 mg capsule",
+        "frequency": "Twice daily with food",
+        "duration": "As prescribed (used in combination therapy)",
+        "reason": "Boosts effectiveness of antiviral treatment in certain cases"
+      },
+      {
+        "generic_name": "Multivitamin with B-complex",
+        "dosage": "1 tablet",
+        "frequency": "Once daily",
+        "duration": "Ongoing",
+        "reason": "Supports liver health and overall nutrition during treatment"
+      }
+    ],
+    "follow_up_questions": [
+      "When were you diagnosed with Hepatitis C?",
+      "Have you received any blood transfusions or injections with reused needles?",
+      "Are you currently on any treatment for Hepatitis C?",
+      "Do you drink alcohol?",
+      "Have you been tested for other hepatitis viruses (A, B)?",
+      "When was your last liver function test done?"
+    ]
+  },
+  "Hepatitis D": {
+    "severity": "warning",
+    "summary": "A liver infection caused by the Hepatitis D virus, which only occurs in people already infected with Hepatitis B. Makes Hepatitis B disease more severe and rapidly progressive. Spread through contaminated blood and body fluids. Can cause faster progression to liver cirrhosis compared to Hepatitis B alone.",
+    "home_care": [
+      "Take all prescribed medicines regularly without missing doses",
+      "Avoid alcohol completely",
+      "Follow a healthy, low-fat diet rich in vegetables and fruits",
+      "Do not share razors, toothbrushes, or needles",
+      "Practice safe sex using condoms",
+      "Get regular blood tests to monitor liver function and viral levels",
+      "Avoid all self-medication and herbal remedies without doctor approval",
+      "Ensure family members are vaccinated against Hepatitis B (which also prevents Hepatitis D)"
+    ],
+    "warning_signs": [
+      "Rapidly worsening jaundice",
+      "Severe abdominal pain with swelling",
+      "Confusion, disorientation, or excessive sleepiness",
+      "Vomiting blood or blood in stools",
+      "Severe weakness and inability to perform daily tasks",
+      "Bleeding from gums or nose",
+      "High fever with chills"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Pegylated Interferon alfa-2a",
+        "dosage": "180 mcg injection",
+        "frequency": "Once weekly subcutaneous injection",
+        "duration": "48 weeks (under specialist supervision)",
+        "reason": "Currently the main treatment option for Hepatitis D"
+      },
+      {
+        "generic_name": "Tenofovir",
+        "dosage": "300 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Long-term as prescribed",
+        "reason": "Controls concurrent Hepatitis B infection"
+      },
+      {
+        "generic_name": "Ursodeoxycholic acid",
+        "dosage": "300 mg tablet",
+        "frequency": "Twice daily after meals",
+        "duration": "As prescribed",
+        "reason": "Supports liver function and improves bile flow"
+      }
+    ],
+    "follow_up_questions": [
+      "Are you already known to have Hepatitis B?",
+      "When was the Hepatitis D diagnosis made?",
+      "Are you currently receiving any treatment?",
+      "Do you have any symptoms of liver disease - jaundice, swelling, confusion?",
+      "Have your family members been vaccinated against Hepatitis B?",
+      "Do you consume alcohol?"
+    ]
+  },
+  "Hepatitis E": {
+    "severity": "warning",
+    "summary": "A viral liver infection spread through contaminated water, especially during monsoon and floods. Very common in India. Causes jaundice, nausea, vomiting, fever, and fatigue. Usually self-limiting in most people but can be very dangerous for pregnant women, causing liver failure and high mortality. Outbreaks occur in areas with poor sanitation.",
+    "home_care": [
+      "Complete bed rest during the acute illness",
+      "Drink plenty of boiled water, ORS, coconut water, and sugarcane juice",
+      "Eat light, low-fat food - khichdi, rice, dal, boiled vegetables, fruits",
+      "Avoid oily, fried, spicy food and all non-vegetarian food during illness",
+      "Stop alcohol completely",
+      "Do not take any medicines without doctor's advice",
+      "Boil drinking water and maintain strict food hygiene",
+      "Pregnant women with Hepatitis E MUST be hospitalized immediately"
+    ],
+    "warning_signs": [
+      "Pregnant woman with jaundice (medical emergency)",
+      "Worsening jaundice despite rest",
+      "Confusion, excessive drowsiness, or irritability",
+      "Severe vomiting preventing fluid and food intake",
+      "Bleeding from any site",
+      "Swelling of abdomen",
+      "Very dark urine with minimal output",
+      "Fever returning after initially going down"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet in 1 litre clean water",
+        "frequency": "Sip frequently throughout the day",
+        "duration": "Until recovery",
+        "reason": "Prevents dehydration and maintains electrolyte balance"
+      },
+      {
+        "generic_name": "Domperidone",
+        "dosage": "10 mg tablet",
+        "frequency": "Three times daily before meals",
+        "duration": "Until nausea resolves",
+        "reason": "Controls nausea and vomiting to maintain nutrition"
+      },
+      {
+        "generic_name": "Multivitamin with B-complex",
+        "dosage": "1 tablet",
+        "frequency": "Once daily",
+        "duration": "4-6 weeks",
+        "reason": "Supports liver recovery and overall health"
+      }
+    ],
+    "follow_up_questions": [
+      "Are you or is the patient pregnant?",
+      "When did the yellowing of the eyes start?",
+      "What is your source of drinking water?",
+      "Has there been flooding or waterlogging in your area recently?",
+      "Are others in your village or area also affected with jaundice?",
+      "Are you able to eat food and keep it down?"
+    ]
+  },
+  "Alcoholic hepatitis": {
+    "severity": "warning",
+    "summary": "Inflammation and damage of the liver caused by excessive alcohol consumption over time. Causes jaundice, abdominal pain and swelling, fever, nausea, and weakness. Can range from mild to life-threatening liver failure. Complete and permanent alcohol cessation is the most important treatment.",
+    "home_care": [
+      "Stop drinking alcohol completely and permanently - this is the single most important step",
+      "Eat a nutritious, high-protein diet to support liver recovery",
+      "Take vitamin supplements as prescribed by the doctor",
+      "Avoid all self-medication, especially paracetamol",
+      "Rest adequately and avoid physical strain",
+      "Seek support from family and de-addiction programs to maintain sobriety",
+      "Follow up regularly with the doctor for liver function monitoring",
+      "Do not take any herbal or traditional liver remedies without doctor's knowledge"
+    ],
+    "warning_signs": [
+      "Worsening jaundice (increasing yellow color of eyes)",
+      "Swelling of the abdomen (fluid accumulation/ascites)",
+      "Vomiting blood or black tarry stools",
+      "Confusion, disorientation, or tremors (liver encephalopathy)",
+      "Fever with chills",
+      "Kidney function declining (decreased urine output)",
+      "Severe weakness and inability to eat",
+      "Bleeding that does not stop easily"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Thiamine (Vitamin B1)",
+        "dosage": "100 mg tablet",
+        "frequency": "Once daily",
+        "duration": "4-8 weeks or as prescribed",
+        "reason": "Prevents and treats thiamine deficiency common in alcohol users"
+      },
+      {
+        "generic_name": "Folic acid",
+        "dosage": "5 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Ongoing",
+        "reason": "Corrects folate deficiency common in chronic alcohol users"
+      },
+      {
+        "generic_name": "Lactulose syrup",
+        "dosage": "15-30 ml",
+        "frequency": "Two to three times daily",
+        "duration": "As prescribed",
+        "reason": "Prevents confusion caused by toxin buildup (hepatic encephalopathy)"
+      }
+    ],
+    "follow_up_questions": [
+      "How much alcohol do you drink daily and for how many years?",
+      "When was your last drink?",
+      "Do you have yellowing of your eyes or swelling of your abdomen?",
+      "Have you tried to stop drinking before? What happened?",
+      "Have you been diagnosed with any liver problem before?",
+      "Are you experiencing any confusion or tremors?"
+    ]
+  },
+  "Tuberculosis": {
+    "severity": "warning",
+    "summary": "A serious bacterial infection caused by Mycobacterium tuberculosis, primarily affecting the lungs. Spreads through air when an infected person coughs or sneezes. Causes persistent cough for more than 2-3 weeks, blood in sputum, fever, night sweats, weight loss, and fatigue. Fully curable with complete treatment under DOTS program.",
+    "home_care": [
+      "Take ALL medicines given under DOTS exactly as prescribed for the FULL 6-9 months - never stop early",
+      "Cover mouth and nose when coughing or sneezing",
+      "Spit in a covered container, not on the ground",
+      "Sleep in a well-ventilated room with windows open",
+      "Eat a high-protein, nutritious diet - eggs, milk, dal, fish, meat, vegetables",
+      "Take medicines under direct observation of the DOTS provider",
+      "Do not share utensils during the initial weeks of treatment",
+      "Family members and close contacts should get screened for TB"
+    ],
+    "warning_signs": [
+      "Coughing up large amounts of blood",
+      "Severe difficulty breathing or chest pain",
+      "High fever not coming down with treatment",
+      "Extreme weight loss and weakness",
+      "Confusion or severe headache (may indicate TB meningitis)",
+      "Symptoms not improving after 2 months of treatment",
+      "New symptoms appearing during treatment (may indicate drug resistance)"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "RHZE Kit (Rifampicin + Isoniazid + Pyrazinamide + Ethambutol)",
+        "dosage": "Fixed-dose combination as per body weight",
+        "frequency": "Daily during intensive phase",
+        "duration": "2 months (intensive phase) under DOTS",
+        "reason": "First-line anti-TB treatment as per RNTCP/NTEP guidelines"
+      },
+      {
+        "generic_name": "RH Kit (Rifampicin + Isoniazid)",
+        "dosage": "Fixed-dose combination as per body weight",
+        "frequency": "Daily during continuation phase",
+        "duration": "4 months (continuation phase) under DOTS",
+        "reason": "Continuation phase treatment to ensure complete cure"
+      },
+      {
+        "generic_name": "Pyridoxine (Vitamin B6)",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily",
+        "duration": "Throughout TB treatment",
+        "reason": "Prevents nerve damage (peripheral neuropathy) caused by Isoniazid"
+      }
+    ],
+    "follow_up_questions": [
+      "How long have you been coughing? Is there blood in the sputum?",
+      "Have you had a sputum test or chest X-ray done?",
+      "Are you currently on TB treatment? For how long?",
+      "Have you missed any doses of your TB medicines?",
+      "Has anyone in your family or close contacts been diagnosed with TB?",
+      "Have you been tested for HIV?"
+    ]
+  },
+  "Common Cold": {
+    "severity": "info",
+    "summary": "A mild viral infection of the nose and throat. Causes runny or blocked nose, sneezing, sore throat, mild cough, and sometimes low-grade fever. Usually resolves on its own within 5-7 days. Very common and usually not dangerous. Spread by droplets when an infected person sneezes or coughs.",
+    "home_care": [
+      "Rest at home and avoid going to crowded places",
+      "Drink plenty of warm fluids - warm water, kadha, ginger-tulsi tea, warm soup",
+      "Do steam inhalation 2-3 times daily for nasal congestion",
+      "Gargle with warm salt water for sore throat",
+      "Eat light, warm, home-cooked meals",
+      "Wash hands frequently with soap to prevent spreading",
+      "Use a handkerchief or tissue when sneezing or coughing",
+      "Get adequate sleep and rest"
+    ],
+    "warning_signs": [
+      "Fever above 103°F (39.5°C) or fever lasting more than 3 days",
+      "Difficulty breathing or shortness of breath",
+      "Severe headache or facial pain with thick yellow-green nasal discharge (sinusitis)",
+      "Ear pain (ear infection)",
+      "Symptoms getting worse after initially improving",
+      "Cough lasting more than 10 days",
+      "Severe sore throat with difficulty swallowing"
+    ],
+    "see_doctor_urgency": "monitor",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6-8 hours if fever or body aches",
+        "duration": "2-3 days as needed",
+        "reason": "Reduces fever and relieves body aches"
+      },
+      {
+        "generic_name": "Cetirizine",
+        "dosage": "10 mg tablet",
+        "frequency": "Once daily",
+        "duration": "3-5 days",
+        "reason": "Reduces runny nose, sneezing, and nasal congestion"
+      },
+      {
+        "generic_name": "Cough syrup (Dextromethorphan)",
+        "dosage": "10 ml syrup",
+        "frequency": "Three times daily",
+        "duration": "3-5 days",
+        "reason": "Suppresses dry cough for better rest and sleep"
+      }
+    ],
+    "follow_up_questions": [
+      "How many days have you had these symptoms?",
+      "Do you have a fever? If yes, how high?",
+      "Is the runny nose clear or thick and colored?",
+      "Do you have any difficulty breathing or chest pain?",
+      "Are your symptoms getting better or worse?",
+      "Is anyone else at home also sick?"
+    ]
+  },
+  "Pneumonia": {
+    "severity": "critical",
+    "summary": "A serious infection of the lungs that fills the air sacs with pus and fluid. Causes high fever, cough with yellowish or bloody sputum, difficulty breathing, chest pain when breathing, and severe weakness. Can be life-threatening, especially in children under 5, elderly, and people with weak immunity. Requires antibiotic treatment.",
+    "home_care": [
+      "Seek medical treatment immediately - pneumonia requires antibiotics",
+      "Take the full course of antibiotics as prescribed - do not stop early",
+      "Drink plenty of warm fluids to stay hydrated and loosen mucus",
+      "Rest completely - avoid all physical exertion",
+      "Do steam inhalation to ease breathing",
+      "Keep the room well-ventilated but warm",
+      "Eat nutritious, easy-to-swallow foods for energy",
+      "Monitor breathing rate and temperature regularly",
+      "For children: continue breastfeeding and give frequent small feeds"
+    ],
+    "warning_signs": [
+      "Breathing rate over 30 breaths per minute in adults (fast breathing)",
+      "Blue or dusky lips, tongue, or fingertips (cyanosis)",
+      "Chest indrawing in children (ribs pulling in with each breath)",
+      "Confusion, drowsiness, or inability to stay awake",
+      "Blood pressure dropping - dizziness on standing",
+      "Unable to drink any fluids",
+      "High fever above 104°F (40°C) not responding to treatment",
+      "Coughing up large amounts of blood"
+    ],
+    "see_doctor_urgency": "immediately",
+    "recommended_medicines": [
+      {
+        "generic_name": "Amoxicillin",
+        "dosage": "500 mg capsule (age/weight-adjusted for children)",
+        "frequency": "Three times daily",
+        "duration": "5-7 days",
+        "reason": "First-line antibiotic effective against common pneumonia bacteria"
+      },
+      {
+        "generic_name": "Azithromycin",
+        "dosage": "500 mg tablet",
+        "frequency": "Once daily",
+        "duration": "3-5 days",
+        "reason": "Covers atypical pneumonia organisms"
+      },
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6 hours as needed",
+        "duration": "Until fever resolves",
+        "reason": "Controls high fever and reduces chest pain"
+      }
+    ],
+    "follow_up_questions": [
+      "How many days have you had fever and cough?",
+      "Are you coughing up any sputum? What color is it?",
+      "Are you having difficulty breathing, even at rest?",
+      "How fast is the patient breathing? (Count breaths in 1 minute)",
+      "Is the patient a child, elderly person, or someone with existing illness?",
+      "Have you started any antibiotics? If yes, is there any improvement?"
+    ]
+  },
+  "Dimorphic hemmorhoids(piles)": {
+    "severity": "info",
+    "summary": "Swollen blood vessels in and around the anus and lower rectum that can be internal or external (dimorphic means both types present). Causes pain during and after passing stools, bleeding (bright red blood), itching, and sometimes a lump near the anus. Common due to constipation, straining, prolonged sitting, and low-fiber diet.",
+    "home_care": [
+      "Eat a high-fiber diet - whole grains, fruits, vegetables, green leafy vegetables",
+      "Drink at least 8-10 glasses of water daily to soften stools",
+      "Do not strain during bowel movements - do not sit on the toilet for long",
+      "Take a warm sitz bath (sit in warm water) for 15-20 minutes twice daily",
+      "Avoid sitting for long periods - take walking breaks",
+      "Apply coconut oil or a soothing cream around the anus for comfort",
+      "Do not suppress the urge to pass stools",
+      "Maintain regular bowel habits - try to go at the same time daily"
+    ],
+    "warning_signs": [
+      "Heavy bleeding during or after bowel movements",
+      "Severe pain that is constant and getting worse",
+      "A large, hard, painful lump protruding from the anus",
+      "Fever with anal pain (may indicate abscess)",
+      "Inability to pass stool or gas",
+      "Black or dark-colored stools (may indicate bleeding higher up)",
+      "Dizziness or weakness from blood loss"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Isabgol husk (Psyllium)",
+        "dosage": "1-2 teaspoons in a glass of water",
+        "frequency": "Once or twice daily",
+        "duration": "Ongoing for regular bowel movements",
+        "reason": "Natural fiber supplement that softens stools and reduces straining"
+      },
+      {
+        "generic_name": "Lignocaine + Nifedipine ointment",
+        "dosage": "Pea-sized amount applied around anus",
+        "frequency": "Twice daily after warm sitz bath",
+        "duration": "2-4 weeks",
+        "reason": "Reduces pain, itching, and swelling of hemorrhoids"
+      },
+      {
+        "generic_name": "Lactulose syrup",
+        "dosage": "15 ml",
+        "frequency": "Once daily at bedtime",
+        "duration": "Until stools are regularly soft",
+        "reason": "Softens stools to prevent straining and worsening of piles"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you have bleeding during or after passing stools? What color is the blood?",
+      "Do you have any pain or lump near the anus?",
+      "How often do you have bowel movements? Do you strain?",
+      "How much water do you drink daily?",
+      "Do you eat enough fiber - fruits, vegetables, whole grains?",
+      "Do you sit for long hours at work?"
+    ]
+  },
+  "Heart attack": {
+    "severity": "critical",
+    "summary": "A life-threatening emergency where blood supply to part of the heart muscle is suddenly blocked, usually by a blood clot. Causes crushing chest pain or pressure, pain spreading to left arm, jaw, or back, sweating, breathlessness, and nausea. Every minute of delay in treatment increases heart damage. Immediate action saves lives.",
+    "home_care": [
+      "CALL EMERGENCY SERVICES (108/102) IMMEDIATELY",
+      "Make the person sit or lie in a comfortable position (usually propped up)",
+      "Loosen tight clothing around the chest and neck",
+      "Give an Aspirin (325 mg or chew 4 low-dose tablets) if available and patient is not allergic",
+      "Give a Sorbitrate/Nitroglycerin tablet under the tongue if the person has one",
+      "Do not give water if the person is not fully conscious",
+      "Be prepared to start CPR if the person becomes unconscious and stops breathing",
+      "Note the time when symptoms started - tell the doctors",
+      "Do not let the person walk or exert themselves - carry them to the vehicle"
+    ],
+    "warning_signs": [
+      "Crushing pressure or squeezing pain in the center of the chest lasting more than a few minutes",
+      "Pain spreading to the left arm, jaw, neck, or back",
+      "Cold sweat with nausea and shortness of breath",
+      "Feeling of impending doom",
+      "Sudden dizziness or loss of consciousness",
+      "Severe breathlessness with inability to lie flat",
+      "In women and diabetics: unusual fatigue, indigestion-like symptoms, or breathlessness without typical chest pain"
+    ],
+    "see_doctor_urgency": "immediately",
+    "recommended_medicines": [
+      {
+        "generic_name": "Aspirin (first aid)",
+        "dosage": "325 mg tablet (chew, do not swallow whole)",
+        "frequency": "Immediately as one-time first aid dose",
+        "duration": "One-time emergency dose",
+        "reason": "Thins the blood and helps dissolve the clot blocking the heart artery"
+      },
+      {
+        "generic_name": "Sorbitrate (Isosorbide dinitrate)",
+        "dosage": "5 mg tablet under the tongue",
+        "frequency": "One tablet, can repeat in 5 minutes (max 3 tablets)",
+        "duration": "Emergency use only",
+        "reason": "Opens up heart blood vessels and reduces chest pain"
+      },
+      {
+        "generic_name": "Atorvastatin",
+        "dosage": "40 mg tablet",
+        "frequency": "Once daily (after stabilization)",
+        "duration": "Lifelong as prescribed",
+        "reason": "Lowers cholesterol and stabilizes plaques in heart arteries (long-term)"
+      }
+    ],
+    "follow_up_questions": [
+      "When did the chest pain start? How long has it lasted?",
+      "Describe the pain - is it pressing, squeezing, or burning?",
+      "Does the pain go to your arm, jaw, neck, or back?",
+      "Are you sweating, feeling nauseous, or short of breath?",
+      "Do you have diabetes, high blood pressure, or high cholesterol?",
+      "Have you had a heart attack before? Do you take any heart medicines?"
+    ]
+  },
+  "Varicose veins": {
+    "severity": "info",
+    "summary": "Enlarged, twisted, swollen veins visible under the skin, most commonly in the legs. Caused by weakened valves in the veins. Symptoms include aching, heaviness, and swelling in the legs, especially after prolonged standing. Common in people who stand for long hours, pregnant women, and the overweight.",
+    "home_care": [
+      "Avoid standing or sitting for long hours - take regular walking breaks",
+      "Elevate legs above heart level for 15-20 minutes several times daily",
+      "Wear compression stockings as advised by doctor during daytime",
+      "Exercise regularly - walking and calf muscle exercises improve blood flow",
+      "Maintain a healthy weight to reduce pressure on leg veins",
+      "Avoid tight clothing around the waist and legs",
+      "Do not cross legs when sitting",
+      "Sleep with a pillow under the feet to keep legs slightly elevated"
+    ],
+    "warning_signs": [
+      "Skin near the varicose vein becoming red, warm, and painful (phlebitis)",
+      "Sudden swelling in the leg (may indicate deep vein blood clot)",
+      "Open wound or ulcer near the ankle that does not heal",
+      "Bleeding from a varicose vein (apply pressure and elevate leg)",
+      "Skin hardening or discoloration (dark brown) near the ankle",
+      "Severe constant pain in the leg"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Diosmin + Hesperidin",
+        "dosage": "500 mg tablet",
+        "frequency": "Twice daily with meals",
+        "duration": "2-3 months",
+        "reason": "Strengthens vein walls and improves blood flow in the legs"
+      },
+      {
+        "generic_name": "Ibuprofen",
+        "dosage": "400 mg tablet",
+        "frequency": "Twice daily after food as needed",
+        "duration": "3-5 days during pain flare-up",
+        "reason": "Reduces pain and inflammation in affected veins"
+      },
+      {
+        "generic_name": "Compression stockings (Class 2)",
+        "dosage": "Wear during daytime",
+        "frequency": "Daily - put on in the morning before getting out of bed",
+        "duration": "Ongoing",
+        "reason": "Supports veins and reduces swelling and pain in legs"
+      }
+    ],
+    "follow_up_questions": [
+      "How long have you had visible swollen veins in your legs?",
+      "Do your legs feel heavy, achy, or painful, especially at the end of the day?",
+      "Does your work require prolonged standing or sitting?",
+      "Is there any swelling in your ankles or feet?",
+      "Have you noticed any skin changes or ulcers near the ankle?",
+      "Are you pregnant or have you been pregnant recently?"
+    ]
+  },
+  "Hypothyroidism": {
+    "severity": "warning",
+    "summary": "A condition where the thyroid gland does not produce enough thyroid hormones, slowing down the body's metabolism. Causes fatigue, weight gain, feeling cold, dry skin, constipation, swelling of the face, hair loss, and depression. Very common in Indian women. Requires lifelong thyroid hormone replacement.",
+    "home_care": [
+      "Take Levothyroxine tablet first thing in the morning on an empty stomach",
+      "Wait at least 30-60 minutes before eating or drinking tea/coffee after taking the tablet",
+      "Do not take calcium, iron, or antacids within 4 hours of thyroid medicine",
+      "Get regular exercise - at least 30 minutes of walking daily",
+      "Eat a balanced diet including iodized salt",
+      "Get thyroid levels (TSH) checked every 6-12 months or as advised",
+      "Do not stop the medicine even if you feel better",
+      "Inform your doctor if you are planning pregnancy as dose needs adjustment"
+    ],
+    "warning_signs": [
+      "Severe drowsiness, confusion, or very slow thinking",
+      "Extreme sensitivity to cold with very low body temperature",
+      "Severe constipation not responding to treatment",
+      "Swelling of the face, hands, and feet (myxedema)",
+      "Very slow heartbeat",
+      "In pregnancy: uncontrolled hypothyroidism can affect baby's brain development",
+      "Unexplained rapid weight gain",
+      "Depression getting significantly worse"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Levothyroxine",
+        "dosage": "25-100 mcg tablet (dose adjusted by TSH levels)",
+        "frequency": "Once daily, empty stomach in the morning",
+        "duration": "Lifelong",
+        "reason": "Replaces the thyroid hormone the body cannot produce enough of"
+      },
+      {
+        "generic_name": "Calcium + Vitamin D3",
+        "dosage": "500 mg Calcium + 250 IU Vitamin D3",
+        "frequency": "Once daily (take 4 hours apart from Levothyroxine)",
+        "duration": "Ongoing",
+        "reason": "Hypothyroidism increases risk of bone loss; calcium supports bone health"
+      },
+      {
+        "generic_name": "Iron + Folic acid",
+        "dosage": "100 mg Iron + 500 mcg Folic acid",
+        "frequency": "Once daily (take 4 hours apart from Levothyroxine)",
+        "duration": "3 months or as needed",
+        "reason": "Treats anemia commonly associated with hypothyroidism"
+      }
+    ],
+    "follow_up_questions": [
+      "Have you had your thyroid levels (TSH) tested? What was the result?",
+      "Are you currently taking any thyroid medicine? What dose?",
+      "Do you feel unusually tired, cold, or have gained weight recently?",
+      "Have you noticed hair loss, dry skin, or constipation?",
+      "Are you pregnant or planning to get pregnant?",
+      "At what time and how do you take your thyroid medicine?"
+    ]
+  },
+  "Hyperthyroidism": {
+    "severity": "warning",
+    "summary": "A condition where the thyroid gland produces too much thyroid hormone, speeding up the body's metabolism. Causes weight loss despite good appetite, rapid heartbeat, trembling hands, sweating, anxiety, irritability, difficulty sleeping, and bulging eyes. If untreated, can cause dangerous heart rhythm problems.",
+    "home_care": [
+      "Take anti-thyroid medicines exactly as prescribed at the same time every day",
+      "Get regular blood tests to monitor thyroid levels as advised",
+      "Avoid excessive iodine intake - limit seaweed and iodine-rich supplements",
+      "Eat a balanced diet with adequate calories to prevent excessive weight loss",
+      "Avoid caffeine (tea, coffee, cola) as it worsens tremors and anxiety",
+      "Practice stress reduction through deep breathing and meditation",
+      "Protect eyes from bright sunlight with sunglasses if eyes are affected",
+      "Do not smoke as it worsens thyroid eye disease"
+    ],
+    "warning_signs": [
+      "Very fast or irregular heartbeat (palpitations) at rest",
+      "Chest pain or difficulty breathing",
+      "High fever with rapid pulse and confusion (thyroid storm - emergency)",
+      "Severe muscle weakness, especially in thighs",
+      "Sudden vision problems or eye pain",
+      "Extreme anxiety, agitation, or psychosis",
+      "Significant unexplained weight loss"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Carbimazole",
+        "dosage": "10-20 mg tablet",
+        "frequency": "Once or twice daily as prescribed",
+        "duration": "12-18 months typically",
+        "reason": "Reduces production of thyroid hormones"
+      },
+      {
+        "generic_name": "Propranolol",
+        "dosage": "40 mg tablet",
+        "frequency": "Two to three times daily",
+        "duration": "Until thyroid levels normalize",
+        "reason": "Controls rapid heartbeat, tremors, and anxiety caused by excess thyroid hormone"
+      },
+      {
+        "generic_name": "Calcium + Vitamin D3",
+        "dosage": "500 mg Calcium + 250 IU Vitamin D3",
+        "frequency": "Once daily",
+        "duration": "Ongoing",
+        "reason": "Protects bones as hyperthyroidism causes bone loss"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you have rapid heartbeat, weight loss, or trembling hands?",
+      "Have you had your thyroid levels (T3, T4, TSH) tested?",
+      "Are you currently taking any medicine for your thyroid?",
+      "Do you have any eye problems - bulging, redness, or double vision?",
+      "Does anyone in your family have thyroid problems?",
+      "Have you noticed any swelling in the front of your neck?"
+    ]
+  },
+  "Hypoglycemia": {
+    "severity": "warning",
+    "summary": "Abnormally low blood sugar level (below 70 mg/dL). Most common in people with diabetes taking insulin or certain diabetes medicines. Causes shaking, sweating, fast heartbeat, hunger, dizziness, confusion, and irritability. If not treated quickly, can lead to seizures, unconsciousness, and brain damage. Requires immediate sugar intake.",
+    "home_care": [
+      "IMMEDIATELY give sugar: 3-4 glucose tablets, or 4 teaspoons of sugar in water, or half glass of fruit juice, or regular (not diet) cold drink",
+      "Recheck blood sugar after 15 minutes - if still below 70 mg/dL, repeat sugar",
+      "Once blood sugar normalizes, eat a proper meal or snack with complex carbs",
+      "Always carry glucose tablets or sugar sachets with you",
+      "Eat regular meals at regular times - never skip meals",
+      "If taking diabetes medicines, take them with food as instructed",
+      "Check blood sugar more often when unwell, exercising more, or eating less",
+      "Wear a medical identification bracelet or card noting diabetes"
+    ],
+    "warning_signs": [
+      "Unable to swallow or unconscious (do NOT put food in mouth - this is an emergency)",
+      "Seizures or convulsions",
+      "Confusion that does not improve after eating sugar",
+      "Blood sugar below 54 mg/dL",
+      "Recurrent hypoglycemia episodes (3 or more in a week)",
+      "Hypoglycemia without warning symptoms (hypoglycemia unawareness)",
+      "Prolonged unconsciousness"
+    ],
+    "see_doctor_urgency": "within_24h",
+    "recommended_medicines": [
+      {
+        "generic_name": "Glucose tablets/powder",
+        "dosage": "15-20 grams (3-4 tablets or 4 teaspoons sugar)",
+        "frequency": "Immediately when symptoms occur, repeat in 15 minutes if needed",
+        "duration": "As needed for emergency",
+        "reason": "Rapidly raises blood sugar to safe levels"
+      },
+      {
+        "generic_name": "ORS (Oral Rehydration Salts)",
+        "dosage": "1 packet in 1 litre water (contains glucose)",
+        "frequency": "Sip after initial sugar intake",
+        "duration": "As needed",
+        "reason": "Provides sustained glucose and electrolytes after initial correction"
+      },
+      {
+        "generic_name": "Glucagon injection (if available)",
+        "dosage": "1 mg injection",
+        "frequency": "Single injection for unconscious patient",
+        "duration": "Emergency one-time use",
+        "reason": "Emergency treatment when patient cannot swallow (health worker administration)"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you have diabetes? What medicines are you taking?",
+      "When did you last eat? Did you skip any meals?",
+      "What is your current blood sugar level if you can check?",
+      "How often do you get these episodes of shaking, sweating, and dizziness?",
+      "Have you recently changed your diabetes medicine dose or started a new medicine?",
+      "Did you do more physical work or exercise than usual today?"
+    ]
+  },
+  "Osteoarthritis": {
+    "severity": "info",
+    "summary": "Age-related wear and tear of the cartilage that cushions joints, especially knees, hips, and hands. Causes joint pain, stiffness (especially in the morning or after rest), swelling, reduced range of movement, and creaking sounds. Very common in elderly Indians, especially in women after menopause. Worsened by obesity and physical labor.",
+    "home_care": [
+      "Maintain a healthy weight - even a few kilograms of weight loss significantly reduces knee pain",
+      "Do gentle exercises daily - walking, swimming, cycling, and leg-strengthening exercises",
+      "Apply warm compress or hot water bottle on painful joints for 15-20 minutes",
+      "Avoid squatting, sitting cross-legged, and using Indian toilets if possible",
+      "Use a walking stick or support if needed for balance and to reduce joint load",
+      "Do quadriceps strengthening exercises as shown by a physiotherapist",
+      "Wear comfortable, supportive footwear with cushioned soles",
+      "Avoid climbing stairs excessively - take the ramp or elevator when available"
+    ],
+    "warning_signs": [
+      "Sudden severe joint swelling with redness and warmth (may indicate infection)",
+      "Joint pain with fever",
+      "Joint becoming locked or giving way while walking",
+      "Night pain severe enough to wake you from sleep",
+      "Rapid worsening of pain and inability to walk",
+      "Numbness or tingling in the leg below the affected joint"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500-1000 mg tablet",
+        "frequency": "Every 6-8 hours as needed",
+        "duration": "During pain flare-ups",
+        "reason": "First-line pain relief for osteoarthritis, safe for regular use"
+      },
+      {
+        "generic_name": "Diclofenac gel",
+        "dosage": "1% topical gel",
+        "frequency": "Apply 3-4 times daily on the painful joint",
+        "duration": "2-3 weeks during flare-ups",
+        "reason": "Reduces pain and inflammation locally with fewer stomach side effects"
+      },
+      {
+        "generic_name": "Glucosamine sulphate",
+        "dosage": "1500 mg tablet/sachet",
+        "frequency": "Once daily",
+        "duration": "3-6 months",
+        "reason": "May help maintain cartilage health and reduce pain over time"
+      }
+    ],
+    "follow_up_questions": [
+      "Which joints are painful - knees, hips, hands, or others?",
+      "Is the pain worse in the morning, after rest, or after activity?",
+      "Do you hear any clicking or creaking sounds when moving the joint?",
+      "What is your weight and height? Have you gained weight recently?",
+      "Do you have difficulty with daily activities like walking, climbing stairs, or squatting?",
+      "Have you tried any exercises or physiotherapy?"
+    ]
+  },
+  "Arthritis": {
+    "severity": "info",
+    "summary": "Inflammation of one or more joints causing pain, swelling, stiffness, and reduced movement. Can be caused by autoimmune conditions (rheumatoid arthritis), infections, gout, or other diseases. Rheumatoid arthritis commonly affects small joints of hands and feet symmetrically. Early treatment prevents joint deformity.",
+    "home_care": [
+      "Apply warm compress on stiff joints and cold compress on swollen, hot joints",
+      "Do gentle range-of-motion exercises daily to maintain joint flexibility",
+      "Maintain a healthy weight to reduce stress on weight-bearing joints",
+      "Use assistive devices like jar openers if hand joints are affected",
+      "Rest during flare-ups but avoid prolonged immobility",
+      "Eat an anti-inflammatory diet rich in fish, vegetables, and fruits",
+      "Avoid smoking as it worsens rheumatoid arthritis",
+      "Take all prescribed medicines regularly even when you feel well"
+    ],
+    "warning_signs": [
+      "Joint becoming very red, hot, and extremely painful (may indicate infection or gout)",
+      "Fever with multiple swollen joints",
+      "Rapid worsening of joint deformity",
+      "Eye redness or pain along with joint symptoms",
+      "New weakness or numbness in hands or feet",
+      "Skin rash appearing along with joint symptoms",
+      "Severe morning stiffness lasting more than 1 hour"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Ibuprofen",
+        "dosage": "400 mg tablet",
+        "frequency": "Twice to three times daily after food",
+        "duration": "7-14 days during flare-ups",
+        "reason": "Reduces joint pain, swelling, and inflammation"
+      },
+      {
+        "generic_name": "Methotrexate",
+        "dosage": "7.5-15 mg tablet",
+        "frequency": "Once weekly (specific day chosen)",
+        "duration": "Long-term under doctor supervision",
+        "reason": "Disease-modifying drug that slows rheumatoid arthritis progression (requires monitoring)"
+      },
+      {
+        "generic_name": "Folic acid",
+        "dosage": "5 mg tablet",
+        "frequency": "Once daily (except on Methotrexate day)",
+        "duration": "While on Methotrexate",
+        "reason": "Reduces side effects of Methotrexate"
+      }
+    ],
+    "follow_up_questions": [
+      "Which joints are affected? Are they on both sides of the body symmetrically?",
+      "Do you have morning stiffness? How long does it last?",
+      "Are the joints swollen, red, or warm to touch?",
+      "When did the joint problems start?",
+      "Do you have any other symptoms like skin rash, eye problems, or fever?",
+      "Has anyone in your family had arthritis?"
+    ]
+  },
+  "(vertigo) Paroymsal  Positional Vertigo": {
+    "severity": "info",
+    "summary": "A condition causing sudden, brief episodes of intense dizziness and a spinning sensation triggered by specific head movements. Caused by tiny calcium crystals becoming dislodged in the inner ear. Episodes are usually short (less than a minute) but can be very distressing. Not dangerous but increases fall risk, especially in elderly.",
+    "home_care": [
+      "Move slowly when changing positions, especially when getting up from bed",
+      "Sit on the edge of the bed for a minute before standing up",
+      "Avoid sudden head movements and looking up or bending down quickly",
+      "Perform Epley maneuver exercises as demonstrated by a doctor or physiotherapist",
+      "Sleep with the head slightly elevated using an extra pillow",
+      "Avoid driving, climbing ladders, or working at heights during episodes",
+      "Hold onto support or rails when walking during a dizzy spell",
+      "Stay hydrated - dehydration can worsen dizziness"
+    ],
+    "warning_signs": [
+      "Dizziness with severe headache or neck pain",
+      "Dizziness with numbness, weakness, or difficulty speaking (stroke warning)",
+      "Loss of hearing or persistent ringing in the ear",
+      "Persistent vomiting with inability to keep fluids down",
+      "Dizziness that does not come in episodes but is constant",
+      "Loss of consciousness or fainting during the episode",
+      "High fever with dizziness"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Betahistine",
+        "dosage": "16 mg tablet",
+        "frequency": "Three times daily",
+        "duration": "2-4 weeks",
+        "reason": "Improves blood flow to the inner ear and reduces vertigo episodes"
+      },
+      {
+        "generic_name": "Meclizine",
+        "dosage": "25 mg tablet",
+        "frequency": "Three times daily as needed",
+        "duration": "Short-term (3-5 days) during acute episodes",
+        "reason": "Controls dizziness, nausea, and vomiting during acute attacks"
+      },
+      {
+        "generic_name": "Domperidone",
+        "dosage": "10 mg tablet",
+        "frequency": "Three times daily before meals",
+        "duration": "During episodes with nausea",
+        "reason": "Reduces nausea and vomiting associated with vertigo"
+      }
+    ],
+    "follow_up_questions": [
+      "Does the room feel like it is spinning, or do you feel unsteady?",
+      "What triggers the dizziness - turning in bed, looking up, bending down?",
+      "How long does each episode of dizziness last?",
+      "Do you have any hearing loss or ringing in the ears?",
+      "Do you have any numbness, weakness, or trouble speaking during episodes?",
+      "Have you fallen or had a near-fall because of the dizziness?"
+    ]
+  },
+  "Acne": {
+    "severity": "info",
+    "summary": "A common skin condition where hair follicles become blocked with oil and dead skin cells, causing pimples, blackheads, whiteheads, and sometimes painful cysts. Most common in teenagers and young adults due to hormonal changes. Can affect the face, back, chest, and shoulders. Can leave scars if picked or squeezed.",
+    "home_care": [
+      "Wash the face gently twice daily with a mild soap or face wash - do not scrub",
+      "Do not squeeze, pick, or pop pimples as this causes scars and infection",
+      "Use oil-free, water-based moisturizer if skin is dry",
+      "Avoid applying oil, butter, or heavy creams on the face",
+      "Avoid touching the face frequently with hands",
+      "Wash pillow covers and towels regularly",
+      "Eat a balanced diet - reduce excessive dairy and sugary foods",
+      "Do not use steroid creams on the face without doctor's prescription",
+      "Protect skin from sun with a non-oily sunscreen"
+    ],
+    "warning_signs": [
+      "Large, painful, deep cysts or nodules under the skin",
+      "Acne covering large areas of face, chest, and back",
+      "Acne leaving deep scars",
+      "Signs of skin infection - increasing redness, warmth, pain, and pus",
+      "Acne not responding to over-the-counter treatments after 3 months",
+      "Acne causing significant emotional distress or affecting daily life",
+      "In females: acne with irregular periods and excess facial hair (possible PCOS)"
+    ],
+    "see_doctor_urgency": "monitor",
+    "recommended_medicines": [
+      {
+        "generic_name": "Benzoyl peroxide gel",
+        "dosage": "2.5% topical gel",
+        "frequency": "Apply once daily at night on affected areas",
+        "duration": "6-8 weeks minimum to see results",
+        "reason": "Kills bacteria on the skin and reduces pimple formation"
+      },
+      {
+        "generic_name": "Clindamycin gel",
+        "dosage": "1% topical gel",
+        "frequency": "Apply twice daily on pimples",
+        "duration": "6-8 weeks",
+        "reason": "Antibiotic that kills acne-causing bacteria on the skin"
+      },
+      {
+        "generic_name": "Adapalene gel",
+        "dosage": "0.1% topical gel",
+        "frequency": "Apply once at night on affected area (pea-sized amount)",
+        "duration": "3-6 months for best results",
+        "reason": "Unblocks pores and prevents new pimples from forming"
+      }
+    ],
+    "follow_up_questions": [
+      "How long have you had acne?",
+      "Where is the acne - face, back, chest?",
+      "Are they small pimples or large, painful lumps under the skin?",
+      "Have you used any creams or medicines for it?",
+      "Are you applying any oils, fairness creams, or steroid creams on your face?",
+      "For females: Are your menstrual periods regular?"
+    ]
+  },
+  "Urinary tract infection": {
+    "severity": "info",
+    "summary": "An infection in any part of the urinary system - most commonly the bladder and urethra. Very common in women. Causes burning or pain during urination, frequent urge to urinate, cloudy or foul-smelling urine, and lower abdominal pain. Can spread to kidneys if untreated, causing fever and back pain.",
+    "home_care": [
+      "Drink plenty of water - at least 8-10 glasses daily to flush out bacteria",
+      "Do not hold urine - go to the toilet whenever you feel the urge",
+      "Urinate before and after sexual intercourse",
+      "Wipe from front to back after using the toilet (important for women)",
+      "Wear loose cotton undergarments",
+      "Maintain good genital hygiene - wash with clean water daily",
+      "Avoid using harsh soaps or douches in the genital area",
+      "Take the full course of antibiotics even if symptoms improve"
+    ],
+    "warning_signs": [
+      "High fever with chills and back pain (kidney infection)",
+      "Blood in the urine",
+      "Nausea, vomiting, or inability to eat",
+      "Severe lower abdominal pain",
+      "Symptoms not improving after 2-3 days of antibiotics",
+      "UTI in a pregnant woman (needs urgent treatment)",
+      "UTI in men or children (needs investigation)",
+      "Recurring UTIs (3 or more in a year)"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Nitrofurantoin",
+        "dosage": "100 mg capsule",
+        "frequency": "Twice daily with food",
+        "duration": "5 days",
+        "reason": "First-line antibiotic effective against common UTI bacteria"
+      },
+      {
+        "generic_name": "Norfloxacin",
+        "dosage": "400 mg tablet",
+        "frequency": "Twice daily on empty stomach",
+        "duration": "3-5 days",
+        "reason": "Alternative antibiotic for urinary tract infections"
+      },
+      {
+        "generic_name": "Paracetamol",
+        "dosage": "500 mg tablet",
+        "frequency": "Every 6-8 hours as needed",
+        "duration": "2-3 days",
+        "reason": "Relieves pain, discomfort, and fever"
+      }
+    ],
+    "follow_up_questions": [
+      "Do you have burning or pain when you pass urine?",
+      "How often are you going to urinate? Is the quantity less?",
+      "Is there any blood in your urine or is it cloudy/smelly?",
+      "Do you have fever or pain in your lower back?",
+      "How much water do you drink daily?",
+      "Have you had urinary infections before? How many times?",
+      "Are you pregnant?"
+    ]
+  },
+  "Psoriasis": {
+    "severity": "info",
+    "summary": "A chronic autoimmune skin condition where skin cells grow too quickly, forming thick, red, scaly patches covered with silvery-white scales. Commonly affects elbows, knees, scalp, and lower back. Not contagious. Tends to come and go in flare-ups. Can also affect nails and joints. Triggered by stress, infections, and certain medicines.",
+    "home_care": [
+      "Keep the skin well moisturized - apply coconut oil or emollient cream after bathing",
+      "Take regular baths with lukewarm water (not hot) to soften scales",
+      "Gently remove scales after soaking - do not scratch or pick",
+      "Get brief, controlled sun exposure (10-15 minutes) which can help some people",
+      "Avoid stress as it triggers flare-ups - practice yoga and meditation",
+      "Avoid alcohol and smoking as they worsen psoriasis",
+      "Wear soft cotton clothing to reduce skin irritation",
+      "Identify and avoid personal triggers (stress, infections, certain medicines)"
+    ],
+    "warning_signs": [
+      "Psoriasis covering large areas of the body (more than 10%)",
+      "Pus-filled blisters on the psoriasis patches",
+      "Joint pain and swelling (psoriatic arthritis)",
+      "Fever with widespread redness of the skin",
+      "Nail changes - pitting, crumbling, or separation from nail bed",
+      "Severe itching or pain affecting sleep and daily activities",
+      "Depression or severe emotional distress due to the condition"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Clobetasol propionate cream",
+        "dosage": "0.05% topical cream",
+        "frequency": "Apply once daily on affected patches (not on face)",
+        "duration": "2-4 weeks maximum, then step down",
+        "reason": "Strong steroid cream that reduces inflammation and scaling quickly"
+      },
+      {
+        "generic_name": "Coal tar shampoo/ointment",
+        "dosage": "2-5% preparation",
+        "frequency": "Apply once daily or use shampoo 2-3 times weekly",
+        "duration": "4-8 weeks",
+        "reason": "Slows skin cell growth and reduces scaling, itching, and inflammation"
+      },
+      {
+        "generic_name": "Emollient cream (white soft paraffin)",
+        "dosage": "Liberal application",
+        "frequency": "Apply 2-3 times daily, especially after bathing",
+        "duration": "Ongoing",
+        "reason": "Keeps skin moisturized and reduces dryness, scaling, and itching"
+      }
+    ],
+    "follow_up_questions": [
+      "Where are the scaly patches located on your body?",
+      "How long have you had these patches?",
+      "Do the patches come and go, or are they always present?",
+      "Do you have any joint pain or stiffness?",
+      "What do you think triggers the flare-ups (stress, illness)?",
+      "Have you used any steroid creams? For how long?"
+    ]
+  },
+  "Impetigo": {
+    "severity": "info",
+    "summary": "A highly contagious bacterial skin infection common in children, caused by Staphylococcus or Streptococcus bacteria. Causes red sores that burst and form honey-colored crusts, usually around the nose, mouth, hands, and forearms. Spreads by direct contact or sharing towels. Common in hot, humid conditions with poor hygiene.",
+    "home_care": [
+      "Gently wash the sores with soap and clean water, then pat dry",
+      "Remove crusts gently after soaking with warm water compress",
+      "Apply antibiotic ointment as prescribed after cleaning",
+      "Cover the sores with a light bandage to prevent spreading",
+      "Keep the child's fingernails short to prevent scratching and spreading",
+      "Wash hands frequently with soap - both patient and caregivers",
+      "Do not share towels, clothing, or bedding with the affected person",
+      "Wash the patient's clothing and towels separately in hot water",
+      "Keep the child home from school until 24 hours after starting antibiotics"
+    ],
+    "warning_signs": [
+      "Sores spreading rapidly despite treatment",
+      "Fever developing with the skin infection",
+      "Red, warm, swollen skin around the sores (cellulitis)",
+      "Blisters becoming large and filled with pus",
+      "Dark-colored urine after the infection (may indicate kidney problem)",
+      "Sores not healing after 3 days of antibiotic treatment",
+      "Swollen lymph nodes near the affected area"
+    ],
+    "see_doctor_urgency": "within_week",
+    "recommended_medicines": [
+      {
+        "generic_name": "Mupirocin ointment",
+        "dosage": "2% topical ointment",
+        "frequency": "Apply three times daily on sores after cleaning",
+        "duration": "5-7 days",
+        "reason": "Topical antibiotic that kills bacteria causing the skin infection"
+      },
+      {
+        "generic_name": "Amoxicillin + Clavulanic acid",
+        "dosage": "375 mg tablet (age-appropriate dose for children)",
+        "frequency": "Three times daily after meals",
+        "duration": "7 days",
+        "reason": "Oral antibiotic for widespread impetigo or when topical treatment is insufficient"
+      },
+      {
+        "generic_name": "Povidone iodine solution",
+        "dosage": "5% solution diluted for washing",
+        "frequency": "Use to clean sores twice daily before applying ointment",
+        "duration": "Until sores heal",
+        "reason": "Antiseptic wash that kills bacteria on the skin surface"
+      }
+    ],
+    "follow_up_questions": [
+      "Where are the sores on the body?",
+      "How long have the sores been present?",
+      "Are the sores spreading or getting bigger?",
+      "Is the child scratching the sores?",
+      "Does the child have a fever?",
+      "Are other children in the family or school also affected?",
+      "Have you been using any ointment or medicine on the sores?"
+    ]
+  }
+}

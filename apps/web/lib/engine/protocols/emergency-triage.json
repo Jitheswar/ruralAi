@@ -1,0 +1,81 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-01",
+  "rules": [
+    {
+      "id": "cardiac_emergency",
+      "name": "Suspected Cardiac Event",
+      "severity": "critical",
+      "rule": {
+        "and": [
+          { "in": ["chest_pain", { "var": "symptoms" }] },
+          { "or": [
+            { "in": ["sweating", { "var": "symptoms" }] },
+            { "in": ["breathlessness", { "var": "symptoms" }] },
+            { "in": ["left_arm_pain", { "var": "symptoms" }] }
+          ]}
+        ]
+      },
+      "action": {
+        "type": "emergency",
+        "message": "Possible heart attack. Call emergency services (108) immediately.",
+        "instructions": [
+          "Make the person sit or lie down comfortably",
+          "Loosen any tight clothing",
+          "If available, give one aspirin (300mg) to chew",
+          "Do NOT give water if unconscious",
+          "Call 108 for ambulance"
+        ]
+      }
+    },
+    {
+      "id": "stroke_emergency",
+      "name": "Suspected Stroke",
+      "severity": "critical",
+      "rule": {
+        "and": [
+          { "or": [
+            { "in": ["sudden_numbness", { "var": "symptoms" }] },
+            { "in": ["face_drooping", { "var": "symptoms" }] },
+            { "in": ["speech_difficulty", { "var": "symptoms" }] }
+          ]},
+          { "in": ["sudden_onset", { "var": "modifiers" }] }
+        ]
+      },
+      "action": {
+        "type": "emergency",
+        "message": "Possible stroke detected. Time is critical. Call 108 immediately.",
+        "instructions": [
+          "Note the time symptoms started",
+          "Do NOT give food or water",
+          "Keep the person lying down with head slightly elevated",
+          "Call 108 for ambulance"
+        ]
+      }
+    },
+    {
+      "id": "severe_breathing",
+      "name": "Severe Breathing Difficulty",
+      "severity": "critical",
+      "rule": {
+        "and": [
+          { "in": ["breathlessness", { "var": "symptoms" }] },
+          { "or": [
+            { "in": ["bluish_lips", { "var": "symptoms" }] },
+            { "in": ["chest_pain", { "var": "symptoms" }] }
+          ]}
+        ]
+      },
+      "action": {
+        "type": "emergency",
+        "message": "Severe breathing difficulty detected. Seek immediate medical help.",
+        "instructions": [
+          "Help the person sit upright",
+          "If they have an inhaler, help them use it",
+          "Loosen tight clothing around chest and neck",
+          "Call 108 for ambulance"
+        ]
+      }
+    }
+  ]
+}

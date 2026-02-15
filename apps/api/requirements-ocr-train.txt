@@ -1,0 +1,13 @@
+# Dedicated training/runtime requirements for prescription OCR model building.
+# Recommended with Python 3.11 in: apps/api/.venv-ocr-train
+
+torch>=2.2.0
+transformers>=4.42.0
+accelerate>=0.32.0
+optimum[onnxruntime]>=1.22.0
+onnx>=1.16.0
+onnxruntime>=1.20.0
+Pillow>=10.0.0
+pytesseract>=0.3.10
+numpy>=1.24.0
+pytest>=8.0.0
