@@ -4,6 +4,18 @@ import { useState, useRef } from 'react';
 import { scanPrescription, type PrescriptionResult, type PrescriptionMedicine } from '@/lib/aiService';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 import { getSession } from '@/lib/auth';
+import {
+  Upload,
+  ScanLine,
+  Info,
+  Pill,
+  Loader2,
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+} from 'lucide-react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 type ScanState = 'idle' | 'scanning' | 'done' | 'error';
 
@@ -11,73 +23,82 @@ function MedicineCard({ med }: { med: PrescriptionMedicine }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+    <div className="bg-card rounded-xl border border-border p-5 mb-3 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
-        <div>
-          <h4 className="font-semibold text-gray-900">{med.name}</h4>
-          {med.generic_name && med.generic_name !== med.name && (
-            <p className="text-xs text-gray-400">Generic: {med.generic_name}</p>
-          )}
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-lg bg-primary/10 mt-0.5">
+            <Pill className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground">{med.name}</h4>
+            {med.generic_name && med.generic_name !== med.name && (
+              <p className="text-xs text-muted-foreground">Generic: {med.generic_name}</p>
+            )}
+          </div>
         </div>
         {med.found_in_db && (
-          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">In DB</span>
+          <span className="text-xs bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+            <CheckCircle className="w-3 h-3" />
+            In DB
+          </span>
         )}
       </div>
 
-      <p className="text-sm text-gray-500 mt-1 mb-3">
-        {med.dosage} &middot; {med.frequency} &middot; {med.duration}
+      <p className="text-sm text-muted-foreground mt-2 mb-3 ml-11">
+        {med.dosage} · {med.frequency} · {med.duration}
       </p>
 
       {(med.market_price > 0 || med.jan_aushadhi_price > 0) && (
-        <div className="bg-green-50 rounded-lg p-3 space-y-1.5">
+        <div className="bg-secondary/50 rounded-lg p-3 space-y-1.5 border border-border/50 ml-11">
           {med.market_price > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Market Price</span>
-              <span className="text-gray-700">&#8377;{med.market_price.toFixed(0)}</span>
+              <span className="text-muted-foreground">Market Price</span>
+              <span className="text-foreground line-through decoration-destructive/50">&#8377;{med.market_price.toFixed(0)}</span>
             </div>
           )}
           {med.jan_aushadhi_price > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-green-700 font-medium">Jan Aushadhi</span>
-              <span className="text-green-700 font-bold">&#8377;{med.jan_aushadhi_price.toFixed(0)}</span>
+              <span className="text-primary font-medium">Jan Aushadhi</span>
+              <span className="text-primary font-bold">&#8377;{med.jan_aushadhi_price.toFixed(0)}</span>
             </div>
           )}
           {med.savings_percent > 0 && (
-            <div className="flex justify-between text-sm pt-1.5 border-t border-green-200">
-              <span className="text-green-600">You save</span>
-              <span className="text-green-600 font-bold">{med.savings_percent}%</span>
+            <div className="flex justify-between text-sm pt-1.5 border-t border-border/50">
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium">You save</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">{med.savings_percent}%</span>
             </div>
           )}
         </div>
       )}
 
       {med.jan_aushadhi_name && med.jan_aushadhi_name !== med.name && (
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-xs text-muted-foreground mt-2 ml-11">
           Jan Aushadhi: {med.jan_aushadhi_name}
         </p>
       )}
 
       {/* Expandable details */}
       {(med.uses?.length > 0 || med.side_effects?.length > 0) && (
-        <div className="mt-3">
+        <div className="mt-3 ml-11">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-xs text-blue-600 hover:underline"
+            className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium"
           >
+            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             {expanded ? 'Hide details' : 'Show uses & side effects'}
           </button>
           {expanded && (
-            <div className="mt-2 space-y-2">
+            <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
               {med.uses?.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-gray-600">Uses:</p>
-                  <p className="text-xs text-gray-500">{med.uses.join(', ')}</p>
+                  <p className="text-xs font-medium text-foreground">Uses:</p>
+                  <p className="text-xs text-muted-foreground">{med.uses.join(', ')}</p>
                 </div>
               )}
               {med.side_effects?.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-gray-600">Side effects:</p>
-                  <p className="text-xs text-gray-500">{med.side_effects.join(', ')}</p>
+                  <p className="text-xs font-medium text-foreground">Side effects:</p>
+                  <p className="text-xs text-muted-foreground">{med.side_effects.join(', ')}</p>
                 </div>
               )}
             </div>
@@ -90,6 +111,7 @@ function MedicineCard({ med }: { med: PrescriptionMedicine }) {
 
 export default function PrescriptionScannerPage() {
   const user = getSession();
+  const { t } = useLanguage();
   const [state, setState] = useState<ScanState>('idle');
   const [result, setResult] = useState<PrescriptionResult | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -141,25 +163,27 @@ export default function PrescriptionScannerPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Prescription Scanner</h1>
-      <p className="text-gray-500 text-sm mb-6">
-        Scan a prescription to find affordable Jan Aushadhi alternatives using AI.
+    <div className="max-w-3xl mx-auto animate-in fade-in duration-500">
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1">{t('prescription.scanner')}</h1>
+      <p className="text-sm text-muted-foreground mb-8">
+        {t('prescription.scanDescription')}
       </p>
 
       {/* Idle: Upload area */}
       {state === 'idle' && (
-        <div>
+        <div className="animate-in slide-in-from-bottom-4 duration-500">
           <div
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+            className="border-2 border-dashed border-border rounded-xl p-16 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group"
           >
-            <div className="text-4xl mb-3">📷</div>
-            <p className="text-gray-700 font-medium mb-1">Upload Prescription</p>
-            <p className="text-gray-400 text-sm">
-              Drag &amp; drop an image or click to browse
+            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <Upload className="w-6 h-6 text-primary" />
+            </div>
+            <p className="text-foreground font-semibold text-lg mb-1">{t('prescription.uploadPrescription')}</p>
+            <p className="text-muted-foreground text-sm">
+              {t('prescription.dragDrop')}
             </p>
             <input
               ref={fileRef}
@@ -170,11 +194,13 @@ export default function PrescriptionScannerPage() {
             />
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mt-6">
-            <h3 className="text-blue-800 font-semibold mb-3">How it works</h3>
-            <div className="space-y-2 text-sm text-blue-700">
+          <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 mt-6">
+            <h3 className="text-primary font-bold mb-3 flex items-center gap-2 text-sm">
+              <Info className="w-4 h-4" /> {t('prescription.howItWorks')}
+            </h3>
+            <div className="space-y-2 text-sm text-foreground/80">
               <p>1. Upload a photo of your prescription</p>
-              <p>2. AI extracts medicine names and dosages using Gemini Vision</p>
+              <p>2. Local OCR extracts medicine names and dosages</p>
               <p>3. We look up Jan Aushadhi alternatives from our database</p>
               <p>4. See real price comparisons and savings</p>
             </div>
@@ -184,89 +210,95 @@ export default function PrescriptionScannerPage() {
 
       {/* Scanning */}
       {state === 'scanning' && (
-        <div className="text-center py-16">
+        <div className="text-center py-20 animate-in fade-in zoom-in duration-300">
           {preview && (
-            <img
-              src={preview}
-              alt="Prescription"
-              className="w-48 h-48 object-cover rounded-xl mx-auto mb-6 border border-gray-200"
-            />
+            <div className="relative inline-block mb-8">
+              <img
+                src={preview}
+                alt="Prescription"
+                className="w-48 h-48 object-cover rounded-xl shadow-lg border border-border"
+              />
+              <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] rounded-xl flex items-center justify-center">
+                <ScanLine className="w-10 h-10 text-primary animate-pulse" />
+              </div>
+            </div>
           )}
-          <div className="text-4xl mb-4 animate-pulse">🔍</div>
-          <p className="text-gray-700 font-medium">Scanning prescription with AI...</p>
-          <p className="text-gray-400 text-sm mt-1">Extracting medicine information using Gemini Vision</p>
-          <div className="mt-4 flex justify-center gap-1">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-            ))}
+          <p className="text-foreground font-semibold text-xl">{t('prescription.scanning')}</p>
+          <p className="text-muted-foreground text-sm mt-2">{t('common.loading')}</p>
+          <div className="mt-6 flex justify-center">
+            <Loader2 className="w-6 h-6 text-primary animate-spin" />
           </div>
         </div>
       )}
 
       {/* Error */}
       {state === 'error' && (
-        <div className="text-center py-12">
+        <div className="text-center py-16 animate-in fade-in duration-300">
           {preview && (
             <img
               src={preview}
               alt="Prescription"
-              className="w-32 h-32 object-cover rounded-xl mx-auto mb-6 border border-gray-200 opacity-50"
+              className="w-32 h-32 object-cover rounded-xl mx-auto mb-6 border border-border opacity-50 grayscale"
             />
           )}
-          <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
-            <p className="text-red-700 text-sm">{errorMsg}</p>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-5 mb-8 max-w-md mx-auto">
+            <p className="text-destructive font-medium text-sm">{errorMsg}</p>
           </div>
           <button
             onClick={handleReset}
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-secondary text-foreground rounded-xl font-medium hover:bg-secondary/80 transition-colors"
           >
-            Try Again
+            <RotateCcw className="w-4 h-4" />
+            {t('prescription.tryAgain')}
           </button>
         </div>
       )}
 
       {/* Results */}
       {state === 'done' && result && (
-        <div>
+        <div className="animate-in slide-in-from-bottom-8 duration-500">
           {/* Doctor info */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Prescribed by</span>
-              <span className="font-medium text-gray-900">{result.doctor_name}</span>
+          <div className="bg-card rounded-xl border border-border p-5 mb-6 shadow-sm">
+            <div className="flex justify-between text-sm items-center border-b border-border/50 pb-3 mb-3">
+              <span className="text-muted-foreground">{t('prescription.prescribedBy')}</span>
+              <span className="font-semibold text-foreground">{result.doctor_name}</span>
             </div>
-            <div className="flex justify-between text-sm mt-1">
-              <span className="text-gray-500">Date</span>
-              <span className="text-gray-700">{result.date}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">{t('prescription.date')}</span>
+              <span className="text-foreground font-medium">{result.date}</span>
             </div>
             {result.notes && (
-              <p className="text-xs text-gray-400 mt-2">{result.notes}</p>
+              <p className="text-xs text-muted-foreground mt-3 italic bg-secondary/30 p-2 rounded-lg">{result.notes}</p>
             )}
           </div>
 
           {/* Medicines */}
-          <h3 className="font-semibold text-gray-900 mb-3">
-            Medicines ({result.medicines.length})
+          <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+            <Pill className="w-4 h-4 text-primary" />
+            {t('prescription.medicines')} ({result.medicines.length})
           </h3>
-          {result.medicines.map((med, i) => (
-            <MedicineCard key={i} med={med} />
-          ))}
+          <div className="space-y-3 mb-6">
+            {result.medicines.map((med, i) => (
+              <MedicineCard key={i} med={med} />
+            ))}
+          </div>
 
           {/* Total savings */}
           {(result.total_market_price > 0 || result.total_jan_aushadhi_price > 0) && (
-            <div className="bg-green-600 rounded-xl p-5 text-white mb-4">
-              <h3 className="font-bold text-lg mb-3">Total Savings</h3>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-green-100">Market total</span>
+            <div className="bg-primary text-primary-foreground rounded-xl p-6 shadow-lg mb-6">
+              <h3 className="font-bold text-lg mb-4">{t('prescription.totalSavings')}</h3>
+              <div className="flex justify-between text-sm mb-2 opacity-90">
+                <span>{t('prescription.marketTotal')}</span>
                 <span>&#8377;{result.total_market_price.toFixed(0)}</span>
               </div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-green-100">Jan Aushadhi total</span>
-                <span className="font-bold">&#8377;{result.total_jan_aushadhi_price.toFixed(0)}</span>
+              <div className="flex justify-between text-sm mb-4">
+                <span>{t('prescription.janAushadhiTotal')}</span>
+                <span className="font-bold text-lg">&#8377;{result.total_jan_aushadhi_price.toFixed(0)}</span>
               </div>
               {result.total_market_price > result.total_jan_aushadhi_price && (
-                <div className="flex justify-between pt-2 border-t border-green-400">
-                  <span className="font-bold">You save</span>
-                  <span className="font-bold text-lg">
+                <div className="flex justify-between pt-4 border-t border-primary-foreground/20">
+                  <span className="font-bold text-lg">{t('prescription.savings')}</span>
+                  <span className="font-bold text-2xl">
                     &#8377;{(result.total_market_price - result.total_jan_aushadhi_price).toFixed(0)}
                   </span>
                 </div>
@@ -275,15 +307,17 @@ export default function PrescriptionScannerPage() {
           )}
 
           {/* Save + Reset */}
-          <div className="flex gap-3">
-            <div className={`flex-1 px-6 py-3 rounded-xl font-medium text-center ${saved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-              {saved ? 'Saved to your health records' : 'Could not save to records — check connection'}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className={`flex-1 px-5 py-3 rounded-xl font-medium text-center border flex items-center justify-center gap-2 text-sm ${saved ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30' : 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30'}`}>
+              {saved ? <CheckCircle className="w-4 h-4" /> : null}
+              {saved ? t('prescription.savedToRecords') : t('prescription.couldNotSave')}
             </div>
             <button
               onClick={handleReset}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-secondary text-foreground rounded-xl font-semibold hover:bg-secondary/80 transition-colors"
             >
-              Scan Another
+              <ScanLine className="w-4 h-4" />
+              {t('prescription.scanAnother')}
             </button>
           </div>
         </div>

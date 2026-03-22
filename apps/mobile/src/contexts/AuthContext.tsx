@@ -21,6 +21,23 @@ function mapSupabaseUser(user: User | null): AuthUser | null {
   };
 }
 
+// Fetch authoritative role from public.users table (server-side truth)
+async function getAuthoritativeRole(userId: string): Promise<UserRole> {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', userId)
+      .maybeSingle();
+    if (!error && data?.role) {
+      return data.role as UserRole;
+    }
+  } catch (e) {
+    console.warn('Failed to fetch authoritative role, using metadata fallback:', e);
+  }
+  return 'citizen';
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         console.log('Auth state changed:', event);
         const mappedUser = mapSupabaseUser(session?.user ?? null);
+        // Validate role from DB to prevent spoofing via user_metadata
+        if (mappedUser) {
+          mappedUser.role = await getAuthoritativeRole(mappedUser.id);
+        }
         setUser(mappedUser);
 
         // Cache user data for offline access
@@ -57,6 +78,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (session?.user) {
         const mappedUser = mapSupabaseUser(session.user);
+        // Validate role from DB to prevent spoofing via user_metadata
+        if (mappedUser) {
+          mappedUser.role = await getAuthoritativeRole(mappedUser.id);
+        }
         setUser(mappedUser);
       } else {
         // Fallback to cached session for offline access
@@ -111,11 +136,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   async function signUp(email: string, password: string, name: string, role: UserRole): Promise<boolean> {
     try {
+      // SECURITY: Only send name in metadata. Role is always set to 'citizen' by the
+      // database trigger — privileged roles must be granted by an admin post-signup.
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { name, role },
+          data: { name },
         },
       });
 

@@ -4,8 +4,10 @@ using OpenStreetMap Overpass API (free, no API key needed).
 """
 
 import math
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 import httpx
+
+from services.auth import get_current_user_id
 
 router = APIRouter()
 
@@ -32,6 +34,7 @@ async def nearby(
     lon: float = Query(..., description="Longitude"),
     type: str = Query("all", description="hospital, pharmacy, or all"),
     radius: int = Query(10000, description="Search radius in meters (default 10km)"),
+    _user_id: str = Depends(get_current_user_id),
 ):
     """Find nearby hospitals and pharmacies using OpenStreetMap."""
     if not (-90 <= lat <= 90):
@@ -71,7 +74,7 @@ async def nearby(
             resp.raise_for_status()
             data = resp.json()
     except Exception as e:
-        return {"error": f"Location search failed: {str(e)}", "results": []}
+        raise HTTPException(status_code=502, detail=f"Location search failed: {str(e)}")
 
     results = []
     seen_names = set()
@@ -90,7 +93,7 @@ async def nearby(
         # Get coordinates (ways use center, nodes use lat/lon directly)
         el_lat = element.get("lat") or element.get("center", {}).get("lat")
         el_lon = element.get("lon") or element.get("center", {}).get("lon")
-        if not el_lat or not el_lon:
+        if el_lat is None or el_lon is None:
             continue
 
         distance = haversine_km(lat, lon, el_lat, el_lon)

@@ -20,3 +20,5 @@ ios/
 apps/api/models/*.joblib
 apps/api/data/Training.csv
 apps/api/data/Testing.csv
+apps/api/data/prescription_ocr/
+apps/api/models/prescription_ocr*

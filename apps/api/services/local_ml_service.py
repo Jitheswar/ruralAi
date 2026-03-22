@@ -11,6 +11,11 @@ import json
 import asyncio
 import numpy as np
 from pathlib import Path
+from services.prescription_ocr_service import (
+    preprocess_prescription_page,
+    parse_prescription_text,
+    extract_prescription_with_local_model,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
@@ -87,7 +92,18 @@ def _load_whisper_model():
 # ─── Symptom Analysis ────────────────────────────────────────────────
 
 
-def _predict_diseases_sync(symptoms: list[str], top_k: int = 3) -> list[dict]:
+_feature_index: dict[str, int] | None = None
+
+
+def _get_feature_index(feature_names: list[str]) -> dict[str, int]:
+    """Build and cache a dict for O(1) feature name lookup."""
+    global _feature_index
+    if _feature_index is None:
+        _feature_index = {name: i for i, name in enumerate(feature_names)}
+    return _feature_index
+
+
+def _predict_diseases_sync(symptoms: list[str], top_k: int = 5) -> list[dict]:
     """Convert frontend symptom IDs to feature vector, predict top-k diseases."""
     model_data = _load_symptom_model()
     mapping = _load_symptom_mapping()
@@ -95,17 +111,20 @@ def _predict_diseases_sync(symptoms: list[str], top_k: int = 3) -> list[dict]:
     model = model_data["model"]
     label_encoder = model_data["label_encoder"]
     feature_names = model_data["feature_names"]
+    feat_idx = _get_feature_index(feature_names)
 
     features = np.zeros(len(feature_names), dtype=int)
+    matched_features = 0
 
     for symptom_id in symptoms:
         kaggle_columns = mapping.get(symptom_id, [])
         for col_name in kaggle_columns:
-            if col_name in feature_names:
-                idx = feature_names.index(col_name)
+            idx = feat_idx.get(col_name)
+            if idx is not None:
                 features[idx] = 1
+                matched_features += 1
 
-    if features.sum() == 0:
+    if matched_features == 0:
         return []
 
     probas = model.predict_proba(features.reshape(1, -1))[0]
@@ -113,7 +132,7 @@ def _predict_diseases_sync(symptoms: list[str], top_k: int = 3) -> list[dict]:
 
     results = []
     for idx in top_indices:
-        if probas[idx] < 0.01:
+        if probas[idx] < 0.05:
             continue
         disease_name = label_encoder.inverse_transform([idx])[0]
         results.append({"name": disease_name, "probability": float(probas[idx])})
@@ -171,19 +190,44 @@ async def analyze_symptoms_local(
                 ],
             }
 
+        # If top prediction is very weak, treat as inconclusive
+        if predictions[0]["probability"] < 0.15:
+            symptom_names = ", ".join(s.replace("_", " ") for s in symptoms)
+            return {
+                "possible_conditions": [],
+                "severity": "info",
+                "summary": f"Your symptoms ({symptom_names}) are common and could have many causes. With just {'one symptom' if len(symptoms) == 1 else 'few symptoms'}, a specific diagnosis is difficult. Please add more symptoms for better accuracy, or visit your nearest PHC.",
+                "recommended_medicines": [],
+                "home_care": [
+                    "Rest and stay hydrated",
+                    "Monitor symptoms for changes",
+                    "Visit PHC if symptoms persist beyond 3 days",
+                ],
+                "warning_signs": [
+                    "Symptoms getting worse",
+                    "New symptoms developing",
+                    "Difficulty breathing or high fever",
+                ],
+                "see_doctor_urgency": "monitor",
+                "follow_up_questions": [
+                    "Do you have any other symptoms?",
+                    "How long have you had these symptoms?",
+                ],
+            }
+
         metadata = _load_disease_metadata()
         top_disease = predictions[0]["name"]
         disease_info = _find_metadata(top_disease, metadata)
 
-        # Build possible_conditions
+        # Build possible_conditions — only show medium/high confidence
         possible_conditions = []
         for pred in predictions:
             if pred["probability"] >= 0.3:
                 likelihood = "high"
-            elif pred["probability"] >= 0.1:
+            elif pred["probability"] >= 0.15:
                 likelihood = "medium"
             else:
-                likelihood = "low"
+                continue  # Skip low-confidence predictions
 
             info = _find_metadata(pred["name"], metadata)
             possible_conditions.append({
@@ -235,154 +279,25 @@ async def analyze_symptoms_local(
 
 
 def _preprocess_prescription_image(image_bytes: bytes):
-    """Pre-process prescription image for better OCR accuracy."""
-    from PIL import Image, ImageFilter, ImageEnhance
-
-    img = Image.open(io.BytesIO(image_bytes))
-    img = img.convert("L")
-
-    enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(2.0)
-
-    enhancer = ImageEnhance.Sharpness(img)
-    img = enhancer.enhance(2.0)
-
-    img = img.point(lambda x: 0 if x < 140 else 255, "1")
-    img = img.filter(ImageFilter.MedianFilter(size=3))
-
-    return img
+    """Backwards-compatible wrapper for OCR pre-processing."""
+    return preprocess_prescription_page(image_bytes)
 
 
 def _parse_prescription_text(raw_text: str) -> dict:
-    """Parse OCR text to extract medicines, dosage, doctor name, date."""
-    lines = [l.strip() for l in raw_text.split("\n") if l.strip()]
-
-    medicines = []
-    doctor_name = None
-    date = None
-
-    # Doctor name patterns
-    for line in lines:
-        match = re.search(
-            r"(?:Dr\.?|Doctor)\s+([A-Z][a-zA-Z\s\.]+)", line, re.IGNORECASE
-        )
-        if match:
-            doctor_name = match.group(1).strip()
-            break
-
-    # Date patterns
-    for line in lines:
-        match = re.search(
-            r"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})", line
-        )
-        if not match:
-            match = re.search(
-                r"(\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{2,4})",
-                line,
-                re.IGNORECASE,
-            )
-        if match:
-            date = match.group(1).strip()
-            break
-
-    # Frequency normalization map
-    freq_map = {
-        "od": "once daily",
-        "bd": "twice daily",
-        "tds": "three times daily",
-        "qid": "four times daily",
-        "sos": "as needed",
-        "hs": "at bedtime",
-        "prn": "as needed",
-        "1-0-1": "twice daily (morning-evening)",
-        "1-1-1": "three times daily",
-        "1-0-0": "once daily (morning)",
-        "0-0-1": "once daily (night)",
-        "0-1-0": "once daily (afternoon)",
-    }
-
-    # Medicine patterns
-    med_pattern = re.compile(
-        r"(?:Tab\.?|Cap\.?|Syp\.?|Inj\.?|Oint\.?|Cream|Drops?|Gel)?\s*"
-        r"([A-Za-z][A-Za-z\s\-]+?)\s+"
-        r"(\d+\s*(?:mg|ml|g|mcg|%)?)\s*"
-        r"((?:BD|TDS|QID|OD|SOS|HS|PRN|"
-        r"[0-1]-[0-1]-[0-1]|"
-        r"once|twice|thrice|"
-        r"\d+\s*times?\s*(?:a|per)\s*day))\s*"
-        r"(?:x\s*|for\s*)?(\d+\s*(?:days?|weeks?|months?))?\s*",
-        re.IGNORECASE,
-    )
-
-    for line in lines:
-        match = med_pattern.search(line)
-        if match:
-            name = match.group(1).strip()
-            dosage = match.group(2).strip()
-            frequency_raw = match.group(3).strip().lower()
-            duration = match.group(4).strip() if match.group(4) else ""
-            frequency = freq_map.get(frequency_raw, frequency_raw)
-
-            medicines.append({
-                "brand_name": name,
-                "generic_name": None,
-                "dosage": dosage,
-                "frequency": frequency,
-                "duration": duration,
-            })
-
-    # Fallback: if regex didn't catch medicines, try line-by-line heuristic
-    if not medicines:
-        dosage_forms = ["tab", "cap", "syp", "inj", "oint", "cream", "drops", "gel"]
-        for line in lines:
-            lower_line = line.lower()
-            if any(form in lower_line for form in dosage_forms):
-                medicines.append({
-                    "brand_name": line.strip()[:60],
-                    "generic_name": None,
-                    "dosage": "",
-                    "frequency": "",
-                    "duration": "",
-                })
-
-    confidence = (
-        "high" if medicines and doctor_name
-        else "medium" if medicines
-        else "low"
-    )
-
-    return {
-        "medicines": medicines,
-        "doctor_name": doctor_name,
-        "date": date,
-        "notes": f"Extracted via local OCR (Tesseract). {len(lines)} lines parsed.",
-        "confidence": confidence,
-    }
+    """Backwards-compatible wrapper for prescription parsing."""
+    return parse_prescription_text(raw_text)
 
 
-def _extract_prescription_sync(image_bytes: bytes) -> dict:
-    """Full pipeline: preprocess -> OCR -> parse."""
-    import pytesseract
-
-    try:
-        img = _preprocess_prescription_image(image_bytes)
-        raw_text = pytesseract.image_to_string(img, config="--oem 3 --psm 6")
-
-        if not raw_text.strip():
-            return {
-                "error": "Could not extract any text from the image. Please ensure the prescription is clearly visible."
-            }
-
-        return _parse_prescription_text(raw_text)
-    except Exception as e:
-        return {"error": f"Local OCR failed: {str(e)}"}
+def _extract_prescription_sync(image_bytes: bytes, mime_type: str = "image/jpeg") -> dict:
+    """Run local OCR pipeline with trained model when available and local fallback."""
+    return extract_prescription_with_local_model(image_bytes, mime_type)
 
 
 async def extract_prescription_local(
     image_data: bytes, mime_type: str = "image/jpeg"
 ) -> dict:
     """Async wrapper for local prescription extraction."""
-    return await asyncio.to_thread(_extract_prescription_sync, image_data)
+    return await asyncio.to_thread(_extract_prescription_sync, image_data, mime_type)
 
 
 # ─── Voice Transcription ─────────────────────────────────────────────

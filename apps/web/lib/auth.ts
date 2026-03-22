@@ -12,14 +12,28 @@ export interface WebUser {
   role: UserRole;
 }
 
-function mapToWebUser(user: User): WebUser | null {
+export interface RegisterResult {
+  success: boolean;
+  requiresOtp: boolean;
+  message?: string;
+  user?: WebUser | null;
+}
+
+function normalizeRole(role: unknown): UserRole {
+  if (role === 'admin' || role === 'sahayak' || role === 'citizen') {
+    return role;
+  }
+  return 'citizen';
+}
+
+function mapToWebUser(user: User, roleOverride?: UserRole): WebUser | null {
   if (!user.email) return null;
 
   return {
     id: user.id,
     email: user.email,
     name: user.user_metadata?.name || '',
-    role: (user.user_metadata?.role as UserRole) || 'citizen',
+    role: roleOverride || normalizeRole(user.user_metadata?.role),
   };
 }
 
@@ -28,10 +42,35 @@ export function getSession(): WebUser | null {
   const stored = localStorage.getItem(SESSION_KEY);
   if (!stored) return null;
   try {
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    return {
+      ...parsed,
+      role: normalizeRole(parsed?.role),
+    };
   } catch {
+    localStorage.removeItem(SESSION_KEY);
     return null;
   }
+}
+
+async function getAuthoritativeRole(userId: string, fallbackRole: UserRole): Promise<UserRole> {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Role lookup error:', error.message);
+    return fallbackRole;
+  }
+
+  return normalizeRole(data?.role ?? fallbackRole);
+}
+
+function persistSession(webUser: WebUser) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(webUser));
 }
 
 export async function login(email: string, password: string): Promise<WebUser | null> {
@@ -48,9 +87,13 @@ export async function login(email: string, password: string): Promise<WebUser | 
   }
 
   if (data.user) {
-    const webUser = mapToWebUser(data.user);
+    const resolvedRole = await getAuthoritativeRole(
+      data.user.id,
+      normalizeRole(data.user.user_metadata?.role)
+    );
+    const webUser = mapToWebUser(data.user, resolvedRole);
     if (webUser) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(webUser));
+      persistSession(webUser);
     }
     return webUser;
   }
@@ -63,23 +106,55 @@ export async function register(
   password: string,
   name: string,
   role: UserRole
-): Promise<boolean> {
+): Promise<RegisterResult> {
   const supabase = getSupabaseClient();
 
-  const { error } = await supabase.auth.signUp({
+  // SECURITY: Only send name in metadata. Role is always set to 'citizen' by the
+  // database trigger — privileged roles must be granted by an admin post-signup.
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { name, role },
+      data: { name },
     },
   });
 
   if (error) {
     console.error('Register error:', error.message);
-    return false;
+    return {
+      success: false,
+      requiresOtp: false,
+      message: error.message,
+      user: null,
+    };
   }
 
-  return true;
+  if (!data.user) {
+    return {
+      success: false,
+      requiresOtp: false,
+      message: 'Sign up did not return a user.',
+      user: null,
+    };
+  }
+
+  // Session present => account is already active (OTP/email confirmation not needed).
+  if (data.session) {
+    const resolvedRole = await getAuthoritativeRole(data.user.id, role);
+    const webUser = mapToWebUser(data.user, resolvedRole);
+    if (webUser) persistSession(webUser);
+    return {
+      success: true,
+      requiresOtp: false,
+      user: webUser,
+    };
+  }
+
+  return {
+    success: true,
+    requiresOtp: true,
+    user: null,
+  };
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<WebUser | null> {
@@ -97,9 +172,13 @@ export async function verifyOtp(email: string, otp: string): Promise<WebUser | n
   }
 
   if (data.user) {
-    const webUser = mapToWebUser(data.user);
+    const resolvedRole = await getAuthoritativeRole(
+      data.user.id,
+      normalizeRole(data.user.user_metadata?.role)
+    );
+    const webUser = mapToWebUser(data.user, resolvedRole);
     if (webUser) {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(webUser));
+      persistSession(webUser);
     }
     return webUser;
   }
@@ -123,11 +202,15 @@ export async function checkAuth(): Promise<WebUser | null> {
     return null;
   }
 
-  const webUser = mapToWebUser(user);
+  const resolvedRole = await getAuthoritativeRole(
+    user.id,
+    normalizeRole(user.user_metadata?.role)
+  );
+  const webUser = mapToWebUser(user, resolvedRole);
   if (webUser) {
     try {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(webUser));
-      console.log('CheckAuth session refreshed in localStorage:', SESSION_KEY);
+      persistSession(webUser);
+      // Session refreshed from Supabase
     } catch (e) {
       console.error('Failed to save CheckAuth session to localStorage:', e);
     }

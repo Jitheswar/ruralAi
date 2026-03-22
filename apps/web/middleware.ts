@@ -5,7 +5,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 // Routes that require authentication
-const protectedRoutes = ['/dashboard', '/patients', '/settings', '/analytics'];
+const protectedRoutes = ['/dashboard', '/patients', '/settings'];
 
 
 export async function middleware(request: NextRequest) {
@@ -68,24 +68,34 @@ export async function middleware(request: NextRequest) {
     }
 
     // Role-based route protection for authenticated users
+    // SECURITY: Read role from public.users table (server-side), never from
+    // user_metadata which can be modified by the user via auth.updateUser().
     if (user && pathname.startsWith('/dashboard/')) {
-        const role = user.user_metadata?.role || 'citizen';
+        let role: string = 'citizen';
+        try {
+            const { data } = await supabase
+                .from('users')
+                .select('role')
+                .eq('id', user.id)
+                .maybeSingle();
+            role = data?.role || 'citizen';
+        } catch {
+            // On DB error, fall back to most restrictive role
+            role = 'citizen';
+        }
 
         const adminOnly = ['/dashboard/patients', '/dashboard/sahayak'];
         const sahayakOnly = ['/dashboard/my-patients'];
-        const citizenOnly = ['/dashboard/my-health', '/dashboard/symptom-checker', '/dashboard/prescription-scanner', '/dashboard/medicine-search', '/dashboard/nearby'];
+        // Health tools are available to all roles (citizens, sahayaks helping patients, admins)
+        // Only admin-panel and sahayak-panel routes are role-restricted
 
         const isAdminRoute = adminOnly.some((r) => pathname.startsWith(r));
         const isSahayakRoute = sahayakOnly.some((r) => pathname.startsWith(r));
-        const isCitizenRoute = citizenOnly.some((r) => pathname.startsWith(r));
 
         if (isAdminRoute && role !== 'admin') {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
-        if (isSahayakRoute && role !== 'sahayak') {
-            return NextResponse.redirect(new URL('/dashboard', request.url));
-        }
-        if (isCitizenRoute && role !== 'citizen') {
+        if (isSahayakRoute && role !== 'sahayak' && role !== 'admin') {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
     }

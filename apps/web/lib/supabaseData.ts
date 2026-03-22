@@ -11,6 +11,7 @@ export interface Patient {
   village: string | null;
   district: string | null;
   abha_id: string | null;
+  is_self_profile: boolean;
   is_synced: boolean;
   created_by: string;
   created_at: string;
@@ -21,8 +22,6 @@ export interface SahayakUser {
   email: string | null;
   name: string | null;
   phone: string | null;
-  village: string | null;
-  district: string | null;
   role: string;
   is_verified: boolean;
   kyc_status: string;
@@ -159,9 +158,13 @@ export interface Medicine {
   is_nlem: boolean;
 }
 
+function escapeIlikePattern(input: string): string {
+  return input.replace(/[%_\\]/g, '\\$&');
+}
+
 export async function searchMedicines(query: string, limit = 50): Promise<Medicine[]> {
   const supabase = getSupabaseClient();
-  const pattern = `%${query}%`;
+  const pattern = `%${escapeIlikePattern(query)}%`;
 
   const { data, error } = await supabase
     .from('medicines')
@@ -239,22 +242,5 @@ export async function getSahayakStats(userId: string) {
     myPatients: patients.length,
     pendingSync: patients.filter((p) => !p.is_synced).length,
     syncedRecords: patients.filter((p) => p.is_synced).length,
-  };
-}
-
-export async function getCitizenStats(userId: string) {
-  const supabase = getSupabaseClient();
-  const { data } = await supabase
-    .from('health_logs')
-    .select('id, log_type, created_at')
-    .eq('recorded_by', userId)
-    .order('created_at', { ascending: false });
-
-  const logs: { id: string; log_type: string; created_at: string }[] = data || [];
-  return {
-    totalLogs: logs.length,
-    lastVisit: logs.length > 0 ? logs[0].created_at : null,
-    vitalsCount: logs.filter((l) => l.log_type === 'vitals').length,
-    prescriptionCount: logs.filter((l) => l.log_type === 'prescription').length,
   };
 }

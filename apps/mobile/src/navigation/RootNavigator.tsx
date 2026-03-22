@@ -3,6 +3,7 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -17,6 +18,7 @@ import PrescriptionOCRScreen from '../screens/PrescriptionOCRScreen';
 import SahayakScreen from '../screens/SahayakScreen';
 import ProfileSetupScreen from '../screens/ProfileSetupScreen';
 import VitalsInputScreen from '../screens/VitalsInputScreen';
+import QRScanScreen from '../screens/QRScanScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +51,8 @@ function AuthStack() {
 }
 
 function AppStack() {
+  const { t } = useLanguage();
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -59,32 +63,32 @@ function AppStack() {
       <Stack.Screen
         name="PatientList"
         component={PatientListScreen}
-        options={{ title: 'Patients' }}
+        options={{ title: t('nav.patients') }}
       />
       <Stack.Screen
         name="AddPatient"
         component={AddPatientScreen}
-        options={{ title: 'Add Patient' }}
+        options={{ title: t('patient.addPatient') }}
       />
       <Stack.Screen
         name="PatientDetail"
         component={PatientDetailScreen}
-        options={{ title: 'Patient Details' }}
+        options={{ title: t('nav.patients') }}
       />
       <Stack.Screen
         name="SymptomChecker"
         component={SymptomCheckerScreen}
-        options={{ title: 'Symptom Check' }}
+        options={{ title: t('symptom.checkSymptoms') }}
       />
       <Stack.Screen
         name="VoiceInput"
         component={VoiceInputScreen}
-        options={{ title: 'Voice Input' }}
+        options={{ title: t('nav.voiceInput') }}
       />
       <Stack.Screen
         name="PrescriptionOCR"
         component={PrescriptionOCRScreen}
-        options={{ title: 'Scan Prescription' }}
+        options={{ title: t('prescription.scan') }}
       />
       <Stack.Screen
         name="Sahayak"
@@ -94,7 +98,12 @@ function AppStack() {
       <Stack.Screen
         name="VitalsInput"
         component={VitalsInputScreen}
-        options={{ title: 'Record Vitals' }}
+        options={{ title: t('patient.vitals') }}
+      />
+      <Stack.Screen
+        name="QRScan"
+        component={QRScanScreen}
+        options={{ title: t('nav.qrShare') }}
       />
     </Stack.Navigator>
   );

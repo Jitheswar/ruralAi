@@ -32,10 +32,15 @@ export function evaluateTriage(input: TriageInput): TriageResult[] {
   // Check emergency rules first (highest priority)
   for (const rule of emergencyRules.rules) {
     if (jsonLogic.apply(rule.rule as any, input)) {
+      const severity = (['critical', 'warning', 'info'] as const).includes(
+        rule.severity as any
+      )
+        ? (rule.severity as TriageResult['severity'])
+        : 'critical';
       results.push({
         ruleId: rule.id,
         name: rule.name,
-        severity: rule.severity as 'critical',
+        severity,
         message: rule.action.message,
         instructions: rule.action.instructions,
       });

@@ -3,12 +3,19 @@ Symptom Analysis Router — AI-powered symptom checking with Gemini.
 Emergency rules (json-logic) run locally first, then AI analysis.
 """
 
-from fastapi import APIRouter, Depends
-from pydantic import BaseModel
+import logging
+
+from fastapi import APIRouter, Depends, Request
+from pydantic import BaseModel, field_validator
+
+from services.rate_limit import limiter
 
 from services.ai_service import analyze_symptoms
 from services.medicine_db import get_all_medicine_names
 from services.auth import get_current_user_id, get_supabase_client
+from services.patient_utils import get_or_create_self_patient
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -36,6 +43,8 @@ EMERGENCY_RULES = [
         "severity": "critical",
         "any_of": ["sudden_numbness", "face_drooping", "speech_difficulty"],
         "requires_modifier": "sudden_onset",
+        # Safety-first: still alert on FAST symptoms if onset modifier is missing.
+        "modifier_optional": True,
         "message": "Possible stroke detected. Time is critical. Call 108 immediately.",
         "instructions": [
             "Note the time symptoms started",
@@ -65,29 +74,38 @@ def check_emergency_rules(symptoms: list[str], modifiers: list[str]) -> list[dic
     """Check symptoms against emergency rules (instant, no API call)."""
     alerts = []
     for rule in EMERGENCY_RULES:
-        # Check required symptoms (all must be present)
-        required = rule.get("required_symptoms", [])
+        required_groups = rule.get("required_symptoms", [])
+        any_of = rule.get("any_of", [])
+        req_mod = rule.get("requires_modifier")
+        modifier_optional = rule.get("modifier_optional", False)
+
+        # All required symptom groups must have at least one match
         required_met = all(
-            any(s in symptoms for s in group) for group in required
+            any(s in symptoms for s in group) for group in required_groups
         )
 
-        # Check any_of (at least one must be present)
-        any_of = rule.get("any_of", [])
-        any_met = any(s in symptoms for s in any_of) if any_of else True
+        # At least one any_of symptom must be present (if specified)
+        any_met = any(s in symptoms for s in any_of) if any_of else False
 
-        # Check modifier requirement
-        req_mod = rule.get("requires_modifier")
-        mod_met = req_mod in modifiers if req_mod else True
+        # Modifier must be present (if specified)
+        mod_present = req_mod in modifiers if req_mod else True
+        mod_met = mod_present if req_mod and not modifier_optional else True
 
-        if (required_met or not required) and any_met and mod_met:
-            # For rules without required_symptoms, at least one any_of must match
-            if not required and not any(s in symptoms for s in any_of):
-                continue
+        # Rule triggers when:
+        # - All required groups satisfied (or none specified)
+        # - At least one any_of symptom matches (rules must have a trigger)
+        # - Required modifier is present (if specified)
+        has_required = required_met if required_groups else True
+        has_trigger = any_met
+
+        if has_required and has_trigger and mod_met:
+            confidence = "high" if mod_present else "medium"
             alerts.append(
                 {
                     "rule_id": rule["id"],
                     "name": rule["name"],
                     "severity": rule["severity"],
+                    "confidence": confidence,
                     "message": rule["message"],
                     "instructions": rule["instructions"],
                 }
@@ -108,6 +126,20 @@ class SymptomAnalysisRequest(BaseModel):
     current_medications: list[str] = []
     patient_id: str | None = None
 
+    @field_validator('symptoms')
+    @classmethod
+    def validate_symptoms_length(cls, v: list[str]) -> list[str]:
+        if len(v) > 20:
+            raise ValueError('Maximum 20 symptoms allowed')
+        return v
+
+    @field_validator('modifiers')
+    @classmethod
+    def validate_modifiers_length(cls, v: list[str]) -> list[str]:
+        if len(v) > 10:
+            raise ValueError('Maximum 10 modifiers allowed')
+        return v
+
 
 class SymptomAnalysisResponse(BaseModel):
     emergency_alerts: list[dict]
@@ -120,9 +152,11 @@ class SymptomAnalysisResponse(BaseModel):
 
 
 @router.post("/analyze", response_model=SymptomAnalysisResponse)
+@limiter.limit("10/minute")
 async def analyze(
+    request: Request,
     req: SymptomAnalysisRequest,
-    user_id: str = Depends(get_current_user_id)
+    user_id: str = Depends(get_current_user_id),
 ):
     """Analyze symptoms: emergency rules first (instant), then AI analysis."""
 
@@ -155,21 +189,7 @@ async def analyze(
 
         # If no patient_id provided, find or create "Self" patient for this user
         if not patient_id:
-            # Check if user has any patients created by them
-            res = supabase.table("patients").select("id").eq("created_by", user_id).limit(1).execute()
-            if res.data:
-                patient_id = res.data[0]["id"]
-            else:
-                # Create new patient (avoid querying users table — RLS recursion)
-                new_patient = {
-                    "created_by": user_id,
-                    "name": "My Health Profile",
-                    "age": req.age,
-                    "gender": req.gender,
-                }
-                create_res = supabase.table("patients").insert(new_patient).execute()
-                if create_res.data:
-                    patient_id = create_res.data[0]["id"]
+            patient_id = get_or_create_self_patient(supabase, user_id, req.age, req.gender)
 
         if patient_id:
             log_entry = {
@@ -177,7 +197,7 @@ async def analyze(
                 "recorded_by": user_id,
                 "log_type": "symptoms",
                 "data": {
-                    "input": req.dict() if hasattr(req, 'dict') else req.model_dump(),
+                    "input": req.model_dump(),
                     "analysis": ai_result,
                     "emergency_alerts": emergency_alerts,
                 },
@@ -187,7 +207,7 @@ async def analyze(
             saved = True
 
     except Exception as e:
-        print(f"Failed to auto-save record: {e}")
+        logger.error("Failed to auto-save record: %s", e)
 
     return SymptomAnalysisResponse(
         emergency_alerts=emergency_alerts,

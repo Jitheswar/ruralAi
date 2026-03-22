@@ -7,25 +7,27 @@ DB calls are offloaded via asyncio.to_thread to avoid blocking the event loop.
 
 import asyncio
 import os
-from supabase import create_client, Client
+import threading
+import time
+from services.auth import get_supabase_client
 
-_client: Client | None = None
+_MEDICINE_CACHE_LOCK = threading.Lock()
+_MEDICINE_NAMES_CACHE: dict[str, str | float | None] = {"value": None, "expires_at": 0.0}
+_MEDICINE_NAMES_TTL_SECONDS = int(os.getenv("MEDICINE_NAMES_CACHE_TTL_SECONDS", "600"))
 
 
-def _get_client() -> Client:
-    global _client
-    if _client is None:
-        url = os.getenv("SUPABASE_URL", "")
-        key = os.getenv("SUPABASE_ANON_KEY", "")
-        if not url or not key:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_ANON_KEY must be set")
-        _client = create_client(url, key)
-    return _client
+def _get_client():
+    return get_supabase_client()
+
+
+def _escape_ilike(s: str) -> str:
+    """Escape special ilike wildcard characters in user input."""
+    return s.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
 def _search_medicines_sync(query: str, limit: int) -> list[dict]:
     client = _get_client()
-    q = query.strip().lower()
+    q = _escape_ilike(query.strip().lower())
     result = (
         client.table("medicines")
         .select("*")
@@ -63,7 +65,7 @@ def _get_medicines_by_names_sync(names: list[str]) -> list[dict]:
     # Build a single OR filter for all names
     conditions = []
     for name in names:
-        q = name.strip().lower()
+        q = _escape_ilike(name.strip().lower())
         if q:
             conditions.append(f"brand_name.ilike.%{q}%")
             conditions.append(f"generic_name.ilike.%{q}%")
@@ -111,6 +113,7 @@ def _get_all_medicine_names_sync() -> str:
         client.table("medicines")
         .select("generic_name, brand_name, strength, dosage_form, category")
         .order("generic_name")
+        .limit(500)
         .execute()
     )
     if not result.data:
@@ -125,4 +128,20 @@ def _get_all_medicine_names_sync() -> str:
 
 async def get_all_medicine_names() -> str:
     """Get a compact list of all medicines for Gemini prompt context."""
-    return await asyncio.to_thread(_get_all_medicine_names_sync)
+    now = time.time()
+    with _MEDICINE_CACHE_LOCK:
+        cached_value = _MEDICINE_NAMES_CACHE.get("value")
+        expires_at = float(_MEDICINE_NAMES_CACHE.get("expires_at") or 0.0)
+        if isinstance(cached_value, str) and now < expires_at:
+            return cached_value
+
+    value = await asyncio.to_thread(_get_all_medicine_names_sync)
+
+    with _MEDICINE_CACHE_LOCK:
+        # Double-check: another thread may have refreshed while we waited
+        expires_at = float(_MEDICINE_NAMES_CACHE.get("expires_at") or 0.0)
+        if now >= expires_at:
+            _MEDICINE_NAMES_CACHE["value"] = value
+            _MEDICINE_NAMES_CACHE["expires_at"] = time.time() + _MEDICINE_NAMES_TTL_SECONDS
+
+    return value

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, Image, StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { scanPrescription, PrescriptionResult, PrescriptionMedicine } from '../services/aiService';
+import { supabase } from '../services/supabaseClient';
 import { useSymptomEngine } from '../hooks/useSymptomEngine';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type ScanState = 'idle' | 'scanning' | 'done';
 
@@ -40,6 +43,7 @@ function MedicineCard({ med }: { med: PrescriptionMedicine }) {
 }
 
 export default function PrescriptionOCRScreen({ navigation }: any) {
+  const { t } = useLanguage();
   const [state, setState] = useState<ScanState>('idle');
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [result, setResult] = useState<PrescriptionResult | null>(null);
@@ -47,13 +51,51 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
 
   async function handlePickImage(source: 'camera' | 'gallery') {
     try {
-      // In production: use expo-image-picker
-      // For now, simulate with a mock URI
-      const mockUri = 'file:///mock-prescription.jpg';
-      setImageUri(mockUri);
+      let pickerResult: ImagePicker.ImagePickerResult;
+
+      if (source === 'camera') {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Required', 'Camera access is needed to scan prescriptions.');
+          return;
+        }
+        pickerResult = await ImagePicker.launchCameraAsync({
+          mediaTypes: ['images'],
+          quality: 0.8,
+          allowsEditing: false,
+        });
+      } else {
+        // Request media library permissions
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permission Required', 'Photo library access is needed to select prescriptions.');
+          return;
+        }
+        pickerResult = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          quality: 0.8,
+          allowsEditing: false,
+        });
+      }
+
+      // User cancelled the picker
+      if (pickerResult.canceled || !pickerResult.assets || pickerResult.assets.length === 0) {
+        return;
+      }
+
+      const uri = pickerResult.assets[0].uri;
+      console.log('[OCR] Image selected, URI:', uri);
+      setImageUri(uri);
       setState('scanning');
 
-      const prescription = await scanPrescription(mockUri);
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        throw new Error('You must be logged in to scan prescriptions.');
+      }
+
+      const prescription = await scanPrescription(uri, token);
       setResult(prescription);
       setState('done');
     } catch (err) {
@@ -84,9 +126,9 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.title}>Prescription Scanner</Text>
+        <Text style={styles.title}>{t('prescription.scanner')}</Text>
         <Text style={styles.subtitle}>
-          Scan a prescription to find affordable Jan Aushadhi alternatives.
+          {t('prescription.scanDescription')}
         </Text>
 
         {state === 'idle' && (
@@ -110,7 +152,7 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
             </Pressable>
 
             <View style={styles.infoCard}>
-              <Text style={styles.infoCardTitle}>How it works</Text>
+              <Text style={styles.infoCardTitle}>{t('prescription.howItWorks')}</Text>
               <View style={styles.infoStep}>
                 <Text style={styles.infoStepNumber}>1.</Text>
                 <Text style={styles.infoStepText}>
@@ -135,9 +177,12 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
 
         {state === 'scanning' && (
           <View style={styles.scanningContainer}>
+            {imageUri && (
+              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+            )}
             <Text style={{ fontSize: 48, marginBottom: 16 }}>🔍</Text>
             <Text style={styles.scanningText}>
-              Scanning prescription...
+              {t('prescription.scanning')}
             </Text>
             <Text style={styles.scanningSubtext}>
               Extracting medicine information
@@ -147,28 +192,31 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
 
         {result && state === 'done' && (
           <View>
+            {imageUri && (
+              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+            )}
             <View style={styles.doctorCard}>
               <View style={styles.doctorRow}>
-                <Text style={styles.doctorLabel}>Prescribed by</Text>
+                <Text style={styles.doctorLabel}>{t('prescription.prescribedBy')}</Text>
                 <Text style={styles.doctorValue}>
                   {result.doctor_name}
                 </Text>
               </View>
               <View style={styles.doctorRowLast}>
-                <Text style={styles.doctorLabel}>Date</Text>
+                <Text style={styles.doctorLabel}>{t('prescription.date')}</Text>
                 <Text style={styles.doctorDate}>{result.date}</Text>
               </View>
             </View>
 
             <Text style={styles.medicinesTitle}>
-              Medicines ({result.medicines.length})
+              {t('prescription.medicines')} ({result.medicines.length})
             </Text>
             {result.medicines.map((med, i) => (
               <MedicineCard key={i} med={med} />
             ))}
 
             <View style={styles.totalSavingsCard}>
-              <Text style={styles.totalSavingsTitle}>Total Savings</Text>
+              <Text style={styles.totalSavingsTitle}>{t('prescription.totalSavings')}</Text>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Market total</Text>
                 <Text style={styles.totalValue}>
@@ -193,14 +241,14 @@ export default function PrescriptionOCRScreen({ navigation }: any) {
               onPress={handleSaveToRecord}
               style={styles.saveButton}
             >
-              <Text style={styles.saveButtonText}>Save to Health Record</Text>
+              <Text style={styles.saveButtonText}>{t('common.save')}</Text>
             </Pressable>
 
             <Pressable
               onPress={handleReset}
               style={styles.scanAnotherButton}
             >
-              <Text style={styles.scanAnotherText}>Scan Another</Text>
+              <Text style={styles.scanAnotherText}>{t('prescription.scanAnother')}</Text>
             </Pressable>
           </View>
         )}
@@ -486,5 +534,12 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 24,
+  },
+  previewImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    marginBottom: 16,
+    resizeMode: 'cover',
   },
 });

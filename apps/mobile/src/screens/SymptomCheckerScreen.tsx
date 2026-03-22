@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useSymptomEngine } from '../hooks/useSymptomEngine';
 import { getSymptomList } from '../engine/triageEngine';
 import SymptomBubble from '../components/SymptomBubble';
 import ChatMessage from '../components/ChatMessage';
 import RedFlagAlert from '../components/RedFlagAlert';
+import { useRoute } from '@react-navigation/native';
 
 type ChatStep = 'symptoms' | 'duration' | 'modifiers' | 'results';
 
@@ -16,6 +17,16 @@ export default function SymptomCheckerScreen() {
   const [step, setStep] = useState<ChatStep>('symptoms');
   const [showRedFlag, setShowRedFlag] = useState(false);
   const symptoms = getSymptomList();
+  const route = useRoute<any>();
+
+  // Apply preselected symptoms from voice input on mount
+  useEffect(() => {
+    const preselected = route.params?.preselectedSymptoms as string[] | undefined;
+    if (preselected?.length) {
+      preselected.forEach((id) => engine.addSymptom(id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleNext() {
     if (step === 'symptoms' && engine.selectedSymptoms.length > 0) {

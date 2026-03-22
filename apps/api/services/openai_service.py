@@ -3,38 +3,24 @@ OpenAI Service — handles symptom analysis and prescription OCR via OpenAI (GPT
 """
 
 import os
-import json
 from openai import AsyncOpenAI
-from services.ai_models import get_model_for_task
-
-# Support both standard and the user's existing key name
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or os.getenv("OPEN_AI_KEY")
+from services.ai_models import get_cloud_model_for_task, parse_json_response as _parse_json_response
 
 _client = None
+_client_key = None
 
 
 def _get_client():
-    global _client
-    if _client is None and OPENAI_API_KEY:
-        _client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+    global _client, _client_key
+    key = os.getenv("OPENAI_API_KEY") or os.getenv("OPEN_AI_KEY")
+    if not key:
+        _client = None
+        _client_key = None
+        return None
+    if _client is None or _client_key != key:
+        _client = AsyncOpenAI(api_key=key)
+        _client_key = key
     return _client
-
-
-def _parse_json_response(text: str) -> dict:
-    """Extract JSON from OpenAI response (handles markdown code blocks)."""
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        lines = cleaned.split("\n")
-        # Remove first line (```json) and last line (```)
-        if lines and lines[0].startswith("```"):
-            lines = lines[1:]
-        if lines and lines[-1].strip() == "```":
-            lines = lines[:-1]
-        cleaned = "\n".join(lines)
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        return {"error": "Failed to parse AI response", "raw": text}
 
 
 async def analyze_symptoms_openai(
@@ -106,10 +92,7 @@ Respond ONLY with valid JSON in this exact format:
 }}"""
 
     try:
-        model_name = get_model_for_task("symptom_analysis")
-        # Fallback to gpt-4o if a gemini model is somehow selected but we are successfully in openai service
-        if "gemini" in model_name: 
-             model_name = "gpt-4o"
+        model_name = get_cloud_model_for_task("symptom_analysis", "openai")
 
         response = await client.chat.completions.create(
             model=model_name,
@@ -129,12 +112,22 @@ Respond ONLY with valid JSON in this exact format:
         return {"error": f"OpenAI API error: {error_msg}"}
 
 
-async def extract_prescription_openai(image_url: str = None, image_b64: str = None) -> dict:
+async def extract_prescription_openai(
+    image_url: str = None,
+    image_b64: str = None,
+    image_data: bytes = None,
+    mime_type: str = "image/jpeg",
+) -> dict:
     """Extract medicines from a prescription image using OpenAI Vision."""
     client = _get_client()
     if not client:
         return {"error": "OpenAI API key not configured"}
-        
+
+    # Convert raw bytes to base64 if provided (for caller compatibility)
+    if image_data and not image_b64:
+        import base64
+        image_b64 = base64.b64encode(image_data).decode("utf-8")
+
     if not image_url and not image_b64:
         return {"error": "No image provided"}
 
@@ -142,7 +135,7 @@ async def extract_prescription_openai(image_url: str = None, image_b64: str = No
     if image_url:
         image_content = {"type": "image_url", "image_url": {"url": image_url}}
     else:
-        image_content = {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}}
+        image_content = {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{image_b64}"}}
 
     prompt = """Extract all medicines from this prescription image. For each medicine, identify:
 - Medicine name (brand name as written)
@@ -174,10 +167,7 @@ Respond ONLY with valid JSON in this exact format:
 If you cannot read the prescription clearly, still try your best and add a "confidence" field (low/medium/high)."""
 
     try:
-        model_name = get_model_for_task("prescription_ocr")
-         # Fallback to gpt-4o if a gemini model is somehow selected
-        if "gemini" in model_name: 
-             model_name = "gpt-4o"
+        model_name = get_cloud_model_for_task("prescription_ocr", "openai")
 
         response = await client.chat.completions.create(
             model=model_name,

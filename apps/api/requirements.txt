@@ -21,3 +21,6 @@ Pillow>=10.0.0
 
 # Local Speech-to-Text
 faster-whisper>=0.10.0
+
+# Testing
+pytest>=8.0.0

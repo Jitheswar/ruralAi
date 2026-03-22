@@ -27,7 +27,7 @@ DISEASE_NAME_FIXES = {
     "Hypertension ": "Hypertension",
     "Osteoarthristis": "Osteoarthritis",
     "Peptic ulcer diseae": "Peptic ulcer disease",
-    "(vertigo) Paroymsal  Positional Vertigo": "(vertigo) Paroymsal  Positional Vertigo",
+    "(vertigo) Paroymsal  Positional Vertigo": "(vertigo) Paroxysmal Positional Vertigo",
 }
 
 
@@ -83,11 +83,15 @@ def main():
 
     print(f"\nDiseases: {list(label_encoder.classes_)}\n")
 
-    # 5. Train model
-    print("Training Random Forest (200 trees)...")
+    # 5. Train model — optimized for maximum precision
+    print("Training Random Forest (500 trees, no depth limit)...")
     model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=20,
+        n_estimators=500,
+        max_depth=None,        # Let trees grow fully for maximum precision
+        min_samples_split=3,   # Require at least 3 samples to split
+        min_samples_leaf=1,
+        max_features="sqrt",   # Standard for classification
+        class_weight="balanced",  # Handle imbalanced disease classes
         random_state=42,
         n_jobs=-1,
     )

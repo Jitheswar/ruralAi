@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { database } from '../db';
 import Patient from '../db/models/Patient';
+import OutbreakAlertBanner from '../components/OutbreakAlertBanner';
+import { LanguageSelector } from '../components/LanguageSelector';
 
 interface DashboardCardProps {
   title: string;
@@ -36,6 +39,7 @@ function DashboardCard({ title, subtitle, icon, color, onPress }: DashboardCardP
 
 export default function DashboardScreen({ navigation }: any) {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const [patientCount, setPatientCount] = useState(0);
 
   useEffect(() => {
@@ -53,7 +57,7 @@ export default function DashboardScreen({ navigation }: any) {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View>
-            <Text style={styles.welcomeText}>Welcome back</Text>
+            <Text style={styles.welcomeText}>{t('auth.welcomeBack')}</Text>
             <Text style={styles.userName}>
               {user?.name || user?.email || 'User'}
             </Text>
@@ -62,51 +66,64 @@ export default function DashboardScreen({ navigation }: any) {
             onPress={logout}
             style={styles.logoutButton}
           >
-            <Text style={styles.logoutText}>Logout</Text>
+            <Text style={styles.logoutText}>{t('auth.logout')}</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Cards */}
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <OutbreakAlertBanner />
+
+        <View style={styles.langRow}>
+          <LanguageSelector />
+        </View>
+
         <DashboardCard
-          title="Patients"
+          title={t('nav.patients')}
           subtitle={`${patientCount} registered`}
           icon="👥"
           color="#2563EB"
           onPress={() => navigation.navigate('PatientList')}
         />
         <DashboardCard
-          title="Symptom Check"
-          subtitle="AI-powered health assessment"
+          title={t('symptom.checkSymptoms')}
+          subtitle={t('symptom.describeSymptoms')}
           icon="🩺"
           color="#059669"
           onPress={() => navigation.navigate('SymptomChecker')}
         />
         <DashboardCard
-          title="Voice Input"
-          subtitle="Describe symptoms by voice"
+          title={t('nav.voiceInput')}
+          subtitle={t('symptom.voiceInput')}
           icon="🎤"
           color="#7C3AED"
           onPress={() => navigation.navigate('VoiceInput')}
         />
         <DashboardCard
-          title="Scan Prescription"
-          subtitle="Find affordable alternatives"
+          title={t('prescription.scan')}
+          subtitle={t('prescription.medicineName')}
           icon="📋"
           color="#D97706"
           onPress={() => navigation.navigate('PrescriptionOCR')}
         />
         <DashboardCard
-          title="Sahayak Mode"
-          subtitle="Manage village health records"
+          title={t('nav.sahayak')}
+          subtitle={t('nav.patients')}
           icon="🤝"
           color="#0891B2"
           onPress={() => navigation.navigate('Sahayak')}
         />
         <DashboardCard
-          title="Emergency"
-          subtitle="Call 108 for ambulance"
+          title={t('nav.qrShare')}
+          subtitle="Scan QR to view records"
+          icon="📱"
+          color="#6366F1"
+          onPress={() => navigation.navigate('QRScan')}
+        />
+        <DashboardCard
+          title={t('advice.emergency')}
+          subtitle={t('advice.emergency')}
           icon="🚨"
           color="#DC2626"
         />
@@ -198,6 +215,9 @@ const styles = StyleSheet.create({
   chevron: {
     color: '#9CA3AF',
     fontSize: 20,
+  },
+  langRow: {
+    marginBottom: 16,
   },
   spacer: {
     height: 24,

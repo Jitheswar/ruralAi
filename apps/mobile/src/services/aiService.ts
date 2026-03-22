@@ -43,11 +43,15 @@ export interface PrescriptionResult {
   notes: string | null;
   total_market_price: number;
   total_jan_aushadhi_price: number;
+  raw_text?: string;
+  ocr_engine?: string;
+  ocr_confidence?: number;
+  warnings?: string[];
 }
 
 // ----- API calls -----
 
-export async function transcribeAudio(audioUri: string): Promise<TranscriptionResult> {
+export async function transcribeAudio(audioUri: string, token?: string): Promise<TranscriptionResult> {
   const formData = new FormData();
   formData.append('audio', {
     uri: audioUri,
@@ -55,9 +59,15 @@ export async function transcribeAudio(audioUri: string): Promise<TranscriptionRe
     name: 'recording.m4a',
   } as any);
 
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API_BASE_URL}/api/voice/transcribe`, {
     method: 'POST',
     body: formData,
+    headers,
   });
 
   if (!res.ok) throw new Error(`Voice API error: HTTP ${res.status}`);
@@ -69,11 +79,17 @@ export async function transcribeAudio(audioUri: string): Promise<TranscriptionRe
 
 export async function transcribeText(
   text: string,
-  language: string = 'hi'
+  language: string = 'hi',
+  token?: string,
 ): Promise<TranscriptionResult> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API_BASE_URL}/api/voice/transcribe-text`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ text, language }),
   });
 
@@ -84,7 +100,11 @@ export async function transcribeText(
   return data.transcription;
 }
 
-export async function scanPrescription(imageUri: string, token?: string): Promise<PrescriptionResult> {
+export async function scanPrescription(imageUri: string, token: string): Promise<PrescriptionResult> {
+  if (!token) {
+    throw new Error('Missing auth token for prescription scan');
+  }
+
   const formData = new FormData();
   formData.append('image', {
     uri: imageUri,
@@ -92,10 +112,9 @@ export async function scanPrescription(imageUri: string, token?: string): Promis
     name: 'prescription.jpg',
   } as any);
 
-  const headers: Record<string, string> = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+  };
 
   const res = await fetch(`${API_BASE_URL}/api/ocr/prescription`, {
     method: 'POST',
@@ -104,7 +123,9 @@ export async function scanPrescription(imageUri: string, token?: string): Promis
   });
 
   if (!res.ok) throw new Error(`OCR API error: HTTP ${res.status}`);
-  return await res.json();
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Prescription scan failed');
+  return data.prescription;
 }
 
 export async function lookupMedicine(

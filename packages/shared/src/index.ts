@@ -14,3 +14,6 @@ export { SUPABASE_URL, SUPABASE_ANON_KEY } from './lib/supabase';
 // Utils
 export { isValidIndianPhone, formatPhone, isValidOtp, isValidAbhaId } from './utils/validation';
 export { formatCurrency, formatAge, capitalizeFirst, truncate } from './utils/formatting';
+
+// i18n
+export * from './i18n';

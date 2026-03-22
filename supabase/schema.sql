@@ -28,8 +28,25 @@ ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own profile" ON public.users
   FOR SELECT USING (auth.uid() = id);
 
+-- Users can update their own profile but CANNOT change role, is_verified, or kyc_status.
+-- The WITH CHECK clause rejects any row where those privileged columns differ from the
+-- pre-UPDATE values (OLD is implicit — Postgres re-evaluates the USING predicate on the
+-- new row when WITH CHECK is absent, but WITH CHECK lets us add real column guards).
+-- Because RLS UPDATE policies cannot reference OLD directly, we compare against a
+-- sub-select on the current row to block privilege escalation.
 CREATE POLICY "Users can update own profile" ON public.users
-  FOR UPDATE USING (auth.uid() = id);
+  FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (
+    auth.uid() = id
+    AND role = (SELECT u.role FROM public.users u WHERE u.id = id)
+    AND is_verified = (SELECT u.is_verified FROM public.users u WHERE u.id = id)
+    AND kyc_status = (SELECT u.kyc_status FROM public.users u WHERE u.id = id)
+  );
+
+-- Users can insert their own profile (safety net for alternative signup flows)
+CREATE POLICY "Users can insert own profile" ON public.users
+  FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Admins can view all users
 CREATE POLICY "Admins can view all users" ON public.users
@@ -40,6 +57,8 @@ CREATE POLICY "Admins can view all users" ON public.users
   );
 
 -- Auto-create user profile on signup
+-- SECURITY: Always assigns 'citizen' role. Privileged roles (sahayak, admin) must be
+-- granted by an admin after signup — never trust client-supplied metadata for role.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -49,7 +68,7 @@ BEGIN
     NEW.email,
     NEW.phone,
     COALESCE(NEW.raw_user_meta_data->>'name', ''),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'citizen')
+    'citizen'
   );
   RETURN NEW;
 END;
@@ -73,7 +92,28 @@ CREATE TRIGGER update_users_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- -----------------------------------------------------------------------------
--- 2. DEVICES TABLE (device registry for session management)
+-- 2. ABDM OTP TABLE (shared stub transaction store)
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.abdm_pending_otps (
+  transaction_id TEXT PRIMARY KEY,
+  abha_id TEXT NOT NULL,
+  otp TEXT NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  max_attempts INTEGER NOT NULL DEFAULT 5,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_abdm_pending_otps_expires_at
+  ON public.abdm_pending_otps(expires_at);
+
+ALTER TABLE public.abdm_pending_otps ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.abdm_pending_otps FROM anon;
+REVOKE ALL ON public.abdm_pending_otps FROM authenticated;
+GRANT ALL ON public.abdm_pending_otps TO service_role;
+
+-- -----------------------------------------------------------------------------
+-- 3. DEVICES TABLE (device registry for session management)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.devices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -120,7 +160,7 @@ CREATE INDEX IF NOT EXISTS idx_devices_user_id ON public.devices(user_id);
 CREATE INDEX IF NOT EXISTS idx_devices_fingerprint ON public.devices(device_fingerprint);
 
 -- -----------------------------------------------------------------------------
--- 3. AUDIT LOG TABLE (immutable access log for compliance)
+-- 4. AUDIT LOG TABLE (immutable access log for compliance)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.audit_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -164,7 +204,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_log_timestamp ON public.audit_log(timestamp
 CREATE INDEX IF NOT EXISTS idx_audit_log_action ON public.audit_log(action);
 
 -- -----------------------------------------------------------------------------
--- 4. PATIENTS TABLE (for WatermelonDB sync)
+-- 5. PATIENTS TABLE (for WatermelonDB sync)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.patients (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -176,6 +216,8 @@ CREATE TABLE IF NOT EXISTS public.patients (
   village TEXT,
   district TEXT,
   abha_id TEXT,
+  user_id UUID REFERENCES auth.users(id),  -- Link patient to their own auth account (nullable)
+  is_self_profile BOOLEAN DEFAULT false,
   is_synced BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -209,6 +251,14 @@ CREATE POLICY "Admins can view all patients" ON public.patients
 
 CREATE INDEX IF NOT EXISTS idx_patients_created_by ON public.patients(created_by);
 CREATE INDEX IF NOT EXISTS idx_patients_abha_id ON public.patients(abha_id);
+CREATE INDEX IF NOT EXISTS idx_patients_user_id ON public.patients(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_patients_self_profile_unique
+  ON public.patients(created_by)
+  WHERE is_self_profile = true;
+
+-- Citizens can view their own patient record (linked via user_id)
+CREATE POLICY "Citizens can view own patient record" ON public.patients
+  FOR SELECT USING (user_id = auth.uid());
 
 -- -----------------------------------------------------------------------------
 -- 5. HEALTH LOGS TABLE (vitals, symptoms, etc.)
@@ -237,6 +287,10 @@ CREATE POLICY "Users can view health logs for their patients" ON public.health_l
     )
   );
 
+-- Users can also view health logs they personally recorded
+CREATE POLICY "Users can view own recorded logs" ON public.health_logs
+  FOR SELECT USING (recorded_by = auth.uid());
+
 CREATE POLICY "Users can insert health logs" ON public.health_logs
   FOR INSERT WITH CHECK (recorded_by = auth.uid());
 
@@ -251,6 +305,16 @@ CREATE POLICY "Admins can view all health logs" ON public.health_logs
 -- NO UPDATE POLICY - medical records are append-only
 REVOKE UPDATE ON public.health_logs FROM authenticated;
 REVOKE UPDATE ON public.health_logs FROM anon;
+
+-- Citizens can view health logs linked to their patient record
+CREATE POLICY "Citizens can view own health logs" ON public.health_logs
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.patients
+      WHERE patients.id = health_logs.patient_id
+        AND patients.user_id = auth.uid()
+    )
+  );
 
 CREATE INDEX IF NOT EXISTS idx_health_logs_patient_id ON public.health_logs(patient_id);
 CREATE INDEX IF NOT EXISTS idx_health_logs_recorded_by ON public.health_logs(recorded_by);

@@ -1,31 +1,78 @@
 """
-Prescription OCR Router — real Gemini Vision for prescription scanning,
-real Supabase medicine DB for lookups and price comparisons.
+Prescription OCR Router — local prescription scanning and
+Supabase medicine DB lookups/price comparisons.
 """
 
-from fastapi import APIRouter, UploadFile, File, Depends
+import logging
+import re
+
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
 from pydantic import BaseModel
+
+from services.rate_limit import limiter
 
 from services.ai_service import extract_prescription
 from services.medicine_db import search_medicines, get_medicines_by_names
 from services.auth import get_current_user_id, get_supabase_client
+from services.patient_utils import get_or_create_self_patient
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+
+def _normalize_medicine_name(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", name.lower()).strip()
+
+
+def _confidence_to_score(confidence: str | float | int | None) -> float:
+    if isinstance(confidence, (float, int)):
+        return max(0.0, min(1.0, float(confidence)))
+    if not confidence:
+        return 0.0
+    token = str(confidence).strip().lower()
+    return {
+        "high": 0.9,
+        "medium": 0.65,
+        "low": 0.35,
+    }.get(token, 0.0)
+
+
+def _is_reasonable_match(search_term: str, candidate: str) -> bool:
+    if not search_term or not candidate:
+        return False
+    if search_term == candidate:
+        return True
+
+    shorter, longer = (search_term, candidate) if len(search_term) <= len(candidate) else (candidate, search_term)
+    if len(shorter) >= 5 and shorter in longer:
+        return True
+
+    search_tokens = set(search_term.split())
+    candidate_tokens = set(candidate.split())
+    common = search_tokens.intersection(candidate_tokens)
+    return any(len(token) >= 5 for token in common)
+
 
 @router.post("/prescription")
+@limiter.limit("10/minute")
 async def scan_prescription(
+    request: Request,
     image: UploadFile = File(...),
     user_id: str = Depends(get_current_user_id)
 ):
     """
-    Accept a prescription image, extract medicines via Gemini Vision,
+    Accept a prescription image, extract medicines via local OCR,
     then look up Jan Aushadhi alternatives from the medicine database.
     """
     image_bytes = await image.read()
+    if len(image_bytes) > MAX_IMAGE_SIZE:
+        raise HTTPException(status_code=413, detail="Image too large. Maximum size is 10 MB.")
     mime_type = image.content_type or "image/jpeg"
 
-    # 1. Extract medicines from image using Gemini Vision
+    # 1. Extract medicines from image using local OCR pipeline
     extraction = await extract_prescription(image_bytes, mime_type)
 
     if "error" in extraction:
@@ -34,6 +81,10 @@ async def scan_prescription(
     raw_medicines = extraction.get("medicines", [])
     doctor_name = extraction.get("doctor_name") or "Unknown"
     date = extraction.get("date") or "Not specified"
+    raw_text = extraction.get("raw_text", "")
+    ocr_engine = extraction.get("ocr_engine", "local-ocr")
+    ocr_confidence = _confidence_to_score(extraction.get("ocr_confidence") or extraction.get("confidence"))
+    warnings = extraction.get("warnings", []) if isinstance(extraction.get("warnings"), list) else []
 
     # 2. Look up each extracted medicine in our database for Jan Aushadhi alternatives
     medicine_names = [
@@ -52,16 +103,16 @@ async def scan_prescription(
     for raw_med in raw_medicines:
         brand = raw_med.get("brand_name", "")
         generic = raw_med.get("generic_name", "")
-        search_term = (brand or generic).lower()
+        search_term = _normalize_medicine_name(brand or generic)
 
         # Find best match from DB
         db_match = None
         for dbm in db_matches:
+            brand_name = _normalize_medicine_name(dbm.get("brand_name", ""))
+            generic_name = _normalize_medicine_name(dbm.get("generic_name", ""))
             if (
-                search_term in (dbm.get("brand_name", "")).lower()
-                or search_term in (dbm.get("generic_name", "")).lower()
-                or (dbm.get("brand_name", "")).lower() in search_term
-                or (dbm.get("generic_name", "")).lower() in search_term
+                _is_reasonable_match(search_term, brand_name)
+                or _is_reasonable_match(search_term, generic_name)
             ):
                 db_match = dbm
                 break
@@ -92,21 +143,7 @@ async def scan_prescription(
     saved = False
     try:
         supabase = get_supabase_client()
-        patient_id = None
-
-        # Check if user has any patients created by them
-        res = supabase.table("patients").select("id").eq("created_by", user_id).limit(1).execute()
-        if res.data:
-            patient_id = res.data[0]["id"]
-        else:
-            # Create new patient (avoid querying users table — RLS recursion)
-            new_patient = {
-                "created_by": user_id,
-                "name": "My Health Profile",
-            }
-            create_res = supabase.table("patients").insert(new_patient).execute()
-            if create_res.data:
-                patient_id = create_res.data[0]["id"]
+        patient_id = get_or_create_self_patient(supabase, user_id)
 
         if patient_id:
             log_entry = {
@@ -122,6 +159,10 @@ async def scan_prescription(
                          "total_market_price": total_market,
                          "total_jan_aushadhi_price": total_jan_aushadhi,
                          "notes": extraction.get("notes", ""),
+                         "raw_text": raw_text,
+                         "ocr_engine": ocr_engine,
+                         "ocr_confidence": ocr_confidence,
+                         "warnings": warnings,
                     }
                 },
                 "notes": f"Prescription from {doctor_name}",
@@ -130,7 +171,7 @@ async def scan_prescription(
             saved = True
 
     except Exception as e:
-        print(f"Failed to auto-save prescription record: {e}")
+        logger.error("Failed to auto-save prescription record: %s", e)
 
     return {
         "success": True,
@@ -142,6 +183,10 @@ async def scan_prescription(
             "total_market_price": round(total_market, 2),
             "total_jan_aushadhi_price": round(total_jan_aushadhi, 2),
             "notes": extraction.get("notes", ""),
+            "raw_text": raw_text,
+            "ocr_engine": ocr_engine,
+            "ocr_confidence": ocr_confidence,
+            "warnings": warnings,
         },
     }
 
@@ -151,7 +196,8 @@ class MedicineLookupRequest(BaseModel):
 
 
 @router.post("/medicine-lookup")
-async def lookup_medicine(req: MedicineLookupRequest):
+@limiter.limit("20/minute")
+async def lookup_medicine(request: Request, req: MedicineLookupRequest):
     """Look up a medicine in the database — returns Jan Aushadhi alternative and details."""
     results = await search_medicines(req.medicine_name, limit=5)
 

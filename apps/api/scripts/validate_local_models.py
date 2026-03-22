@@ -13,7 +13,11 @@ async def main():
     from services.local_ml_service import (
         analyze_symptoms_local,
         extract_medical_terms_local,
+        extract_prescription_local,
     )
+    from services.prescription_ocr_service import get_ocr_model_status
+    from PIL import Image, ImageDraw
+    import io
 
     passed = 0
     failed = 0
@@ -115,6 +119,51 @@ async def main():
         passed += 1
     else:
         print(f"  FAILED: {result}")
+        failed += 1
+
+    # Test 7: OCR model readiness check
+    print("\n--- Test 7: OCR model readiness ---")
+    ocr_status = get_ocr_model_status()
+    print(f"  Preferred engine: {ocr_status['preferred_engine']}")
+    print(f"  Model artifact exists: {ocr_status['model_artifact_exists']}")
+    print(f"  Tesseract available: {ocr_status['tesseract_available']}")
+    if ocr_status["model_artifact_exists"] or ocr_status["tesseract_available"]:
+        print("  PASSED")
+        passed += 1
+    else:
+        print("  FAILED: neither trained OCR artifact nor Tesseract is available")
+        failed += 1
+
+    # Test 8: OCR smoke test
+    print("\n--- Test 8: OCR smoke test ---")
+    img = Image.new("RGB", (1800, 1000), "white")
+    draw = ImageDraw.Draw(img)
+    lines = [
+        "Dr.R Sharma",
+        "Date 12/002/2026",
+        "TabParacetamol 500 mg BDx 5 days",
+        "Cap Amoxicillin 250 mg TDS for 7 days",
+    ]
+    y = 100
+    for line in lines:
+        draw.text((100, y), line, fill="black")
+        y += 120
+    img = img.resize((2600, 1400))
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG")
+
+    ocr_result = await extract_prescription_local(buf.getvalue(), "image/jpeg")
+    if "error" in ocr_result:
+        print(f"  FAILED: {ocr_result['error']}")
+        failed += 1
+    elif ocr_result.get("ocr_engine") and "raw_text" in ocr_result:
+        print(f"  Engine: {ocr_result.get('ocr_engine')}")
+        print(f"  OCR confidence: {ocr_result.get('ocr_confidence')}")
+        print(f"  Medicines parsed: {len(ocr_result.get('medicines', []))}")
+        print("  PASSED")
+        passed += 1
+    else:
+        print(f"  FAILED: malformed OCR response {ocr_result}")
         failed += 1
 
     # Summary

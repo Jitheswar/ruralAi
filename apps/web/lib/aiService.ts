@@ -31,6 +31,10 @@ export interface PrescriptionResult {
   total_market_price: number;
   total_jan_aushadhi_price: number;
   notes: string;
+  raw_text?: string;
+  ocr_engine?: string;
+  ocr_confidence?: number;
+  warnings?: string[];
 }
 
 export interface MedicineLookupResult {
@@ -60,7 +64,35 @@ export interface MedicineLookupResult {
   message?: string;
 }
 
+export interface TranscribeTextResult {
+  text: string;
+  language: string;
+  suggested_symptoms: string[];
+  medical_terms: { term: string; symptom_id: string; confidence: number }[];
+}
+
 // ----- API calls -----
+
+export async function transcribeText(
+  text: string,
+  language: string,
+  token: string,
+): Promise<TranscribeTextResult> {
+  const res = await fetch(`${API_BASE}/api/voice/transcribe-text`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ text, language }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Voice API error: HTTP ${res.status}`);
+  }
+
+  return await res.json();
+}
 
 export async function scanPrescription(file: File, token?: string): Promise<PrescriptionResult & { saved?: boolean }> {
   const formData = new FormData();

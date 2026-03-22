@@ -1,21 +1,42 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, StyleSheet } from 'react-native';
+import { Audio } from 'expo-av';
+import { toBackendLanguage } from '@rural-ai/shared';
+import { supabase } from '../services/supabaseClient';
 import VoiceRecordButton from '../components/VoiceRecordButton';
-import { transcribeAudio, TranscriptionResult } from '../services/aiService';
+import { transcribeAudio, transcribeText, TranscriptionResult } from '../services/aiService';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type RecordingState = 'idle' | 'recording' | 'processing' | 'done';
 
 export default function VoiceInputScreen({ navigation, route }: any) {
   const [state, setState] = useState<RecordingState>('idle');
   const [result, setResult] = useState<TranscriptionResult | null>(null);
-  const recordingRef = useRef<any>(null);
+  const recordingRef = useRef<Audio.Recording | null>(null);
+  const { language, t } = useLanguage();
 
   async function handlePressIn() {
     try {
-      // In production: use expo-av Audio.Recording
-      // For now, we simulate recording start
+      // Request microphone permissions
+      const { status } = await Audio.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Microphone access is needed to record voice input.');
+        return;
+      }
+
+      // Configure audio mode for recording
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      // Create and start a new recording
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
+      await recording.startAsync();
+      recordingRef.current = recording;
       setState('recording');
-      console.log('[Voice] Recording started (mock)');
+      console.log('[Voice] Recording started');
     } catch (err) {
       console.error('Failed to start recording:', err);
       Alert.alert('Error', 'Could not start recording. Please check microphone permissions.');
@@ -26,22 +47,56 @@ export default function VoiceInputScreen({ navigation, route }: any) {
     try {
       setState('processing');
 
-      // In production: stop recording and get URI from expo-av
-      // For now, simulate with a mock URI
-      const mockUri = 'file:///mock-recording.m4a';
-
-      // Stop recording if active
-      if (recordingRef.current) {
-        await recordingRef.current.stopAndUnloadAsync();
-        // const uri = recordingRef.current.getURI();
-        recordingRef.current = null;
+      if (!recordingRef.current) {
+        setState('idle');
+        Alert.alert('Error', 'No active recording found.');
+        return;
       }
 
-      const transcription = await transcribeAudio(mockUri);
+      // Stop recording and get the real file URI
+      await recordingRef.current.stopAndUnloadAsync();
+      const uri = recordingRef.current.getURI();
+      recordingRef.current = null;
+
+      // Reset audio mode
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+      });
+
+      if (!uri) {
+        setState('idle');
+        Alert.alert('Error', 'Recording failed — no audio file was created.');
+        return;
+      }
+
+      console.log('[Voice] Recording stopped, URI:', uri);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+
+      const transcription = await transcribeAudio(uri, accessToken ?? undefined);
+
+      // Run backend normalization with selected language for consistent symptom IDs
+      if (transcription.english_text) {
+        try {
+          const normalized = await transcribeText(
+            transcription.english_text,
+            toBackendLanguage(language),
+            accessToken ?? undefined,
+          );
+          // Merge normalized symptoms into transcription result
+          if (normalized.suggested_symptoms?.length) {
+            transcription.suggested_symptoms = normalized.suggested_symptoms;
+          }
+        } catch (normErr) {
+          console.warn('[Voice] Normalization fallback, using raw transcription:', normErr);
+        }
+      }
+
       setResult(transcription);
       setState('done');
     } catch (err) {
       console.error('Failed to process recording:', err);
+      recordingRef.current = null;
       setState('idle');
       Alert.alert('Error', 'Could not process recording. Please try again.');
     }
@@ -63,9 +118,9 @@ export default function VoiceInputScreen({ navigation, route }: any) {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={{ alignItems: 'center' }}>
-        <Text style={styles.title}>Voice Input</Text>
+        <Text style={styles.title}>{t('nav.voiceInput')}</Text>
         <Text style={styles.subtitle}>
-          Describe your symptoms in Hindi or English. We'll translate and identify medical terms.
+          {t('symptom.voiceInput')}
         </Text>
 
         <View style={styles.recordingButtonContainer}>
@@ -80,7 +135,7 @@ export default function VoiceInputScreen({ navigation, route }: any) {
         {state === 'processing' && (
           <View style={styles.processingContainer}>
             <Text style={styles.processingText}>
-              Processing your voice input...
+              {t('common.loading')}
             </Text>
           </View>
         )}
@@ -112,12 +167,12 @@ export default function VoiceInputScreen({ navigation, route }: any) {
                             term.category === 'cardiac'
                               ? '#DC2626'
                               : term.category === 'neuro'
-                              ? '#4F46E5'
-                              : term.category === 'respiratory'
-                              ? '#2563EB'
-                              : term.category === 'gastro'
-                              ? '#D97706'
-                              : '#6B7280',
+                                ? '#4F46E5'
+                                : term.category === 'respiratory'
+                                  ? '#2563EB'
+                                  : term.category === 'gastro'
+                                    ? '#D97706'
+                                    : '#6B7280',
                         }
                       ]}
                     />

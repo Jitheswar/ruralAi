@@ -4,34 +4,25 @@ Uses the new google.genai SDK.
 """
 
 import os
-import json
 from google import genai
 from google.genai import types
-from services.ai_models import get_model_for_task
-
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+from services.ai_models import get_cloud_model_for_task, parse_json_response as _parse_json_response
 
 _client = None
+_client_key = None
 
 
 def _get_client():
-    global _client
-    if _client is None and GEMINI_API_KEY:
-        _client = genai.Client(api_key=GEMINI_API_KEY)
+    global _client, _client_key
+    key = os.getenv("GEMINI_API_KEY")
+    if not key:
+        _client = None
+        _client_key = None
+        return None
+    if _client is None or _client_key != key:
+        _client = genai.Client(api_key=key)
+        _client_key = key
     return _client
-
-
-def _parse_json_response(text: str) -> dict:
-    """Extract JSON from Gemini response (handles markdown code blocks)."""
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        lines = cleaned.split("\n")
-        lines = [l for l in lines if not l.strip().startswith("```")]
-        cleaned = "\n".join(lines)
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        return {"error": "Failed to parse AI response", "raw": text}
 
 
 async def analyze_symptoms(
@@ -103,7 +94,7 @@ Respond ONLY with valid JSON in this exact format:
 }}"""
 
     try:
-        model_name = get_model_for_task("symptom_analysis")
+        model_name = get_cloud_model_for_task("symptom_analysis", "gemini")
         response = client.models.generate_content(
             model=model_name,
             contents=prompt,
@@ -113,7 +104,7 @@ Respond ONLY with valid JSON in this exact format:
         error_msg = str(e)
         if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
              return {
-                "error": "Daily AI quota exceeded. Please try again tomorrow or upgrade your plan.", 
+                "error": "Daily AI quota exceeded. Please try again tomorrow or upgrade your plan.",
                 "friendly_message": "I'm currently overwhelmed with requests! Please try again later."
              }
         return {"error": f"Gemini API error: {error_msg}"}
@@ -155,7 +146,7 @@ Respond ONLY with valid JSON in this exact format:
 If you cannot read the prescription clearly, still try your best and add a "confidence" field (low/medium/high)."""
 
     try:
-        model_name = get_model_for_task("prescription_ocr")
+        model_name = get_cloud_model_for_task("prescription_ocr", "gemini")
         image_part = types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
         response = client.models.generate_content(
             model=model_name,

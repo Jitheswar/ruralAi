@@ -1,20 +1,49 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getSession } from '@/lib/auth';
 import StatsCard from '@/components/StatsCard';
 import {
   getAdminStats,
   getSahayakStats,
-  getCitizenStats,
   getPatients,
   getPatientsByCreator,
   type Patient,
 } from '@/lib/supabaseData';
+import { getSupabaseClient } from '@/lib/supabaseClient';
+import { API_CONFIG } from '@rural-ai/shared';
 import type { UserRole } from '@rural-ai/shared';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import {
+  Users,
+  UserCheck,
+  Clock,
+  FileCheck,
+  FileText,
+  HeartPulse,
+  Pill,
+  CalendarDays,
+  Loader2,
+  Stethoscope,
+  ArrowRight,
+  CheckCircle,
+  Microscope,
+} from 'lucide-react';
 
 export default function DashboardPage() {
-  const user = getSession();
+  const [user, setUser] = useState<ReturnType<typeof getSession>>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setUser(getSession());
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
   const role: UserRole = user?.role || 'citizen';
 
   if (role === 'admin') return <AdminDashboard />;
@@ -25,6 +54,7 @@ export default function DashboardPage() {
 // ---------- Admin Dashboard ----------
 
 function AdminDashboard() {
+  const { t } = useLanguage();
   const [stats, setStats] = useState({ totalPatients: 0, activeSahayaks: 0, pendingSync: 0, syncedRecords: 0 });
   const [recentPatients, setRecentPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,15 +77,21 @@ function AdminDashboard() {
   if (loading) return <LoadingState />;
 
   return (
-    <div>
+    <div className="space-y-8 animate-in fade-in duration-500">
       <TBScreeningBar />
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatsCard title="Total Patients" value={stats.totalPatients} icon="👥" />
-        <StatsCard title="Active Sahayaks" value={stats.activeSahayaks} icon="👩‍⚕️" />
-        <StatsCard title="Pending Sync" value={stats.pendingSync} icon="⏳" />
-        <StatsCard title="Synced Records" value={stats.syncedRecords} icon="📋" />
+      <MalariaScreeningBar />
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1">{t('nav.dashboard')}</h1>
+        <p className="text-muted-foreground text-sm">Overview of system health and patient records.</p>
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard title={t('patient.total')} value={stats.totalPatients} icon={Users} iconColor="text-blue-600" iconBg="bg-blue-50 dark:bg-blue-500/10" />
+        <StatsCard title="Active Sahayaks" value={stats.activeSahayaks} icon={UserCheck} iconColor="text-emerald-600" iconBg="bg-emerald-50 dark:bg-emerald-500/10" />
+        <StatsCard title="Pending Sync" value={stats.pendingSync} icon={Clock} iconColor="text-amber-600" iconBg="bg-amber-50 dark:bg-amber-500/10" />
+        <StatsCard title="Synced Records" value={stats.syncedRecords} icon={FileCheck} iconColor="text-teal-600" iconBg="bg-teal-50 dark:bg-teal-500/10" />
+      </div>
+
       <RecentPatientsList patients={recentPatients} />
     </div>
   );
@@ -64,6 +100,7 @@ function AdminDashboard() {
 // ---------- Sahayak Dashboard ----------
 
 function SahayakDashboard({ userId }: { userId: string }) {
+  const { t } = useLanguage();
   const [stats, setStats] = useState({ myPatients: 0, pendingSync: 0, syncedRecords: 0 });
   const [recentPatients, setRecentPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,14 +123,20 @@ function SahayakDashboard({ userId }: { userId: string }) {
   if (loading) return <LoadingState />;
 
   return (
-    <div>
+    <div className="space-y-8 animate-in fade-in duration-500">
       <TBScreeningBar />
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatsCard title="My Patients" value={stats.myPatients} icon="👥" />
-        <StatsCard title="Pending Sync" value={stats.pendingSync} icon="⏳" />
-        <StatsCard title="Synced Records" value={stats.syncedRecords} icon="📋" />
+      <MalariaScreeningBar />
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1">{t('nav.dashboard')}</h1>
+        <p className="text-muted-foreground text-sm">Manage your patients and data synchronization.</p>
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatsCard title={t('nav.myPatients')} value={stats.myPatients} icon={Users} iconColor="text-blue-600" iconBg="bg-blue-50 dark:bg-blue-500/10" />
+        <StatsCard title="Pending Sync" value={stats.pendingSync} icon={Clock} iconColor="text-amber-600" iconBg="bg-amber-50 dark:bg-amber-500/10" />
+        <StatsCard title="Synced Records" value={stats.syncedRecords} icon={FileCheck} iconColor="text-teal-600" iconBg="bg-teal-50 dark:bg-teal-500/10" />
+      </div>
+
       <RecentPatientsList patients={recentPatients} />
     </div>
   );
@@ -102,14 +145,32 @@ function SahayakDashboard({ userId }: { userId: string }) {
 // ---------- Citizen Dashboard ----------
 
 function CitizenDashboard({ userId, name }: { userId: string; name: string }) {
+  const { t } = useLanguage();
   const [stats, setStats] = useState({ totalLogs: 0, lastVisit: null as string | null, vitalsCount: 0, prescriptionCount: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const s = await getCitizenStats(userId);
-        setStats(s);
+        const supabase = getSupabaseClient();
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        if (!token) { setLoading(false); return; }
+
+        const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || API_CONFIG.BASE_URL;
+        const res = await fetch(`${apiBase}/api/vitals/health-logs`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const logs: { id: string; log_type: string; created_at: string }[] = json.logs || [];
+          setStats({
+            totalLogs: logs.length,
+            lastVisit: logs.length > 0 ? logs[0].created_at : null,
+            vitalsCount: logs.filter((l) => l.log_type === 'vitals').length,
+            prescriptionCount: logs.filter((l) => l.log_type === 'prescription').length,
+          });
+        }
       } catch (err) {
         console.error('Failed to load citizen dashboard:', err);
       } finally {
@@ -122,23 +183,36 @@ function CitizenDashboard({ userId, name }: { userId: string; name: string }) {
   if (loading) return <LoadingState />;
 
   return (
-    <div>
+    <div className="space-y-8 animate-in fade-in duration-500">
       <TBScreeningBar />
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Welcome, {name || 'User'}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <StatsCard title="Health Logs" value={stats.totalLogs} icon="📋" />
-        <StatsCard title="Vitals Recorded" value={stats.vitalsCount} icon="❤️" />
-        <StatsCard title="Prescriptions" value={stats.prescriptionCount} icon="💊" />
+      <MalariaScreeningBar />
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1">{t('auth.welcomeBack')}, {name || 'User'}</h1>
+        <p className="text-muted-foreground text-sm">Track your health records and vitals.</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard title="Health Logs" value={stats.totalLogs} icon={FileText} iconColor="text-blue-600" iconBg="bg-blue-50 dark:bg-blue-500/10" />
+        <StatsCard title="Vitals Recorded" value={stats.vitalsCount} icon={HeartPulse} iconColor="text-rose-600" iconBg="bg-rose-50 dark:bg-rose-500/10" />
+        <StatsCard title="Prescriptions" value={stats.prescriptionCount} icon={Pill} iconColor="text-purple-600" iconBg="bg-purple-50 dark:bg-purple-500/10" />
         <StatsCard
           title="Last Visit"
           value={stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'None'}
-          icon="📅"
+          icon={CalendarDays}
+          iconColor="text-teal-600"
+          iconBg="bg-teal-50 dark:bg-teal-500/10"
         />
       </div>
+
       {stats.totalLogs === 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-          <p className="text-gray-500 text-lg mb-2">No health records yet</p>
-          <p className="text-gray-400 text-sm">Your health logs will appear here once recorded by a Sahayak or through the mobile app.</p>
+        <div className="bg-card text-card-foreground rounded-xl shadow-sm border border-border p-12 text-center">
+          <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-6 h-6 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-medium text-foreground mb-2">No health records yet</h3>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto">
+            Your health logs will appear here once recorded by a Sahayak or through the mobile app.
+          </p>
         </div>
       )}
     </div>
@@ -153,16 +227,54 @@ function TBScreeningBar() {
       href="https://tb-pwa.digitalclinics.ai/login"
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-between w-full mb-6 px-5 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-sm hover:from-red-700 hover:to-red-600 transition-all cursor-pointer group"
+      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 p-1 shadow-md transition-all hover:shadow-lg hover:scale-[1.01] block"
     >
-      <div className="flex items-center gap-3">
-        <span className="text-2xl">🫁</span>
-        <div>
-          <p className="font-semibold text-sm">TB Screening</p>
-          <p className="text-xs text-red-100">Click to start tuberculosis screening assessment</p>
+      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative flex items-center justify-between px-5 py-4 bg-transparent text-white">
+        <div className="flex items-center gap-4">
+          <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <Stethoscope className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <p className="font-bold text-base leading-tight">TB Screening Assessment</p>
+            <p className="text-sm text-rose-100/90">Click to start tuberculosis screening via external tool</p>
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-rose-100 font-medium group-hover:text-white transition-colors">
+          <span className="text-sm">Start Assessment</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
-      <span className="text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all text-lg">&rarr;</span>
+    </a>
+  );
+}
+
+// ---------- Malaria Screening Bar ----------
+
+function MalariaScreeningBar() {
+  return (
+    <a
+      href="https://malaria-detection-ml.onrender.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 p-1 shadow-md transition-all hover:shadow-lg hover:scale-[1.01] block"
+    >
+      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative flex items-center justify-between px-5 py-4 bg-transparent text-white">
+        <div className="flex items-center gap-4">
+          <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+            <Microscope className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <p className="font-bold text-base leading-tight">Malaria Screening</p>
+            <p className="text-sm text-amber-100/90">Upload a blood smear image for AI-powered malaria detection</p>
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-amber-100 font-medium group-hover:text-white transition-colors">
+          <span className="text-sm">Start Screening</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </div>
     </a>
   );
 }
@@ -170,9 +282,11 @@ function TBScreeningBar() {
 // ---------- Shared Components ----------
 
 function LoadingState() {
+  const { t } = useLanguage();
   return (
-    <div className="flex items-center justify-center h-64">
-      <div className="text-gray-400">Loading...</div>
+    <div className="flex flex-col items-center justify-center h-[50vh] gap-3">
+      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
     </div>
   );
 }
@@ -180,39 +294,55 @@ function LoadingState() {
 function RecentPatientsList({ patients }: { patients: Patient[] }) {
   if (patients.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-        <p className="text-gray-500 text-lg mb-2">No patients yet</p>
-        <p className="text-gray-400 text-sm">Patients added via the mobile app will appear here.</p>
+      <div className="bg-card text-card-foreground rounded-xl shadow-sm border border-border p-8 text-center">
+        <p className="text-muted-foreground text-sm">No patients added yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Patients</h2>
-      <div className="space-y-3">
+    <div className="bg-card text-card-foreground rounded-xl shadow-sm border border-border overflow-hidden">
+      <div className="px-5 py-4 border-b border-border bg-muted/30">
+        <h2 className="text-base font-semibold text-foreground">Recent Patients</h2>
+      </div>
+      <div className="divide-y divide-border">
         {patients.map((p) => (
-          <div key={p.id} className="flex items-center justify-between py-2 border-b border-gray-50">
+          <div key={p.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm">
-                {p.name.charAt(0)}
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                {p.name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">{p.name}</p>
-                <p className="text-xs text-gray-500">{p.village}{p.district ? `, ${p.district}` : ''}</p>
+                <p className="text-sm font-medium text-foreground">{p.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {p.village || 'No village'} {p.district ? `· ${p.district}` : ''}
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                p.is_synced ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-              }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${p.is_synced ? 'bg-green-500' : 'bg-orange-500'}`} />
+            <div className="flex flex-col items-end gap-1">
+              <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${p.is_synced
+                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                }`}>
+                {p.is_synced ? (
+                  <CheckCircle className="w-3 h-3" />
+                ) : (
+                  <Clock className="w-3 h-3" />
+                )}
                 {p.is_synced ? 'Synced' : 'Pending'}
               </span>
-              <span className="text-xs text-gray-400">{new Date(p.created_at).toLocaleDateString()}</span>
+              <span className="text-[11px] text-muted-foreground">
+                Added {new Date(p.created_at).toLocaleDateString()}
+              </span>
             </div>
           </div>
         ))}
+      </div>
+      <div className="px-5 py-3 bg-muted/30 border-t border-border text-center">
+        <Link href="/dashboard/patients" className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium transition-colors">
+          View all patients
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
     </div>
   );
